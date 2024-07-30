@@ -1,10 +1,6 @@
-# Don't Remove Credit @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot @Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, IS_SHORTLINK, LOG_CHANNEL, TUTORIAL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION
+from info import ADMINS, PREMIUM_USER, AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, IS_SHORTLINK, LOG_CHANNEL, TUTORIAL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, SECOND_AUTH_CHANNEL, STREAM_SITE, STREAM_API, SHORTLINK_API, SHORTLINK_URL, SECOND_SHORTLINK_API, SECOND_SHORTLINK_URL
 from imdb import Cinemagoer 
 import asyncio
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
@@ -16,7 +12,7 @@ import pytz
 import random 
 import re
 import os
-from datetime import datetime, date
+from datetime import datetime, date, time, timedelta
 import string
 from typing import List
 from database.users_chats_db import db
@@ -26,6 +22,8 @@ import aiohttp
 from shortzy import Shortzy
 import http.client
 import json
+
+from loguru import logger
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -57,19 +55,43 @@ class temp(object):
     SHORT = {}
     SETTINGS = {}
     IMDB_CAP = {}
+    VERIFY = {}
 
-async def is_subscribed(bot, query):
+async def is_req_subscribed(client, message):
     try:
-        user = await bot.get_chat_member(AUTH_CHANNEL, query.from_user.id)
+        # Check if the user is a member, admin, or owner of AUTH_CHANNEL
+        user1 = await client.get_chat_member(int(AUTH_CHANNEL), message.from_user.id)
+        if user1.status in [enums.ChatMemberStatus.OWNER, enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.MEMBER]:
+            # Check for join request in the database for SECOND_AUTH_CHANNEL
+            if await db.find_join_req(message.from_user.id):
+                return True
+            
+            # Check if the user is a member, admin, or owner of SECOND_AUTH_CHANNEL
+            try:
+                user2 = await client.get_chat_member(int(SECOND_AUTH_CHANNEL), message.from_user.id)
+                if user2.status in [enums.ChatMemberStatus.OWNER, enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.MEMBER]:
+                    return True
+                else:
+                    return False
+            except UserNotParticipant:
+                return False
+            except ChatAdminRequired:
+                logger.error("Bot lacks admin privileges in the SECOND_AUTH_CHANNEL.")
+                return False
+            except Exception as e:
+                logger.error(f"Unexpected error in SECOND_AUTH_CHANNEL check: {e}")
+                return False
+        else:
+            return False
     except UserNotParticipant:
-        pass
+        return False
+    except ChatAdminRequired:
+        logger.error("Bot lacks admin privileges in the AUTH_CHANNEL.")
+        return False
     except Exception as e:
-        logger.exception(e)
-    else:
-        if user.status != enums.ChatMemberStatus.BANNED:
-            return True
+        logger.error(f"Unexpected error in AUTH_CHANNEL check: {e}")
+        return False
 
-    return False
 
 async def get_poster(query, bulk=False, id=False, file=None):
     if not id:
@@ -192,7 +214,7 @@ async def search_gagala(text):
         'Chrome/61.0.3163.100 Safari/537.36'
         }
     text = text.replace(" ", '+')
-    url = f'https://www.google.com/search?q={text}'
+    url = f'https://www.google.co.in/search?q={text}'
     response = requests.get(url, headers=usr_agent)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -534,51 +556,90 @@ async def get_tutorial(chat_id):
         TUTORIAL_URL = TUTORIAL
     return TUTORIAL_URL
         
-async def get_verify_shorted_link(link):
-    API = SHORTLINK_API
-    URL = SHORTLINK_URL
-    https = link.split(":")[0]
-    if "http" == https:
-        https = "https"
-        link = link.replace("http", https)
-
-    if URL == "api.shareus.in":
-        url = f"https://{URL}/shortLink"
-        params = {"token": API,
-                  "format": "json",
-                  "link": link,
-                  }
+ #added stream and download shorten api's & website.
+async def get_streamanddownload_shorted_link(link):
+    shortzy = Shortzy(api_key=STREAM_API, base_site=STREAM_SITE)
+    link = await shortzy.convert(link)
+    return link
+    
+    
+async def get_verify_shorted_link(link, url, api):
+    API = api
+    URL = url
+    if URL == "api.shareus.io":
+        url = f'https://{URL}/easy_api'
+        params = {
+            "key": API,
+            "link": link,
+        }
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, params=params, raise_for_status=True, ssl=False) as response:
-                    data = await response.json(content_type="text/html")
-                    if data["status"] == "success":
-                        return data["shortlink"]
-                    else:
-                        logger.error(f"Error: {data['message']}")
-                        return f'https://{URL}/shortLink?token={API}&format=json&link={link}'
-
+                    data = await response.text()
+                    return data
+        except aiohttp.ClientError as e:
+            logger.error(f"Client error while shortening link: {e}")
+            return link
         except Exception as e:
-            logger.error(e)
-            return f'https://{URL}/shortLink?token={API}&format=json&link={link}'
+            logger.error(f"Unexpected error while shortening link: {e}")
+            return link
     else:
-        url = f'https://{URL}/api'
-        params = {'api': API,
-                  'url': link,
-                  }
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, params=params, raise_for_status=True, ssl=False) as response:
-                    data = await response.json()
-                    if data["status"] == "success":
-                        return data['shortenedUrl']
-                    else:
-                        logger.error(f"Error: {data['message']}")
-                        return f'https://{URL}/api?api={API}&link={link}'
-
+            shortzy = Shortzy(api_key=API, base_site=URL)
+            link = await shortzy.convert(link)
+            return link
         except Exception as e:
-            logger.error(e)
-            return f'{URL}/api?api={API}&link={link}'
+            logger.error(f"Error using Shortzy to shorten link: {e}")
+            return link
+
+
+
+##
+
+async def get_token(bot, userid, link):
+    try:
+        user = await bot.get_users(userid)
+    except Exception as e:
+        logger.error(f"Error fetching user {userid}: {e}")
+        return None
+    
+    if not await db.is_user_exist(user.id):
+        await db.add_user(user.id, user.first_name)
+        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
+    
+    token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
+    TOKENS[user.id] = {token: False}
+    link = f"{link}verify-{user.id}-{token}"
+
+    # Get current time in Asia/Kolkata timezone
+    kolkata_tz = pytz.timezone('Asia/Kolkata')
+    current_time = datetime.now(kolkata_tz).time()
+
+    # Define time ranges
+    morning_start = time(6, 0)  # 6:00 AM
+    morning_end = time(12, 0)   # 12:00 PM
+    evening_start = time(18, 0) # 6:00 PM
+    evening_end = time(23, 59)    # 12:00 AM (midnight)
+
+    # Determine which shortener to use based on the time
+    if (morning_start <= current_time < morning_end) or (evening_start <= current_time < evening_end):
+        shortlink_url = SHORTLINK_URL
+        shortlink_api = SHORTLINK_API
+    else:
+        shortlink_url = SECOND_SHORTLINK_URL
+        shortlink_api = SECOND_SHORTLINK_API
+    
+    try:
+        shortened_verify_url = await get_verify_shorted_link(link, shortlink_url, shortlink_api)
+        return str(shortened_verify_url)
+    except Exception as e:
+        logger.error(f"Error in token generation process: {e}")
+        return None
+        
+            
+                            ##
+
+                        
 
 async def check_token(bot, userid, token):
     user = await bot.get_users(userid)
@@ -596,44 +657,106 @@ async def check_token(bot, userid, token):
     else:
         return False
 
-async def get_token(bot, userid, link):
-    user = await bot.get_users(userid)
-    if not await db.is_user_exist(user.id):
-        await db.add_user(user.id, user.first_name)
-        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
-    token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
-    TOKENS[user.id] = {token: False}
-    link = f"{link}verify-{user.id}-{token}"
-    shortened_verify_url = await get_verify_shorted_link(link)
-    return str(shortened_verify_url)
+
+    
+async def get_verify_status(userid):
+    status = temp.VERIFY.get(userid)
+    if not status:
+        status = await db.get_verified(userid)
+        temp.VERIFY[userid] = status
+    return status
+
+async def update_verify_status(userid, date_temp, time_temp):
+    status = await get_verify_status(userid)
+    status["date"] = date_temp
+    status["time"] = time_temp
+    temp.VERIFY[userid] = status
+    await db.update_verification(userid, date_temp, time_temp)    
+    
+
+
 
 async def verify_user(bot, userid, token):
-    user = await bot.get_users(userid)
+    user = await bot.get_users(int(userid))
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     TOKENS[user.id] = {token: True}
     tz = pytz.timezone('Asia/Kolkata')
-    today = date.today()
-    VERIFIED[user.id] = str(today)
+    date_var = datetime.now(tz)+timedelta(hours=6) #added verification expire Time. in Hour 
+    temp_time = date_var.strftime("%H:%M:%S")
+    date_var, time_var = str(date_var).split(" ")
+    await update_verify_status(user.id, date_var, temp_time)
+
 
 async def check_verification(bot, userid):
-    user = await bot.get_users(userid)
+    user = await bot.get_users(int(userid))
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
+        # premium verification bypass added 
+    if await db.has_premium_access(user.id):
+        return True      
+    else:
+        pass       
     tz = pytz.timezone('Asia/Kolkata')
     today = date.today()
-    if user.id in VERIFIED.keys():
-        EXP = VERIFIED[user.id]
-        years, month, day = EXP.split('-')
-        comp = date(int(years), int(month), int(day))
-        if comp<today:
-            return False
+    now = datetime.now(tz)
+    curr_time = now.strftime("%H:%M:%S")
+    hour1, minute1, second1 = curr_time.split(":")
+    curr_time = time(int(hour1), int(minute1), int(second1))
+    status = await get_verify_status(user.id)
+    date_var = status["date"]
+    time_var = status["time"]
+    years, month, day = date_var.split('-')
+    comp_date = date(int(years), int(month), int(day))
+    hour, minute, second = time_var.split(":")
+    comp_time = time(int(hour), int(minute), int(second))
+    if comp_date<today:
+        return False
+    else:
+        if comp_date == today:
+            if comp_time<curr_time:
+                return False
+            else:
+                return True
         else:
             return True
+    
+async def get_seconds(time_string):
+    def extract_value_and_unit(ts):
+        value = ""
+        unit = ""
+
+        index = 0
+        while index < len(ts) and ts[index].isdigit():
+            value += ts[index]
+            index += 1
+
+        unit = ts[index:].lstrip()
+
+        if value:
+            value = int(value)
+
+        return value, unit
+
+    value, unit = extract_value_and_unit(time_string)
+
+    if unit == 's':
+        return value
+    elif unit == 'min':
+        return value * 60
+    elif unit == 'hour':
+        return value * 3600
+    elif unit == 'day':
+        return value * 86400
+    elif unit == 'month':
+        return value * 86400 * 30
+    elif unit == 'year':
+        return value * 86400 * 365
     else:
-        return False
+        return 0    
+    
     
     
 async def send_all(bot, userid, files, ident, chat_id, user_name, query):

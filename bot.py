@@ -3,6 +3,9 @@
 # Ask Doubt on telegram @KingVJ01
 
 
+
+
+
 import sys
 import glob
 import importlib
@@ -86,7 +89,7 @@ async def Lazy_start():
     today = date.today()
     now = datetime.now(tz)
     time = now.strftime("%H:%M:%S %p")
-    await LazyPrincessBot.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
+    await LazyPrincessBot.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time, temp.U_NAME))
     app = web.AppRunner(await web_server())
     await app.setup()
     bind_address = "0.0.0.0"

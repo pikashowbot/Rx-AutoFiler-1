@@ -16,10 +16,6 @@ import pyrogram
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
     make_inactive
 from info import *
-
-from .login import check_login_status
-
-
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
@@ -1778,10 +1774,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             hp_link = await get_streamanddownload_shorted_link(lazy_download)
             ph_link = await get_streamanddownload_shorted_link(lazy_stream)
             buttons = []
-            #cheaking login and premium status 
-            login_status = await check_login_status(user_id)
-            premium_access = await db.has_premium_access(user_id)
-            if not login_status and not premium_access and IS_SREAM_SHORTLINK:
+            if not await db.has_premium_access(user_id) and IS_SREAM_SHORTLINK == True:
                 await query.answer("🚸 ɴᴏᴛᴇ :\nᴀᴅ-ꜰʀᴇᴇ ꜱᴇʀᴠɪᴄᴇ ɪꜱ ᴏɴʟʏ ꜰᴏʀ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ.\n\nᴛᴏ ᴋɴᴏᴡ ᴍᴏʀᴇ ᴄʜᴇᴄᴋ ᴘʟᴀɴꜱ.", show_alert=True)
                 await query.message.reply_text(
                     text="<b>‼️ ᴡᴀɴᴛ ᴛᴏ ʀᴇᴍᴏᴠᴇ ᴀᴅꜱ ?\n\n✅ ᴘᴜʀᴄʜᴀꜱᴇ ᴘʀᴇᴍɪᴜᴍ ᴀɴᴅ ᴇɴᴊᴏʏ ᴀᴅ-ꜰʀᴇᴇ ᴇxᴘᴇʀɪᴇɴᴄᴇ.</b>",
@@ -1942,7 +1935,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         buttons = [[
             InlineKeyboardButton('Sʜᴀʀᴇ Uʀ Lɪɴᴋ / Rᴇғғᴇʀ Tᴏ Fʀɪᴇɴᴅs ♂️', url=f'https://t.me/share/url?url=https://telegram.me/{temp.U_NAME}?start=VJ-{query.from_user.id}')
         ],[
-            InlineKeyboardButton('⚡𝐆𝐞𝐭 𝐅𝐫𝐞𝐞 𝐒𝐮𝐛𝐬𝐜𝐫𝐢𝐩𝐭𝐢𝐨𝐧⚡', callback_data='free')
+            InlineKeyboardButton('• ꜰʀᴇᴇ ᴛʀɪᴀʟ •', callback_data='free')
         ],[
             InlineKeyboardButton('• ʙʀᴏɴᴢᴇ •', callback_data='broze'),
             InlineKeyboardButton('• ꜱɪʟᴠᴇʀ •', callback_data='silver')
@@ -1958,15 +1951,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_text(
-           # text=script.SUBSCRIPTION_TXT.format(REFERAL_PREMEIUM_TIME, REFERAL_COUNT, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, temp.U_NAME, query.from_user.id),
-            text=script.SUBSCRIPTION_TXT.format(temp.U_NAME, query.from_user.id),
+            text=script.SUBSCRIPTION_TXT.format(REFERAL_PREMEIUM_TIME, REFERAL_COUNT, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, temp.U_NAME, query.from_user.id),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
         
     elif query.data == "free":
         buttons = [[
-            InlineKeyboardButton(' 𝐒𝐢𝐠𝐧-𝐢𝐧 𝐓𝐨 𝐁𝐨𝐭 ♻️ ', callback_data="ch_login")
+            InlineKeyboardButton('⚜️ ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ɢᴇᴛ ꜰʀᴇᴇ ᴛʀɪᴀʟ', callback_data="give_trial")
         ],[
             InlineKeyboardButton('⋞ ʙᴀᴄᴋ', callback_data='other'),
             InlineKeyboardButton('1 / 7', callback_data='pagesn1'),
@@ -1980,23 +1972,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-        
-
-    elif query.data == "ch_login":
-        user_id = query.from_user.id
-        login_status = await check_login_status(user_id)
-        if login_status:
-            await query.answer("♻️ Yᴏᴜ Aʀᴇ Aʟʟʀᴇᴀᴅʏ Lᴏɢɢᴇᴅ-ɪɴ ", show_alert=True)
-            return
-        else:                        
-            await query.message.reply_text(
-                text="<b>𝐔𝐬𝐞 𝐋𝐨𝐠𝐢𝐧 𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐓𝐨 𝐋𝐨𝐠𝐢𝐧.\n👉 /login 👈</b>",
-                quote=False,
-                disable_web_page_preview=True,                  
-                )
-            return    
-    
-    
     
     elif query.data == "broze":
         buttons = [[
@@ -2741,7 +2716,7 @@ emoji_pattern = re.compile(
 invite_link_pattern = re.compile(r't\.me/\w+', re.IGNORECASE)
 username_pattern = re.compile(r'@\w+', re.IGNORECASE)
 url_pattern = re.compile(r'(http[s]?://)?(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(?:/[^\\s]*)?', re.IGNORECASE)
-non_english_pattern = re.compile(r'[^a-zA-Z0-9\s\':.]')  #Respond only English characters & digits and ( ' & : ) contains messages. others ignore and delete immediately.
+non_english_pattern = re.compile(r'[^a-zA-Z0-9\s\':.)(]')  #Respond only English characters & digits and ( ' & : ) contains messages. others ignore and delete immediately.
 
 async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
     print(kwargs)

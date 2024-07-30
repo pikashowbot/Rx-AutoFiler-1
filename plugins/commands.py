@@ -7,14 +7,16 @@ import os
 import logging
 import random
 import asyncio
+import time
+import datetime
 from Script import script
 from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import *
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id, get_bad_files
-from database.users_chats_db import db
-from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, CHNL_LNK, GRP_LNK, REQST_CHANNEL, SUPPORT_CHAT_ID, SUPPORT_CHAT, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, IS_TUTORIAL, PREMIUM_USER
-from utils import get_settings, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_tutorial
+from database.users_chats_db import db, delete_all_referal_users, get_referal_users_count, get_referal_all_users, referal_add_user
+from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, CHNL_LNK, GRP_LNK, REQST_CHANNEL, SUPPORT_CHAT_ID, SUPPORT_CHAT, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, IS_TUTORIAL, PREMIUM_USER, VERIFY_TUTORIAL, SECOND_AUTH_CHANNEL, LOG_CHANNEL_V, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, LOG_CHANNEL_RQ 
+from utils import get_settings, get_size, is_req_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_seconds, get_token, get_shortlink, get_tutorial
 from database.connections_mdb import active_connection
 # from plugins.pm_filter import ENABLE_SHORTLINK
 import re, asyncio, os, sys
@@ -28,42 +30,44 @@ BATCH_FILES = {}
 async def start(client, message):
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [[
-                    InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
-                ],[
-                    InlineKeyboardButton('✪ Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url="https://t.me/vj_bot_disscussion"),
-                    InlineKeyboardButton('⌬ Mᴏᴠɪᴇ Gʀᴏᴜᴘ', url='https://t.me/vj_bots')
-                ],[
-                  InlineKeyboardButton('💌 SOURCE CODE 💌', callback_data='source')
-                ],[
-                    InlineKeyboardButton('✇ Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ✇', url=CHNL_LNK)
-                  ]]
+            InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
+        ], [
+            InlineKeyboardButton('✪ Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
+            InlineKeyboardButton('⌬ Mᴏᴠɪᴇ Gʀᴏᴜᴘ', url=GRP_LNK)
+        ], [
+            InlineKeyboardButton('⭐ PREMIUM ⭐', callback_data='premium_info')
+        ], [
+            InlineKeyboardButton('✇ Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ✇', url=CHNL_LNK)
+        ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply(script.START_TXT.format(message.from_user.mention if message.from_user else message.chat.title, temp.U_NAME, temp.B_NAME), reply_markup=reply_markup, disable_web_page_preview=True)
-        await asyncio.sleep(2) # 😢 https://github.com/EvamariaTG/EvaMaria/blob/master/plugins/p_ttishow.py#L17 😬 wait a bit, before checking.
+        await asyncio.sleep(2)
         if not await db.get_chat(message.chat.id):
-            total=await client.get_chat_members_count(message.chat.id)
-            await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
+            total = await client.get_chat_members_count(message.chat.id)
+            await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown", temp.U_NAME))
             await db.add_chat(message.chat.id, message.chat.title)
-        return 
+        return
+
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
-        await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
+        await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention, temp.U_NAME))
+
     if len(message.command) != 2:
         buttons = [[
-                    InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
-                ],[
-                    InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 💸', callback_data="shortlink_info"),
-                    InlineKeyboardButton('⌬ Mᴏᴠɪᴇ Gʀᴏᴜᴘ', url='https://t.me/vj_bots')
-                ],[
-                    InlineKeyboardButton('〄 Hᴇʟᴘ', callback_data='help'),
-                    InlineKeyboardButton('⍟ Aʙᴏᴜᴛ', callback_data='about')
-                ],[
-                  InlineKeyboardButton('💌 SOURCE CODE 💌', callback_data='source')
-                ],[
-                    InlineKeyboardButton('✇ Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ✇', url=CHNL_LNK)
-                  ]]
+            InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
+        ], [
+            InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 💸', callback_data="shortlink_info"),
+            InlineKeyboardButton('⌬ Mᴏᴠɪᴇ Gʀᴏᴜᴘ', url=GRP_LNK)
+        ], [
+            InlineKeyboardButton('〄 Hᴇʟᴘ', callback_data='help'),
+            InlineKeyboardButton('⍟ Aʙᴏᴜᴛ', callback_data='about')
+        ], [
+            InlineKeyboardButton('⭐ PREMIUM ⭐', callback_data='premium_info')
+        ], [
+            InlineKeyboardButton('✇ Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ✇', url=CHNL_LNK)
+        ]]
         reply_markup = InlineKeyboardMarkup(buttons)
-        m=await message.reply_sticker("CAACAgUAAxkBAAEKVaxlCWGs1Ri6ti45xliLiUeweCnu4AACBAADwSQxMYnlHW4Ls8gQMAQ") 
+        m = await message.reply_sticker("CAACAgUAAxkBAAEKVaxlCWGs1Ri6ti45xliLiUeweCnu4AACBAADwSQxMYnlHW4Ls8gQMAQ")
         await asyncio.sleep(1)
         await m.delete()
         await message.reply_photo(
@@ -73,37 +77,81 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML
         )
         return
-    
-    if AUTH_CHANNEL and not await is_subscribed(client, message):
+
+    if not await is_req_subscribed(client, message):
         try:
-            invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
+            invite_link_1 = await client.create_chat_invite_link(int(AUTH_CHANNEL), creates_join_request=True)
+            invite_link_2 = await client.create_chat_invite_link(int(SECOND_AUTH_CHANNEL), creates_join_request=True)
         except ChatAdminRequired:
-            logger.error("Make sure Bot is admin in Forcesub channel")
+            logger.error("Make sure Bot is admin in both Forcesub channels")
             return
+        logger.info(f"Generated invite link for AUTH_CHANNEL: {invite_link_1.invite_link}")
+        logger.info(f"Generated invite link for SECOND_AUTH_CHANNEL: {invite_link_2.invite_link}")
         btn = [
             [
-                InlineKeyboardButton("❆ Jᴏɪɴ Oᴜʀ Cʜᴀɴɴᴇʟ ❆", url=invite_link.invite_link)
-            ],[
-                InlineKeyboardButton('🤔 Why Iam Join🤔', callback_data='sinfo')
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➊", url=invite_link_1.invite_link)
+            ], [
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➋", url=invite_link_2.invite_link)
             ]
         ]
 
         if message.command[1] != "subscribe":
             try:
                 kk, file_id = message.command[1].split("_", 1)
-                btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ", callback_data=f"checksub#{kk}#{file_id}")])
+                btn.append([InlineKeyboardButton("𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️", callback_data=f"checksub#{kk}#{file_id}")])
             except (IndexError, ValueError):
-                btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
+                btn.append([InlineKeyboardButton("𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
         await client.send_photo(
             chat_id=message.from_user.id,
-            photo="https://telegra.ph/file/20b4aaaddb8aba646e53c.jpg",
-            caption="**You are not in our channel given below so you don't get the movie file...\n\nIf you want the movie file, click on the '🍿ᴊᴏɪɴ ᴏᴜʀ ʙᴀᴄᴋ-ᴜᴘ ᴄʜᴀɴɴᴇʟ🍿' button below and join our back-up channel, then click on the '🔄 Try Again' button below...\n\nThen you will get the movie files...**",
+            photo="https://graph.org/file/6b4edd8ae1dca02c8e13d.jpg",
+            caption="**English -**\n\t\t\t\tYᴏᴜ Nᴇᴇᴅ Tᴏ Jᴏɪɴ Oᴜʀ Aʟʟ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟs Fᴏʀ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Mᴏᴠɪᴇs. Aғᴛᴇʀ Jᴏɪɴɪɴɢ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟs, Pʟᴇᴀsᴇ Cʟɪᴄᴋ Oɴ (𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️) Button.\n\n**हिंदी -**\n\t\t\t\tमूवी डाउनलोड करने के लिए आपको हमारे अपडेट चैनल से जुड़ना होगा। चैनल से जुड़ने के बाद (𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️) बटन पर क्लिक करें।",
             reply_markup=InlineKeyboardMarkup(btn),
             parse_mode=enums.ParseMode.MARKDOWN
-            )
+        )
         return
+
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
         buttons = [[
+            InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
+        ], [
+            InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 💸', callback_data="shortlink_info"),
+            InlineKeyboardButton('⌬ Mᴏᴠɪᴇ Gʀᴏᴜᴘ', url=GRP_LNK)
+        ], [
+            InlineKeyboardButton('〄 Hᴇʟᴘ', callback_data='help'),
+            InlineKeyboardButton('⍟ Aʙᴏᴜᴛ', callback_data='about')
+        ], [
+            InlineKeyboardButton('⭐ PREMIUM ⭐', callback_data='premium_info')
+        ], [
+            InlineKeyboardButton('✇ Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ✇', url=CHNL_LNK)
+        ]]
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await message.reply_photo(
+            photo=random.choice(PICS),
+            caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME),
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+        return
+    data = message.command[1]
+    if data.split("-", 1)[0] == "VJ":
+        user_id = int(data.split("-", 1)[1])
+        vj = await referal_add_user(user_id, message.from_user.id)
+        if vj:
+            await message.reply(f"<b>You have joined using the referral link of user with ID {user_id}\n\nSend /start again to use the bot</b>")
+            num_referrals = await get_referal_users_count(user_id)
+            await client.send_message(chat_id = user_id, text = "<b>{} start the bot with your referral link\n\nTotal Referals - {}</b>".format(message.from_user.mention, num_referrals))
+            if num_referrals == REFERAL_COUNT:
+                time = REFERAL_PREMEIUM_TIME       
+                seconds = await get_seconds(time)
+                if seconds > 0:
+                    expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=seconds)
+                    user_data = {"id": user_id, "expiry_time": expiry_time} 
+                    await db.update_user(user_data)  # Use the update_user method to update or insert user data
+                    await delete_all_referal_users(user_id)
+                    await client.send_message(chat_id = user_id, text = "<b>You Have Successfully Completed Total Referal.\n\nYou Added In Premium For {}</b>".format(REFERAL_PREMEIUM_TIME))
+                    return 
+        else:
+            buttons = [[
                     InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
                 ],[
                     InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 💸', callback_data="shortlink_info"),
@@ -112,7 +160,7 @@ async def start(client, message):
                     InlineKeyboardButton('〄 Hᴇʟᴘ', callback_data='help'),
                     InlineKeyboardButton('⍟ Aʙᴏᴜᴛ', callback_data='about')
                 ],[
-                  InlineKeyboardButton('💌 SOURCE CODE 💌', callback_data='source')
+                  InlineKeyboardButton('⭐ PREMIUM ⭐', callback_data='premium_info')
                 ],[
                     InlineKeyboardButton('✇ Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ✇', url=CHNL_LNK)
                   ]]
@@ -124,7 +172,6 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML
         )
         return
-    data = message.command[1]
     try:
         pre, file_id = data.split('_', 1)
     except:
@@ -166,17 +213,15 @@ async def start(client, message):
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=f'https://t.me/{SUPPORT_CHAT}'),
+                                InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
                                 InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
                             ],[
-                                InlineKeyboardButton('𝗕𝗢𝗧 𝗢𝗪𝗡𝗘𝗥', url="https://t.me/KingVJ01")
-                            ],
-                            [
-                                InlineKeyboardButton('🚀 Fast Download / Watch Online🖥️', callback_data=f'generate_stream_link:{file_id}') #Don't change anything without contacting me @LazyDeveloperr
+                                InlineKeyboardButton('🚀 Fᴀsᴛ Dᴏᴡɴʟᴏᴀᴅ & Wᴀᴛᴄʜ Oɴʟɪɴᴇ 🖥️', callback_data=f'generate_stream_link:{file_id}')
                             ]
                         ]
                     )
                 )
+                await client.send_message(LOG_CHANNEL_RQ, script.LOG_TEXT_RQ.format(message.from_user.id, message.from_user.mention, title, size, temp.U_NAME))
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 logger.warning(f"Floodwait of {e.x} sec.")
@@ -187,17 +232,16 @@ async def start(client, message):
                     protect_content=msg.get('protect', False),
                     reply_markup=InlineKeyboardMarkup(
                         [
-                         [
-                          InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=f'https://t.me/{SUPPORT_CHAT}'),
+                        [
+                          InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
                           InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
-                       ],[
-                          InlineKeyboardButton("𝗕𝗢𝗧 𝗢𝗪𝗡𝗘𝗥", url="t.me/KingVJ01")
-                         ],[ 
-                            InlineKeyboardButton('🚀 Fast Download / Watch Online🖥️', callback_data=f'generate_stream_link:{file_id}') #Don't change anything without contacting me @LazyDeveloperr
-                            ]
+                        ],[
+                                InlineKeyboardButton('🚀 Fᴀsᴛ Dᴏᴡɴʟᴏᴀᴅ & Wᴀᴛᴄʜ Oɴʟɪɴᴇ 🖥️', callback_data=f'generate_stream_link:{file_id}')
+                        ]
                         ]
                     )
                 )
+                await client.send_message(LOG_CHANNEL_RQ, script.LOG_TEXT_RQ.format(message.from_user.id, message.from_user.mention, title, size, temp.U_NAME))
             except Exception as e:
                 logger.warning(e, exc_info=True)
                 continue
@@ -260,9 +304,22 @@ async def start(client, message):
             )
         is_valid = await check_token(client, userid, token)
         if is_valid == True:
+            await client.send_message(LOG_CHANNEL_V, script.LOG_TEXT_V.format(message.from_user.id, message.from_user.mention, temp.U_NAME)),
             await message.reply_text(
-                text=f"<b>Hey {message.from_user.mention}, You are successfully verified !\nNow you have unlimited access for all movies till today midnight.</b>",
+                text=f"=> Hᴇʏ {message.from_user.mention}, Yᴏᴜ ᴀʀᴇ sᴜᴄᴄᴇssғᴜʟʟʏ\n🥰 🇻 🇪 🇷 🇮 🇫 🇮 🇪 🇩 🥰\n\nNᴏᴡ Yᴏᴜ Hᴀᴠᴇ Uɴʟɪᴍɪᴛᴇᴅ Mᴏᴠɪᴇs Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aɴᴅ Oɴʟɪɴᴇ Sᴛʀᴇᴀᴍɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs Fʀᴏᴍ Nᴏᴡ.\n\n=> आप सफलतापूर्वक verify हो गए हैं, अब आपके पास 6 घंटे तक के लिए असीमित मूवी डाउनलोडिंग और ऑनलाइन स्ट्रीमिंग की सुविधा है।\n\n<b>#Verification_Completed 👍</b>\n\n<b>=> Please Go Back 🔙 And Search 🔎 Your Movies Again in Group\n\n=> कृपया 🔙 जा कर अपनी मूवीज को दोबारा ग्रुप में सर्च 🔎 करें।</b>",            
                 protect_content=True
+                #,
+             #   reply_markup=InlineKeyboardMarkup(
+          #          [    
+                       #  [
+                    #     InlineKeyboardButton('♻️Get your File ♻️', url=f'https://telegram.me/+HldvnSK5kV9hMmFl')
+                   #      ],
+                     #    [
+                     #    InlineKeyboardButton('Back To Our Group 👉', url=f'https://telegram.me/+HldvnSK5kV9hMmFl')
+                      #   ]
+                #    ]
+                            
+             #   )
             )
             await verify_user(client, userid, token)
         else:
@@ -274,7 +331,7 @@ async def start(client, message):
         chat_id = int("-" + file_id.split("-")[1])
         userid = message.from_user.id if message.from_user else None
         g = await get_shortlink(chat_id, f"https://telegram.me/{temp.U_NAME}?start=allfiles_{file_id}")
-        k = await client.send_message(chat_id=message.from_user.id,text=f"<b>Get All Files in a Single Click!!!\n\n📂 ʟɪɴᴋ ➠ : {g}\n\n<i>Note: This message is deleted in 5 mins to avoid copyrights. Save the link to Somewhere else</i></b>", reply_markup=InlineKeyboardMarkup(
+        k = await client.send_message(chat_id=message.from_user.id,text=f"<b>Get All Files in a Single Click!!!\n\n📂 ʟɪɴᴋ ➠ : {g}\n\n<i>Note: This message is deleted in 3 mins to avoid copyrights. Save the link to Somewhere else\n\n यह मैसेज 3 मिनट में ऑटोमैटिक डिलीट हो जायेगा। \n लिंक को कही और सेव कर लीजिए।</i></b>\n\nDᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ғɪʟᴇs? Wɪᴛʜᴏᴜᴛ sᴇᴇɪɴɢ ᴀᴅᴠᴇʀᴛɪsᴇᴍᴇɴᴛs?\nTʜᴇɴ ᴄʟɪᴄᴋ ʜᴇʀᴇ /plan .\n\nक्या आपको डायरेक्ट फाइल्स चाहिएं ? बिना एडवरटाइजमेंट देंखे?,\nतो यहा क्लिक करें /plan", reply_markup=InlineKeyboardMarkup(
                 [
                     [
                         InlineKeyboardButton('📂 Dᴏᴡɴʟᴏᴀᴅ Nᴏᴡ 📂', url=g)
@@ -284,7 +341,7 @@ async def start(client, message):
                 ]
             )
         )
-        await asyncio.sleep(300)
+        await asyncio.sleep(180)
         await k.edit("<b>Your message is successfully deleted!!!</b>")
         return
         
@@ -295,7 +352,7 @@ async def start(client, message):
         files_ = await get_file_details(file_id)
         files = files_[0]
         g = await get_shortlink(chat_id, f"https://telegram.me/{temp.U_NAME}?start=file_{file_id}")
-        k = await client.send_message(chat_id=user,text=f"<b>📕Nᴀᴍᴇ ➠ : <code>{files.file_name}</code> \n\n🔗Sɪᴢᴇ ➠ : {get_size(files.file_size)}\n\n📂Fɪʟᴇ ʟɪɴᴋ ➠ : {g}\n\n<i>Note: This message is deleted in 20 mins to avoid copyrights. Save the link to Somewhere else</i></b>", reply_markup=InlineKeyboardMarkup(
+        k = await client.send_message(chat_id=user,text=f"<b>📕Nᴀᴍᴇ ➠ : <code>{files.file_name}</code> \n\n🔗Sɪᴢᴇ ➠ : {get_size(files.file_size)}\n\n📂Fɪʟᴇ ʟɪɴᴋ ➠ : {g}\n\n<i>Note: This message is deleted in 3 mins to avoid copyrights. Save the link to Somewhere else\n\n यह मैसेज 3 मिनट में ऑटोमैटिक डिलीट हो जायेगा। \n लिंक को कही और सेव कर लीजिए।</i></b>\n\nDᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ғɪʟᴇs? Wɪᴛʜᴏᴜᴛ sᴇᴇɪɴɢ ᴀᴅᴠᴇʀᴛɪsᴇᴍᴇɴᴛs?\nTʜᴇɴ ᴄʟɪᴄᴋ ʜᴇʀᴇ /plan .\n\nक्या आपको डायरेक्ट फाइल्स चाहिएं ? बिना एडवरटाइजमेंट देंखे?,\nतो यहा क्लिक करें /plan", reply_markup=InlineKeyboardMarkup(
                 [
                     [
                         InlineKeyboardButton('📂 Dᴏᴡɴʟᴏᴀᴅ Nᴏᴡ 📂', url=g)
@@ -305,7 +362,7 @@ async def start(client, message):
                 ]
             )
         )
-        await asyncio.sleep(1200)
+        await asyncio.sleep(180)
         await k.edit("<b>Your message is successfully deleted!!!</b>")
         return
         
@@ -330,11 +387,15 @@ async def start(client, message):
             if f_caption is None:
                 f_caption = f"{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))}"
             if not await check_verification(client, message.from_user.id) and VERIFY == True:
-                btn = [[
-                    InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start="))
-                ]]
+                btn = [
+                        [
+            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start="))
+        ],[
+            InlineKeyboardButton(' 𝖧𝗈𝗐  𝖳𝗈  𝖵𝖾𝗋𝗂𝖿𝗒  🎦 ', url=VERIFY_TUTORIAL)
+                            ]
+        ]
                 await message.reply_text(
-                    text="<b>You are not verified !\nKindly verify to continue !</b>",
+                    text="<b>English:-</b>\n     Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\n\nWᴀɴᴛs A Dɪʀᴇᴄᴛ Fɪʟᴇs Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Aɴᴅ Wᴀᴛᴄʜɪɴɢ Aᴅᴠᴇʀᴛɪsᴇᴍᴇɴᴛs, Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs 👉 /plan .\nTᴏ Cʜᴇᴄᴋ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ 👉 /myplan\n\n\n<b>हिंदी:-</b>\n     आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\n\nयदि आप बिना वेरीफाई किये और बीना विज्ञापन देखे डायरेक्ट फ़ाइलें चाहते हैं, तो हमारी प्रीमियम योजनाएँ देखें। 👉 /plan अपनी वर्तमान सदस्यता जाँचने के लिए। 👉 /myplan\n\t",
                     protect_content=True,
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
@@ -346,39 +407,36 @@ async def start(client, message):
                 protect_content=True if pre == 'filep' else False,
                 reply_markup=InlineKeyboardMarkup(
                     [
-                     [
-                      InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=f'https://t.me/{SUPPORT_CHAT}'),
+                    [
+                      InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
                       InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
-                   ],[
-                      InlineKeyboardButton("𝗕𝗢𝗧 𝗢𝗪𝗡𝗘𝗥", url="t.me/KingVJ01")
-                     ],
-                     [
-                        InlineKeyboardButton('🚀 Fast Download / Watch Online🖥️', callback_data=f'generate_stream_link:{file_id}') #Don't change anything without contacting me @LazyDeveloperr
-
-                     ]
+                    ],[
+                                InlineKeyboardButton('🚀 Fᴀsᴛ Dᴏᴡɴʟᴏᴀᴅ & Wᴀᴛᴄʜ Oɴʟɪɴᴇ 🖥️', callback_data=f'generate_stream_link:{file_id}')
+                    ]
                     ]
                 )
             )
+            await client.send_message(LOG_CHANNEL_RQ, script.LOG_TEXT_RQ.format(message.from_user.id, message.from_user.mention, title, size, temp.U_NAME))
             filesarr.append(msg)
-        k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>10 mins</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>")
-        await asyncio.sleep(600)
-        for x in filesarr:
-            await x.delete()
-        await k.edit_text("<b>Your All Files/Videos is successfully deleted!!!</b>")
+    #    k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>")
+     #   await asyncio.sleep(120)
+    #    for x in filesarr:
+       #     await x.delete()
+     #   await k.edit_text("<b>Your All Files/Videos is successfully deleted!!!</b>") 
         return    
         
     elif data.startswith("files"):
         user = message.from_user.id
         if temp.SHORT.get(user)==None:
-            await message.reply_text(text="<b>Please Search Again in Group</b>")
+            await message.reply_text(text="<b>This is not your requested movies\nPlease Request Your Owen Movies\n\nयह किसी और के द्वारा रिक्वेस्ट की गई मूवी है \nकृपया खुद से रिक्वेस्ट करें।</b>")
         else:
             chat_id = temp.SHORT.get(user)
         settings = await get_settings(chat_id)
-        if settings['is_shortlink'] and user not in PREMIUM_USER:
+        if not await db.has_premium_access(clicked) and settings['is_shortlink']: #added premium membership check 
             files_ = await get_file_details(file_id)
             files = files_[0]
             g = await get_shortlink(chat_id, f"https://telegram.me/{temp.U_NAME}?start=file_{file_id}")
-            k = await client.send_message(chat_id=message.from_user.id,text=f"<b>📕Nᴀᴍᴇ ➠ : <code>{files.file_name}</code> \n\n🔗Sɪᴢᴇ ➠ : {get_size(files.file_size)}\n\n📂Fɪʟᴇ ʟɪɴᴋ ➠ : {g}\n\n<i>Note: This message is deleted in 20 mins to avoid copyrights. Save the link to Somewhere else</i></b>", reply_markup=InlineKeyboardMarkup(
+            k = await client.send_message(chat_id=message.from_user.id,text=f"<b>📕Nᴀᴍᴇ ➠ : <code>{files.file_name}</code> \n\n🔗Sɪᴢᴇ ➠ : {get_size(files.file_size)}\n\n📂Fɪʟᴇ ʟɪɴᴋ ➠ : {g}\n\n<i>Note: This message is deleted in 3 mins to avoid copyrights. Save the link to Somewhere else\n\n यह मैसेज 3 मिनट में ऑटोमैटिक डिलीट हो जायेगा। \n लिंक को कही और सेव कर लीजिए।</i></b>\n\nDᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ғɪʟᴇs? Wɪᴛʜᴏᴜᴛ sᴇᴇɪɴɢ ᴀᴅᴠᴇʀᴛɪsᴇᴍᴇɴᴛs?\nTʜᴇɴ ᴄʟɪᴄᴋ ʜᴇʀᴇ /plan .\n\nक्या आपको डायरेक्ट फाइल्स चाहिएं ? बिना एडवरटाइजमेंट देंखे?,\nतो यहा क्लिक करें /plan", reply_markup=InlineKeyboardMarkup(
                     [
                         [
                             InlineKeyboardButton('📂 Dᴏᴡɴʟᴏᴀᴅ Nᴏᴡ 📂', url=g)
@@ -388,7 +446,7 @@ async def start(client, message):
                     ]
                 )
             )
-            await asyncio.sleep(1200)
+            await asyncio.sleep(180)
             await k.edit("<b>Your message is successfully deleted!!!</b>")
             return
     user = message.from_user.id
@@ -397,11 +455,15 @@ async def start(client, message):
         pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
         try:
             if not await check_verification(client, message.from_user.id) and VERIFY == True:
-                btn = [[
-                    InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start="))
-                ]]
+                btn = [
+                        [
+            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start="))
+        ],[
+            InlineKeyboardButton(' 𝖧𝗈𝗐  𝖳𝗈  𝖵𝖾𝗋𝗂𝖿𝗒  🎦 ', url=VERIFY_TUTORIAL)
+                            ]
+        ]
                 await message.reply_text(
-                    text="<b>You are not verified !\nKindly verify to continue !</b>",
+                    text="<b>English:-</b>\n     Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\n\nWᴀɴᴛs A Dɪʀᴇᴄᴛ Fɪʟᴇs Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Aɴᴅ Wᴀᴛᴄʜɪɴɢ Aᴅᴠᴇʀᴛɪsᴇᴍᴇɴᴛs, Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs 👉 /plan .\nTᴏ Cʜᴇᴄᴋ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ 👉 /myplan\n\n\n<b>हिंदी:-</b>\n     आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\n\nयदि आप बिना वेरीफाई किये और बीना विज्ञापन देखे डायरेक्ट फ़ाइलें चाहते हैं, तो हमारी प्रीमियम योजनाएँ देखें। 👉 /plan अपनी वर्तमान सदस्यता जाँचने के लिए। 👉 /myplan\n\t",
                     protect_content=True,
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
@@ -412,21 +474,19 @@ async def start(client, message):
                 protect_content=True if pre == 'filep' else False,
                 reply_markup=InlineKeyboardMarkup(
                     [
-                     [
-                      InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=f'https://t.me/{SUPPORT_CHAT}'),
+                    [
+                      InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
                       InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
-                   ],[
-                      InlineKeyboardButton("𝗕𝗢𝗧 𝗢𝗪𝗡𝗘𝗥", url="t.me/KingVJ01")
-                     ],
-                     [
-                        InlineKeyboardButton('🚀 Fast Download / Watch Online🖥️', callback_data=f'generate_stream_link:{file_id}') #Don't change anything without contacting me @LazyDeveloperr
-                     ]
+                    ],[
+                                InlineKeyboardButton('🚀 Fᴀsᴛ Dᴏᴡɴʟᴏᴀᴅ & Wᴀᴛᴄʜ Oɴʟɪɴᴇ 🖥️', callback_data=f'generate_stream_link:{file_id}')
+                    ]
                     ]
                 )
             )
+            await client.send_message(LOG_CHANNEL_RQ, script.LOG_TEXT_RQ.format(message.from_user.id, message.from_user.mention, title, size, temp.U_NAME))
             filetype = msg.media
             file = getattr(msg, filetype.value)
-            title = '@VJ_Bots  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
+            title = '@Rx_Bots  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
             size=get_size(file.file_size)
             f_caption = f"<code>{title}</code>"
             if CUSTOM_FILE_CAPTION:
@@ -438,16 +498,16 @@ async def start(client, message):
             btn = [[
                 InlineKeyboardButton("Get File Again", callback_data=f'delfile#{file_id}')
             ]]
-            k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>10 mins</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</i></b>",quote=True)
-            await asyncio.sleep(600)
-            await msg.delete()
-            await k.edit_text("<b>Your File/Video is successfully deleted!!!\n\nClick below button to get your deleted file 👇</b>",reply_markup=InlineKeyboardMarkup(btn))
-            return
+         #   k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>",quote=True)
+       #     await asyncio.sleep(120)
+       #     await msg.delete()
+        #    await k.edit_text("<b>Your File/Video is successfully deleted!!!\n\nClick below button to get your deleted file 👇</b>\n\nआपकी फ़ाइल या वीडियो सफलता पूर्वक Delete कर दी गयी है।\n\nअपनी डिलीट की गई फ़ाइल पुनः प्राप्त करने के लिए नीचे दिए गए बटन पर क्लिक करें",reply_markup=InlineKeyboardMarkup(btn)) 
+            return 
         except:
             pass
-        return await message.reply('No such file exist.')
+        return await message.reply('ThankYou❤️.')
     files = files_[0]
-    title = '@VJ_Bots  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.split()))
+    title = '@Rx_Bots  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.split()))
     size=get_size(files.file_size)
     f_caption=files.caption
     if CUSTOM_FILE_CAPTION:
@@ -457,13 +517,17 @@ async def start(client, message):
             logger.exception(e)
             f_caption=f_caption
     if f_caption is None:
-        f_caption = f"@VJ_Bots  {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.split()))}"
+        f_caption = f"@Rx_Bots  {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.split()))}"
     if not await check_verification(client, message.from_user.id) and VERIFY == True:
-        btn = [[
-            InlineKeyboardButton("Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start="))
-        ]]
+        btn = [
+                        [
+            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start="))
+        ],[
+            InlineKeyboardButton(' 𝖧𝗈𝗐  𝖳𝗈  𝖵𝖾𝗋𝗂𝖿𝗒  🎦 ', url=VERIFY_TUTORIAL)
+                            ]
+        ]
         await message.reply_text(
-            text="<b>You are not verified !\nKindly verify to continue !</b>",
+                    text="<b>English:-</b>\n     Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\n\nWᴀɴᴛs A Dɪʀᴇᴄᴛ Fɪʟᴇs Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Aɴᴅ Wᴀᴛᴄʜɪɴɢ Aᴅᴠᴇʀᴛɪsᴇᴍᴇɴᴛs, Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs 👉 /plan .\nTᴏ Cʜᴇᴄᴋ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ 👉 /myplan\n\n\n<b>हिंदी:-</b>\n     आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\n\nयदि आप बिना वेरीफाई किये और बीना विज्ञापन देखे डायरेक्ट फ़ाइलें चाहते हैं, तो हमारी प्रीमियम योजनाएँ देखें। 👉 /plan अपनी वर्तमान सदस्यता जाँचने के लिए। 👉 /myplan\n\t",
             protect_content=True,
             reply_markup=InlineKeyboardMarkup(btn)
         )
@@ -475,25 +539,23 @@ async def start(client, message):
         protect_content=True if pre == 'filep' else False,
         reply_markup=InlineKeyboardMarkup(
             [
-             [
-              InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=f'https://t.me/{SUPPORT_CHAT}'),
+            [
+              InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
               InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
-           ],[
-              InlineKeyboardButton("𝗕𝗢𝗧 𝗢𝗪𝗡𝗘𝗥", url="t.me/KingVJ01")
-             ],
-             [
-              InlineKeyboardButton('🚀 Fast Download / Watch Online🖥️', callback_data=f'generate_stream_link:{file_id}') #Don't change anything without contacting me @LazyDeveloperr
-             ]
+            ],[
+              InlineKeyboardButton('🚀 Fᴀsᴛ Dᴏᴡɴʟᴏᴀᴅ & Wᴀᴛᴄʜ Oɴʟɪɴᴇ 🖥️', callback_data=f'generate_stream_link:{file_id}')
+            ]
             ]
         )
     )
+    await client.send_message(LOG_CHANNEL_RQ, script.LOG_TEXT_RQ.format(message.from_user.id, message.from_user.mention, title, size, temp.U_NAME))
     btn = [[
         InlineKeyboardButton("Get File Again", callback_data=f'delfile#{file_id}')
     ]]
-    k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>10 mins</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</i></b>",quote=True)
-    await asyncio.sleep(600)
-    await msg.delete()
-    await k.edit_text("<b>Your File/Video is successfully deleted!!!\n\nClick below button to get your deleted file 👇</b>",reply_markup=InlineKeyboardMarkup(btn))
+ #   k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>",quote=True)
+ #   await asyncio.sleep(120)
+ #   await msg.delete()
+ #   await k.edit_text("<b>Your File/Video is successfully deleted!!!\n\nClick below button to get your deleted file 👇</b>\n\nआपकी फ़ाइल या वीडियो सफलता पूर्वक Delete कर दी गयी है।\n\nअपनी डिलीट की गई फ़ाइल पुनः प्राप्त करने के लिए नीचे दिए गए बटन पर क्लिक करें",reply_markup=InlineKeyboardMarkup(btn)) 
     return   
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
@@ -691,16 +753,6 @@ async def settings(client, message):
                 InlineKeyboardButton(
                     '✔ Oɴ' if settings["file_secure"] else '✘ Oғғ',
                     callback_data=f'setgs#file_secure#{settings["file_secure"]}#{grp_id}',
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'Iᴍᴅʙ',
-                    callback_data=f'setgs#imdb#{settings["imdb"]}#{grp_id}',
-                ),
-                InlineKeyboardButton(
-                    '✔ Oɴ' if settings["imdb"] else '✘ Oғғ',
-                    callback_data=f'setgs#imdb#{settings["imdb"]}#{grp_id}',
                 ),
             ],
             [
@@ -981,7 +1033,7 @@ async def shortlink(bot, message):
         return await message.reply(f"You are anonymous admin. Turn off anonymous admin and try again this command")
     chat_type = message.chat.type
     if chat_type == enums.ChatType.PRIVATE:
-        return await message.reply_text(f"<b>Hey {message.from_user.mention}, This command only works on groups !\n\n<u>Follow These Steps to Connect Shortener:</u>\n\n1. Add Me in Your Group with Full Admin Rights\n\n2. After Adding in Grp, Set your Shortener\n\nSend this command in your group\n\n—> /shortlink ""{your_shortener_website_name} {your_shortener_api}\n\n#Sample:-\n/shortlink kpslink.in CAACAgUAAxkBAAEJ4GtkyPgEzpIUC_DSmirN6eFWp4KInAACsQoAAoHSSFYub2D15dGHfy8E\n\nThat's it!!! Enjoy Earning Money 💲\n\n[[[ Trusted Earning Site - https://kpslink.in]]]\n\nIf you have any Doubts, Feel Free to Ask me - @kingvj01\n\n(Puriyala na intha contact la message pannunga - @kngvj01)</b>")
+        return await message.reply_text(f"<b>Hey {message.from_user.mention}, This command only works on groups !\n\n<u>Follow These Steps to Connect Shortener:</u>\n\n1. Add Me in Your Group with Full Admin Rights\n\n2. After Adding in Grp, Set your Shortener\n\nSend this command in your group\n\n—> /shortlink ""{your_shortener_website_name} {your_shortener_api}\n\n#Sample:-\n/shortlink earnpro.in 67b0a56787476eef44423f101e753f3af7377a44\n\nThat's it!!! Enjoy Earning Money 💲\n\n[[[ Trusted Earning Site - https://earnpro.in]]]\n\nIf you have any Doubts, Feel Free to Ask me - @spshah878 </b>")
     elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         grpid = message.chat.id
         title = message.chat.title
@@ -997,7 +1049,7 @@ async def shortlink(bot, message):
     try:
         command, shortlink_url, api = data.split(" ")
     except:
-        return await message.reply_text("<b>Command Incomplete :(\n\nGive me a shortener website link and api along with the command !\n\nFormat: <code>/shortlink kpslink.in e3d82cdf8f9f4783c42170b515d1c271fb1c4500</code></b>")
+        return await message.reply_text("<b>Command Incomplete :(\n\nGive me a shortener website link and api along with the command !\n\nFormat: <code>/shortlink earnpro.in 67b0a56787476eef44423f101e753f3af7377a44</code></b>")
     reply = await message.reply_text("<b>Please Wait...</b>")
     shortlink_url = re.sub(r"https?://?", "", shortlink_url)
     shortlink_url = re.sub(r"[:/]", "", shortlink_url)

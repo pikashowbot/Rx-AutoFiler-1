@@ -22,7 +22,7 @@ async def save_group(bot, message):
         if not await db.get_chat(message.chat.id):
             total=await bot.get_chat_members_count(message.chat.id)
             r_j = message.from_user.mention if message.from_user else "Anonymous" 
-            await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, r_j))       
+            await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, r_j, temp.U_NAME))       
             await db.add_chat(message.chat.id, message.chat.title)
         if message.chat.id in temp.BANNED_CHATS:
             # Inspired from a boat of a banana tree
@@ -45,7 +45,7 @@ async def save_group(bot, message):
                     InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
                     InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
                  ],[
-                    InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/KingVJ01")
+                    InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/spshah878")
                   ]]
         reply_markup=InlineKeyboardMarkup(buttons)
         await message.reply_text(
@@ -68,7 +68,7 @@ async def save_group(bot, message):
                                                                            InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
                                                                            InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
                                                                         ],[
-                                                                           InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/KingVJ01")
+                                                                           InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/spshah878")
                                                                          ]]
                                                  ),
                                                  parse_mode=enums.ParseMode.HTML
@@ -93,8 +93,8 @@ async def leave_a_chat(bot, message):
         chat = chat
     try:
         buttons = [[
-            InlineKeyboardButton('Support Group',url="https://t.me/vj_bots"),
-            InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/KingVJ01")
+            InlineKeyboardButton('Support Group',url=GRP_LNK),
+            InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/spshah878")
         ],[
             InlineKeyboardButton('Use Me Here', url=f'https://t.me/{SUPPORT_CHAT}')
         ]]
@@ -166,7 +166,7 @@ async def re_enable_chat(bot, message):
     await message.reply("Chat Successfully re-enabled")
 
 
-@Client.on_message(filters.command('stats') & filters.incoming)
+@Client.on_message(filters.command('stats') & filters.user(ADMINS))
 async def get_ststs(bot, message):
     rju = await message.reply('Fetching stats..')
     total_users = await db.total_users_count()
@@ -176,7 +176,7 @@ async def get_ststs(bot, message):
     free = 536870912 - size
     size = get_size(size)
     free = get_size(free)
-    await rju.edit(script.STATUS_TXT.format(files, total_users, totl_chats, size, free))
+    await rju.edit(script.STATUS_TXT.format(files, total_users, totl_chats, size, free, temp.U_NAME))
 
 
 @Client.on_message(filters.command('invite') & filters.user(ADMINS))
@@ -263,23 +263,81 @@ async def unban_a_user(bot, message):
 
 
     
+
+from pyrogram import Client, filters
+from pyrogram.errors import MessageTooLong
+import json
+import os
+
 @Client.on_message(filters.command('users') & filters.user(ADMINS))
 async def list_users(bot, message):
-    # https://t.me/GetTGLink/4184
     raju = await message.reply('Getting List Of Users')
-    users = await db.get_all_users()
+    print("Fetching users from database...")  # Debug statement
+
     out = "Users Saved In DB Are:\n\n"
-    async for user in users:
-        out += f"<a href=tg://user?id={user['id']}>{user['name']}</a>"
-        if user['ban_status']['is_banned']:
-            out += '( Banned User )'
-        out += '\n'
-    try:
-        await raju.edit_text(out)
-    except MessageTooLong:
-        with open('users.txt', 'w+') as outfile:
+    unique_users = set()  # Set to track unique user IDs
+    users_file = 'users.txt'
+
+    # Delete the existing users.txt file if it exists
+    if os.path.exists(users_file):
+        os.remove(users_file)
+
+    cursor = None
+
+    while True:
+        try:
+            if cursor is None:
+                users_cursor = await db.get_all_users()
+            else:
+                users_cursor = await db.get_all_users(cursor=cursor)
+            
+            users_batch = await users_cursor.to_list(length=None)
+            if not users_batch:
+                break
+            
+            for user in users_batch:
+                user_id = user['id']
+                if user_id in unique_users:
+                    continue  # Skip if user ID is already processed
+
+                unique_users.add(user_id)
+                out += f"<a href='tg://user?id={user_id}'>{user['name']}</a>"
+                if user.get('ban_status', {}).get('is_banned', False):
+                    out += ' (Banned User)'
+                out += '\n'
+                
+                # Check if the output is too long
+                if len(out) > 4000:
+                    with open(users_file, 'a+') as outfile:
+                        outfile.write(out)
+                    out = "Users Saved In DB Are:\n\n"  # Reset output
+            
+            cursor = users_cursor.cursor_id if hasattr(users_cursor, 'cursor_id') else None
+            if not cursor:
+                break
+
+        except Exception as e:
+            print(f"Error fetching users: {e}")  # Debug statement
+            await raju.edit_text(f"Error fetching users: {e}")
+            return
+
+    if len(out.strip()) > len("Users Saved In DB Are:\n\n"):
+        with open(users_file, 'a+') as outfile:
             outfile.write(out)
-        await message.reply_document('users.txt', caption="List Of Users")
+        await message.reply_document(users_file, caption="List Of Users")
+    else:
+        try:
+            await raju.edit_text(out)
+        except MessageTooLong:
+            with open(users_file, 'a+') as outfile:
+                outfile.write(out)
+            await message.reply_document(users_file, caption="List Of Users")
+        except Exception as e:
+            print(f"Error editing message: {e}")  # Debug statement
+            await raju.edit_text(f"Error displaying users: {e}")
+
+    print(f"Finished processing users. Total unique users fetched: {len(unique_users)}")  # Debug statement
+    await raju.delete()
 
 @Client.on_message(filters.command('chats') & filters.user(ADMINS))
 async def list_chats(bot, message):

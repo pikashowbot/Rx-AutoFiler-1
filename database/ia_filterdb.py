@@ -37,13 +37,26 @@ class Media(Document):
         collection_name = COLLECTION_NAME
 
 
+
+
+
 async def save_file(media):
     """Save file in database"""
-
-    # TODO: Find better way to get same file_id for same media to avoid duplicates
+    
+    # Extracting necessary fields
     file_id, file_ref = unpack_new_file_id(media.file_id)
-    file_name = re.sub(r"(_|\-|\.|\+)", " ", str(media.file_name))
+    
+    # Initial cleaning of file_name
+    file_name = str(media.file_name)
+    
+    # Remove blacklist words and patterns
+    file_name = re.sub(r"(mkv|movies|movie|x264|x265|Kbps|mwkOTT|AAC|SMM|x264-PAHE|mp4|MP4|MP3|Mp4|telegram|Bollywood|Hollywood|Tollywood|Download|subtitles|film|dubbed|latest|ClipmateMovies|mkvCinemas|PrimeFix|www_SkymoviesHD_email|www|Latest_Movies_Reborn|Netflix_Villa_Original|FilmOne_Movies|Miteshpatelnewmovies|MoviesClubXyz|Skymovies|File_Movies_Uploaded|Tg-@New_Movies_OnTG|Tg_@New_Movies_OnTG|Moonknight_media|Bob_files|Desire|CineVood|Bisal|Miteshpatelnew|Mallu_Movies|TheMoviesBoss|cineasteseries|Links|Mallu|@MR_Linkz|Linkz|@Sons_of_TamilRockers|@VideoMemesTamil|@TM_LMO|@Vip_LinkzZ|@Tamil_LinkzZ|@mwkOTT|@C_V|@Mallu_Movies|TamilRockers|Tamilblasters|@lubokvideo|@NithinMovies|Linkzz|Bolly4u|Jesseverse|TeamSeries|@Mj_Linkz|@SY_MS|@ulluweb_Series|@Einthusan|@RayFilms4U|@IMDbFilms4U|@HindiOldMovies|@HollywoodBay|@hdhindicinemas|@Hollywood_WebHub|MoviesVerse|A2MOVIES|@CE_LinkS|@mallukingz|@MEDIA_KING|@MoviePlayTk|@MOVIEHUNT|@E4E_ROCKERS|@MOVIEZMOB|@pluscinemas|@QualityCinemaZ|@universalpicturez|@uteam|TamilMV|@mfmixhindi|@mwkseries|@FBM|@vivimaxx|@IM|@Cinemagramz|Toonsouthindia|POPCORN_FILMS|@UCParadiso|@ensembly|@nkmhdpro1|worldfree4|@bb_movie|@Links2U|A2MOVIES|@QualiStuff|@Hindi_UltraHD_Movies|@Moviesmasaaly|@KannadaWarriors|@Mxoriginals|@udanpadam|@Star_rockers|@TM_LMO|@mfmixhindi|@Ml_Movies|@SimplyCinema|www_TamilBlasters_uk|@khatrimaza|@MCArchives|@Movieslkwww|@HindiHDCinemaa|Filmy4wap_xyz|@InfotainmentMedia2|FILMCOMPANY|@CinematicsUnited|@ALBCINEMASALL|@Kande76|@MKMovieking|@SoumenBot|@FrediesChannel|@MMXE|@Massmoviess|@universalpicturez|@popcorn_cinemas|@tamilrockers_in|@TROFFICIAL|@Bollywoodcinemas|@desimovies_TelegramHindi|@CC_Series|KatmovieHD|@geniehd|@HindiRockers|@CelluloidCineClub|@Mlwapcinemas|@kickass_torrents|@fullyfilmie|@paravamedia|@southindianm|@H265_Movies|@t_m_Golmaal|Downloadhub.us|mobile_mm|TheMoviesBoss|TbestMovies4|movieworldkdY|Akatsuki_Media|@Einthusan|Tvserieshome|@WMR_Terminator|@HindiHDMovies_Netflix|@desimovies|@RickyChannel|MOVIEZXSTREAMZ|@Nex_Film|@TamilAnimation|@CC_ALL|@TM_LHM|@cc|@BestMovie|@cinema_company|@cinema_kottaka|@CK_Hindi|@WMR|@cinemacollections|Tinymkv|@CM|@iMediaShare|@TM_LMO|@Cw_Links|@MMXE|@Onmoviess|@Cinema_Company|@MCArchives|@Cinema_kottaka|@CeritaSarikataMelayu|@Qualitymovies|@TR_Moviez|@Hezz_Movies|@Bollywoodcinemas|@FBM_HW|@CKMovies|@DVDWOALL|@Dubbedmovies|@Disney_Links|@Hollywood500|@MJ_Linkz|@cinema_petty|@CK_HEVC|@mmsubtitles|@CINEMA_BEACON|@IndianMoviez|@cinema_company|MOVIEBOXPROTAMIL|@Cw_LINKS|BollYFlix|@HindiNewMovies|@mfmixhindi|@HindiNEWmovies|@HindiHDmovies|@RickyChristanto|@CC|RickyChannel|MoviezzClub|@agm_300mb_zone|links2u|MM_New|fimpurmovie|FilmyGod|mwklinks|@mobile_mm|@MM_Linkz|@FBM|@CCineClub|@HEVC_Moviesz|@MM_New|NithinMovies|@WorldCinemaToday|@Moviezzclub|@JohnWick_Files|@TG_UPDATES1|@KR_MOVIES|@Kannada_Dub|Join|@EE_MOVIES|@Ak_Movies|@KR_Crazy|@nkmhdpro1|@KANNADA_ROOCKERSZ|@NK_CINIMA|@MJ_Moviez|@CH_MOVIES1|@mj_link_4u|@Cmkmedia|@Kichcha_Creations|@Zee5_Movies_HD|@newrockers1|@D_W_T_1|@Kichcha_Creations|@Zee5_Kannada_Films|@KannadaWarriors|@Kannada_HEVC|@jeevan|@breakfreemovies|@UMR_KAN_MOVIES|@Cinema_Rockets|@KC|@ARUNMOVIES1|@FBM_New|Movie4uKannada|@TROFFICIAL|@Ott_Moviezz|@Movies_Pro|@UCDump|@Anylink_Movies|@MovieStoreOfcl|www_TamilBlasters_cloud|@WMR_Kirik|@colorkannadi_LinkzZ|@luxmv_Linkz|@KGRockers|www_TamilBlasters_kim|www_1TamilMV_fans|@DCENIMAS|@Movies_Platform|@SouthTamilall1|@Theprofffesorr|@NANDAN_REIGNS|@SouthTamilall|@RunningMovies|@Moviez_Empires|@Bullmoviee|@MasterLinZz|@Stark_X_Expo|@Dk_Drama|@MoviesWorldBkp|www_HTPMovies_org|APDBackup|@MoviezAdda|nnadavalCinemas|IMDB_Backup1|\[|\]|\_|\(|\)|\:|\}|\{|\-|\.|\+)", " ", file_name, flags=re.IGNORECASE)
+    file_name = re.sub(r'@[\w]+|[._\(\)\[\]]', ' ', file_name)  # Replace usernames, ., _, (, ), [, ]
+    file_name = re.sub(r"'", '', file_name)  # Remove single quotes
+    file_name = re.sub(r'\s+', ' ', file_name).strip()  # Remove all extra spaces
+    
     try:
+        # Create a new Media object
         file = Media(
             file_id=file_id,
             file_ref=file_ref,
@@ -51,7 +64,7 @@ async def save_file(media):
             file_size=media.file_size,
             file_type=media.file_type,
             mime_type=media.mime_type,
-            caption=media.caption.html if media.caption else None,
+            #caption=media.caption.html if media.caption else None,
         )
     except ValidationError:
         logger.exception('Error occurred while saving file in database')
@@ -59,11 +72,10 @@ async def save_file(media):
     else:
         try:
             await file.commit()
-        except DuplicateKeyError:      
+        except DuplicateKeyError:
             logger.warning(
                 f'{getattr(media, "file_name", "NO_FILE")} is already saved in database'
             )
-
             return False, 0
         else:
             logger.info(f'{getattr(media, "file_name", "NO_FILE")} is saved to database')

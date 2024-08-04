@@ -129,7 +129,6 @@ async def pm_text(bot, message):
         return  # Ignore commands and hashtags
 
     # Reply to the user
-    await message.react(emoji="🔥")
     await message.reply_text(
         text=f"<b>ʜᴇʏ {user} 😍 ,\n\nʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ᴍᴏᴠɪᴇs ꜰʀᴏᴍ ʜᴇʀᴇ. ʀᴇǫᴜᴇsᴛ ɪᴛ ɪɴ ᴏᴜʀ <a href=https://t.me/+WR8UmD7UVSs3NTc1>ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ</a> ᴏʀ ᴄʟɪᴄᴋ ʀᴇǫᴜᴇsᴛ ʜᴇʀᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ 👇\n\nआप यहां पर मूवीज प्राप्त नहीं कर सकते हैं। कृपया हमारे ग्रुप में रिक्वेस्ट करें। 👇</b>",
         disable_web_page_preview=True,
@@ -2763,7 +2762,6 @@ async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
             print(f"Message is fine: {message.text}")
 
         if len(message.text) < 70:
-            await message.react(emoji="🔥")
             search = message.text
             m = await message.reply_text(f"<b><i> 𝖲𝖾𝖺𝗋𝖼𝗁𝗂𝗇𝗀 𝖿𝗈𝗋 '{search}' 🔎</i></b>")
             search = search.swapcase()  # added convert string case viseVersa

@@ -44,7 +44,7 @@ PREMIUM_USER = [int(user) if id_pattern.search(user) else user for user in envir
 MV_UPDATE_CHANNEL = -1002179322730  # ID of the log of daily movies update CHANNEL
 
 auth_channel = environ.get('AUTH_CHANNEL', '-1001641011626') #public channel 
-second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002199110608')  # Add the second auth channel or Group (should private)
+second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002154519885')  # Add the second auth channel or Group (should private)
 
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 SECOND_AUTH_CHANNEL = int(second_auth_channel) if second_auth_channel and id_pattern.search(second_auth_channel) else None
@@ -61,7 +61,7 @@ NO_RESULTS_MSG = bool(environ.get("NO_RESULTS_MSG", True))
 
 # Premium And Referal Settings
 SUBSCRIPTION = (environ.get('SUBSCRIPTION', 'https://graph.org/file/35323f5f7bb90113b4337.jpg'))
-CODE = (environ.get('CODE', 'https://graph.org/file/2dce415ac8d303ee7c7ca.jpg'))
+CODE = (environ.get('CODE', 'https://graph.org/file/96d0950a0460645799156.jpg'))
 REFERAL_COUNT = int(environ.get('REFERAL_COUNT', '20')) # number of referal count
 REFERAL_PREMEIUM_TIME = environ.get('REFERAL_PREMEIUM_TIME', '1_Month')
 

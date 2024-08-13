@@ -9,7 +9,8 @@ class script(object):
 
     RQ_ACCEPT_MSG = """<b>Hello {},
 
-Please wait for an Admin to approve your join request"""
+Please Wait For An Admin To Approve Your Join Request.
+Your Can Start Bot By 👉 /start """
     
     
     HELP_TXT = """<b>Hᴇʏ {}
@@ -369,6 +370,7 @@ Bot - @{}"""
 
 
     CAPTION = """<b><u>Fɪʟᴇɴᴀᴍᴇ</u> : {file_name}
+    
 <u>FɪʟᴇSize</u> : {file_size}
 
 https://t.me/+WR8UmD7UVSs3NTc1 👈 <u>𝗝𝗼𝗶𝗻 𝗚𝗿𝗼𝘂𝗽</u></b>""" 

@@ -1,4 +1,3 @@
-# Kanged From @TroJanZheX
 import asyncio
 import re
 import os
@@ -49,9 +48,6 @@ from pyrogram.types import WebAppInfo # stream on telegram
 tracemalloc.start()
 
 
-
-
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
@@ -64,17 +60,11 @@ BUTTONS2 = {}
 SPELL_CHECK = {}
 # ENABLE_SHORTLINK = ""
  
-
-
-        
     
 #private(PM) filter on mode👇
 #@Client.on_message(filters.group | filters.private & filters.text & filters.incoming)
 
 #@Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
-
-
-
 
 
 @Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
@@ -110,14 +100,6 @@ async def give_filter(client, message):
                 "कृपया इस ग्रुप को ज्वाइन करें ,और इस ग्रुप में मूवीज सर्च करें।</b>"
             )
 
-# Your other code and handlers here...
-
-
-
-
-
-
-
 
 @Client.on_message(filters.private & filters.text & filters.incoming)
 async def pm_text(bot, message):
@@ -127,7 +109,9 @@ async def pm_text(bot, message):
     
     if content.startswith("/") or content.startswith("#"):
         return  # Ignore commands and hashtags
-
+    
+    #react emoji to users message 
+    await message.react(emoji="🔥", big=True)
     # Reply to the user
     await message.reply_text(
         text=f"<b>ʜᴇʏ {user} 😍 ,\n\nʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ᴍᴏᴠɪᴇs ꜰʀᴏᴍ ʜᴇʀᴇ. ʀᴇǫᴜᴇsᴛ ɪᴛ ɪɴ ᴏᴜʀ <a href=https://t.me/+WR8UmD7UVSs3NTc1>ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ</a> ᴏʀ ᴄʟɪᴄᴋ ʀᴇǫᴜᴇsᴛ ʜᴇʀᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ 👇\n\nआप यहां पर मूवीज प्राप्त नहीं कर सकते हैं। कृपया हमारे ग्रुप में रिक्वेस्ट करें। 👇</b>",
@@ -147,9 +131,7 @@ async def pm_text(bot, message):
     await asyncio.sleep(30)
     await message.delete()
         
-
-    
-                    
+        
         
 @Client.on_callback_query(filters.regex(r"^next"))
 async def next_page(bot, query):
@@ -1409,6 +1391,31 @@ async def cb_handler(client: Client, query: CallbackQuery):
         except Exception as e:
             logger.exception(e)
             await query.answer(url=f"https://telegram.me/{temp.U_NAME}?start=sendfiles4_{key}")
+    
+    
+    
+    elif query.data.startswith("unmuteme"):
+        ident, userid = query.data.split("#")
+        user_id = query.from_user.id
+        settings = await get_settings(int(query.message.chat.id))
+        if userid == 0:
+            await query.answer("You are anonymous admin !", show_alert=True)
+            return
+        try:
+            btn = await pub_is_subscribed(client, query, settings['fsub'])
+            if btn:
+                await query.answer("Kindly Join Given Channel Then Click On Unmute Button", show_alert=True)
+            else:
+                await client.unban_chat_member(query.message.chat.id, user_id)
+                await query.answer("Unmuted Successfully !", show_alert=True)
+                try:
+                    await query.message.delete()
+                except:
+                    return
+        except:
+            await query.answer("Not For Your My Dear", show_alert=True)    
+    
+    
     
     elif query.data.startswith("del"):
         ident, file_id = query.data.split("#")
@@ -2762,6 +2769,7 @@ async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
             print(f"Message is fine: {message.text}")
 
         if len(message.text) < 70:
+            await message.react(emoji="🔥", big=True)
             search = message.text
             m = await message.reply_text(f"<b><i> 𝖲𝖾𝖺𝗋𝖼𝗁𝗂𝗇𝗀 𝖿𝗈𝗋 '{search}' 🔎</i></b>")
             search = search.swapcase()  # added convert string case viseVersa

@@ -22,12 +22,30 @@ from database.connections_mdb import active_connection
 import re, asyncio, os, sys
 import json
 import base64
+import logging
+
 logger = logging.getLogger(__name__)
+
+# Add your handler here, for example, a file handler:
+handler = logging.FileHandler('error_log.log')
+handler.setLevel(logging.ERROR)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+
+# Set up logging
+logging.basicConfig(level=logging.ERROR)
+
+
+
+
 
 BATCH_FILES = {}
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
+    await message.react(emoji="🔥", big=True)
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [[
             InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
@@ -297,6 +315,7 @@ async def start(client, message):
     elif data.split("-", 1)[0] == "verify":
         userid = data.split("-", 2)[1]
         token = data.split("-", 3)[2]
+        fileid = data.split("-", 3)[3]
         if str(message.from_user.id) != str(userid):
             return await message.reply_text(
                 text="<b>Invalid link or Expired link !</b>",
@@ -304,29 +323,37 @@ async def start(client, message):
             )
         is_valid = await check_token(client, userid, token)
         if is_valid == True:
-            await client.send_message(LOG_CHANNEL_V, script.LOG_TEXT_V.format(message.from_user.id, message.from_user.mention, temp.U_NAME)),
+            if fileid == "send_all":
+                btn = [[
+                    InlineKeyboardButton("Gᴇᴛ Fɪʟᴇ", callback_data=f"checksub#send_all")
+                ]]
+                await verify_user(client, userid, token)
+                await client.send_message(LOG_CHANNEL_V, script.LOG_TEXT_V.format(message.from_user.id, message.from_user.mention, temp.U_NAME)),
+                await message.reply_text(
+                    text=f"=> Hᴇʏ {message.from_user.mention}, Yᴏᴜ ᴀʀᴇ sᴜᴄᴄᴇssғᴜʟʟʏ\n🥰 🇻 🇪 🇷 🇮 🇫 🇮 🇪 🇩 🥰\n\nNᴏᴡ Yᴏᴜ Hᴀᴠᴇ Uɴʟɪᴍɪᴛᴇᴅ Mᴏᴠɪᴇs Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs Fʀᴏᴍ Nᴏᴡ.\n\n=> आप सफलतापूर्वक verify हो गए हैं, अब आपके पास 6 घंटे तक के लिए असीमित मूवी डाउनलोडिंग की सुविधा है।\n\n<b>#Verification_Completed 👍</b>",            
+                    protect_content=True,
+                    reply_markup=InlineKeyboardMarkup(btn)
+                )
+                return
+            btn = [[
+                InlineKeyboardButton("♻️ Get your File ♻️", url=f"https://telegram.me/{temp.U_NAME}?start=files_{fileid}")
+            ]] 
             await message.reply_text(
-                text=f"=> Hᴇʏ {message.from_user.mention}, Yᴏᴜ ᴀʀᴇ sᴜᴄᴄᴇssғᴜʟʟʏ\n🥰 🇻 🇪 🇷 🇮 🇫 🇮 🇪 🇩 🥰\n\nNᴏᴡ Yᴏᴜ Hᴀᴠᴇ Uɴʟɪᴍɪᴛᴇᴅ Mᴏᴠɪᴇs Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aɴᴅ Oɴʟɪɴᴇ Sᴛʀᴇᴀᴍɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs Fʀᴏᴍ Nᴏᴡ.\n\n=> आप सफलतापूर्वक verify हो गए हैं, अब आपके पास 6 घंटे तक के लिए असीमित मूवी डाउनलोडिंग और ऑनलाइन स्ट्रीमिंग की सुविधा है।\n\n<b>#Verification_Completed 👍</b>\n\n<b>=> Please Go Back 🔙 And Search 🔎 Your Movies Again in Group\n\n=> कृपया 🔙 जा कर अपनी मूवीज को दोबारा ग्रुप में सर्च 🔎 करें।</b>",            
-                protect_content=True
-                #,
-             #   reply_markup=InlineKeyboardMarkup(
-          #          [    
-                       #  [
-                    #     InlineKeyboardButton('♻️Get your File ♻️', url=f'https://telegram.me/+HldvnSK5kV9hMmFl')
-                   #      ],
-                     #    [
-                     #    InlineKeyboardButton('Back To Our Group 👉', url=f'https://telegram.me/+HldvnSK5kV9hMmFl')
-                      #   ]
-                #    ]
-                            
-             #   )
-            )
+                text=f"=> Hᴇʏ {message.from_user.mention}, Yᴏᴜ ᴀʀᴇ sᴜᴄᴄᴇssғᴜʟʟʏ\n🥰 🇻 🇪 🇷 🇮 🇫 🇮 🇪 🇩 🥰\n\nNᴏᴡ Yᴏᴜ Hᴀᴠᴇ Uɴʟɪᴍɪᴛᴇᴅ Mᴏᴠɪᴇs Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs Fʀᴏᴍ Nᴏᴡ.\n\n=> आप सफलतापूर्वक verify हो गए हैं, अब आपके पास 6 घंटे तक के लिए असीमित मूवी डाउनलोडिंग की सुविधा है।\n\n<b>#Verification_Completed 👍</b>",            
+                protect_content=True,
+                reply_markup=InlineKeyboardMarkup(btn)
+            )          
             await verify_user(client, userid, token)
+            return 
         else:
             return await message.reply_text(
                 text="<b>Invalid link or Expired link !</b>",
                 protect_content=True
             )
+            
+           
+            
+            
     if data.startswith("sendfiles"):
         chat_id = int("-" + file_id.split("-")[1])
         userid = message.from_user.id if message.from_user else None
@@ -387,13 +414,12 @@ async def start(client, message):
             if f_caption is None:
                 f_caption = f"{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))}"
             if not await check_verification(client, message.from_user.id) and VERIFY == True:
-                btn = [
-                        [
-            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start="))
-        ],[
-            InlineKeyboardButton(' 𝖧𝗈𝗐  𝖳𝗈  𝖵𝖾𝗋𝗂𝖿𝗒  🎦 ', url=VERIFY_TUTORIAL)
+                btn = [[
+                    InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
+                ],[
+                    InlineKeyboardButton(' 𝖧𝗈𝗐  𝖳𝗈  𝖵𝖾𝗋𝗂𝖿𝗒  🎦 ', url=VERIFY_TUTORIAL)
                             ]
-        ]
+                ]
                 await message.reply_text(
                     text="<b>English:-</b>\n     Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\n\nWᴀɴᴛs A Dɪʀᴇᴄᴛ Fɪʟᴇs Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Aɴᴅ Wᴀᴛᴄʜɪɴɢ Aᴅᴠᴇʀᴛɪsᴇᴍᴇɴᴛs, Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs 👉 /plan .\nTᴏ Cʜᴇᴄᴋ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ 👉 /myplan\n\n\n<b>हिंदी:-</b>\n     आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\n\nयदि आप बिना वेरीफाई किये और बीना विज्ञापन देखे डायरेक्ट फ़ाइलें चाहते हैं, तो हमारी प्रीमियम योजनाएँ देखें। 👉 /plan अपनी वर्तमान सदस्यता जाँचने के लिए। 👉 /myplan\n\t",
                     protect_content=True,
@@ -418,11 +444,11 @@ async def start(client, message):
             )
             await client.send_message(LOG_CHANNEL_RQ, script.LOG_TEXT_RQ.format(message.from_user.id, message.from_user.mention, title, size, temp.U_NAME))
             filesarr.append(msg)
-    #    k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>")
-     #   await asyncio.sleep(120)
-    #    for x in filesarr:
-       #     await x.delete()
-     #   await k.edit_text("<b>Your All Files/Videos is successfully deleted!!!</b>") 
+        k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>")
+        await asyncio.sleep(120)
+        for x in filesarr:
+            await x.delete()
+        await k.edit_text("<b>Your All Files/Videos is successfully deleted!!!</b>") 
         return    
         
     elif data.startswith("files"):
@@ -457,7 +483,7 @@ async def start(client, message):
             if not await check_verification(client, message.from_user.id) and VERIFY == True:
                 btn = [
                         [
-            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start="))
+            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
         ],[
             InlineKeyboardButton(' 𝖧𝗈𝗐  𝖳𝗈  𝖵𝖾𝗋𝗂𝖿𝗒  🎦 ', url=VERIFY_TUTORIAL)
                             ]
@@ -494,14 +520,17 @@ async def start(client, message):
                     f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
                 except:
                     return
-            await msg.edit_caption(f_caption)
+            await msg.edit_caption(
+                caption=f_caption,
+                reply_markup=InlineKeyboardMarkup(button)
+            )
             btn = [[
                 InlineKeyboardButton("Get File Again", callback_data=f'delfile#{file_id}')
             ]]
-         #   k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>",quote=True)
-       #     await asyncio.sleep(120)
-       #     await msg.delete()
-        #    await k.edit_text("<b>Your File/Video is successfully deleted!!!\n\nClick below button to get your deleted file 👇</b>\n\nआपकी फ़ाइल या वीडियो सफलता पूर्वक Delete कर दी गयी है।\n\nअपनी डिलीट की गई फ़ाइल पुनः प्राप्त करने के लिए नीचे दिए गए बटन पर क्लिक करें",reply_markup=InlineKeyboardMarkup(btn)) 
+            k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>",quote=True)
+            await asyncio.sleep(120)
+            await msg.delete()
+            await k.edit_text("<b>Your File/Video is successfully deleted!!!\n\nClick below button to get your deleted file 👇</b>\n\nआपकी फ़ाइल या वीडियो सफलता पूर्वक Delete कर दी गयी है।\n\nअपनी डिलीट की गई फ़ाइल पुनः प्राप्त करने के लिए नीचे दिए गए बटन पर क्लिक करें",reply_markup=InlineKeyboardMarkup(btn)) 
             return 
         except:
             pass
@@ -521,7 +550,7 @@ async def start(client, message):
     if not await check_verification(client, message.from_user.id) and VERIFY == True:
         btn = [
                         [
-            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start="))
+            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
         ],[
             InlineKeyboardButton(' 𝖧𝗈𝗐  𝖳𝗈  𝖵𝖾𝗋𝗂𝖿𝗒  🎦 ', url=VERIFY_TUTORIAL)
                             ]
@@ -552,11 +581,177 @@ async def start(client, message):
     btn = [[
         InlineKeyboardButton("Get File Again", callback_data=f'delfile#{file_id}')
     ]]
- #   k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>",quote=True)
- #   await asyncio.sleep(120)
- #   await msg.delete()
- #   await k.edit_text("<b>Your File/Video is successfully deleted!!!\n\nClick below button to get your deleted file 👇</b>\n\nआपकी फ़ाइल या वीडियो सफलता पूर्वक Delete कर दी गयी है।\n\nअपनी डिलीट की गई फ़ाइल पुनः प्राप्त करने के लिए नीचे दिए गए बटन पर क्लिक करें",reply_markup=InlineKeyboardMarkup(btn)) 
+    k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>",quote=True)
+    await asyncio.sleep(120)
+    await msg.delete()
+    await k.edit_text("<b>Your File/Video is successfully deleted!!!\n\nClick below button to get your deleted file 👇</b>\n\nआपकी फ़ाइल या वीडियो सफलता पूर्वक Delete कर दी गयी है।\n\nअपनी डिलीट की गई फ़ाइल पुनः प्राप्त करने के लिए नीचे दिए गए बटन पर क्लिक करें",reply_markup=InlineKeyboardMarkup(btn)) 
     return   
+
+#####
+
+    # elif data.startswith("files"):
+        # user = message.from_user.id
+        # if temp.SHORT.get(user) is None:
+            # await message.reply_text(text="<b>This is not your requested movies\nPlease Request Your Owen Movies\n\nयह किसी और के द्वारा रिक्वेस्ट की गई मूवी है \nकृपया खुद से रिक्वेस्ट करें।</b>")
+        # else:
+            # chat_id = temp.SHORT.get(user)
+            # try:
+                # settings = await get_settings(chat_id)
+                # if not await db.has_premium_access(user) and settings['is_shortlink']:  # Ensure 'user' is used here
+                    # files_ = await get_file_details(file_id)
+                    # if files_:
+                        # files = files_[0]
+                        # g = await get_shortlink(chat_id, f"https://telegram.me/{temp.U_NAME}?start=file_{file_id}")
+                        # k = await client.send_message(chat_id=message.from_user.id, text=f"<b>📕Nᴀᴍᴇ ➠ : <code>{files.file_name}</code> \n\n🔗Sɪᴢᴇ ➠ : {get_size(files.file_size)}\n\n📂Fɪʟᴇ ʟɪɴᴋ ➠ : {g}\n\n<i>Note: This message is deleted in 3 mins to avoid copyrights. Save the link to Somewhere else\n\n यह मैसेज 3 मिनट में ऑटोमैटिक डिलीट हो जायेगा। \n लिंक को कही और सेव कर लीजिए।</i></b>\n\nDᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ғɪʟᴇs? Wɪᴛʜᴏᴜᴛ sᴇᴇɪɴɢ ᴀᴅᴠᴇʀᴛɪsᴇᴍᴇɴᴛs?\nTʜᴇɴ ᴄʟɪᴄᴋ ʜᴇʀᴇ /plan .\n\nक्या आपको डायरेक्ट फाइल्स चाहिएं ? बिना एडवरटाइजमेंट देंखे?,\nतो यहा क्लिक करें /plan", reply_markup=InlineKeyboardMarkup(
+                            # [
+                                # [
+                                    # InlineKeyboardButton('📂 Dᴏᴡɴʟᴏᴀᴅ Nᴏᴡ 📂', url=g)
+                                # ], [
+                                    # InlineKeyboardButton('⁉️ Hᴏᴡ Tᴏ Dᴏᴡɴʟᴏᴀᴅ ⁉️', url=await get_tutorial(chat_id))
+                                # ]
+                            # ]
+                        # )
+                        # )
+                        # await asyncio.sleep(180)
+                        # await k.edit("<b>Your message is successfully deleted!!!</b>")
+                        # return
+            # except Exception as e:
+                # logging.error(f"Error in handling files for user {user}: {e}")
+                # await message.reply_text(f"An error occurred: {e}")
+
+        # user = message.from_user.id
+        # try:
+            # files_ = await get_file_details(file_id)
+            # if not files_:
+                # pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
+                # try:
+                    # if not await check_verification(client, message.from_user.id) and VERIFY:
+                        # btn = [
+                            # [
+                                # InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
+                            # ],[
+                                # InlineKeyboardButton(' 𝖧𝗈𝗐  𝖳𝗈  𝖵𝖾𝗋𝗂𝖿𝗒  🎦 ', url=VERIFY_TUTORIAL)
+                            # ]
+                        # ]
+                        # await message.reply_text(
+                            # text="<b>English:-</b>\n     Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\n\nWᴀɴᴛs A Dɪʀᴇᴄᴛ Fɪʟᴇs Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Aɴᴅ Wᴀᴛᴄʜɪɴɢ Aᴅᴠᴇʀᴛɪsᴇᴍᴇɴᴛs, Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs 👉 /plan .\nTᴏ Cʜᴇᴄᴋ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ 👉 /myplan\n\n\n<b>हिंदी:-</b>\n     आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\n\nयदि आप बिना वेरीफाई किये और बीना विज्ञापन देखे डायरेक्ट फ़ाइलें चाहते हैं, तो हमारी प्रीमियम योजनाएँ देखें। 👉 /plan अपनी वर्तमान सदस्यता जाँचने के लिए। 👉 /myplan\n\t",
+                            # protect_content=True,
+                            # reply_markup=InlineKeyboardMarkup(btn)
+                        # )
+                        # return
+                    # msg = await client.send_cached_media(
+                        # chat_id=message.from_user.id,
+                        # file_id=file_id,
+                        # protect_content=True if pre == 'filep' else False,
+                        # reply_markup=InlineKeyboardMarkup(
+                            # [
+                                # [
+                                    # InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
+                                    # InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
+                                # ],[
+                                    # InlineKeyboardButton('🚀 Fᴀsᴛ Dᴏᴡɴʟᴏᴀᴅ & Wᴀᴛᴄʜ Oɴʟɪɴᴇ 🖥️', callback_data=f'generate_stream_link:{file_id}')
+                                # ]
+                            # ]
+                        # )
+                    # )
+                    # await client.send_message(LOG_CHANNEL_RQ, script.LOG_TEXT_RQ.format(message.from_user.id, message.from_user.mention, title, size, temp.U_NAME))
+                    # filetype = msg.media
+                    # file = getattr(msg, filetype.value)
+                    # title = '@Rx_Bots  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
+                    # size = get_size(file.file_size)
+                    # f_caption = f"<code>{title}</code>"
+                    # if CUSTOM_FILE_CAPTION:
+                        # try:
+                            # f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                        # except Exception as e:
+                            # logging.exception(e)
+                            # return
+                    # await msg.edit_caption(
+                        # caption=f_caption,
+                        # reply_markup=InlineKeyboardMarkup(button)
+                    # )
+                    # btn = [[
+                        # InlineKeyboardButton("Get File Again", callback_data=f'delfile#{file_id}')
+                    # ]]
+                    # k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>", quote=True)
+                    # await asyncio.sleep(120)
+                    # await msg.delete()
+                    # await k.edit_text("<b>Your File/Video is successfully deleted!!!\n\nClick below button to get your deleted file 👇</b>\n\nआपकी फ़ाइल या वीडियो सफलता पूर्वक Delete कर दी गयी है।\n\nअपनी डिलीट की गई फ़ाइल पुनः प्राप्त करने के लिए नीचे दिए गए बटन पर क्लिक करें", reply_markup=InlineKeyboardMarkup(btn))
+                    # return
+                # except Exception as e:
+                    # logging.error(f"Error in sending file to user {user}: {e}")
+                    # await message.reply_text(f"An error occurred: {e}")
+                    # return
+            # files = files_[0]
+            # title = '@Rx_Bots  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.split()))
+            # size = get_size(files.file_size)
+            # f_caption = files.caption
+            # if CUSTOM_FILE_CAPTION:
+                # try:
+                    # f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                # except Exception as e:
+                    # logging.exception(e)
+                    # f_caption = f_caption
+            # if f_caption is None:
+                # f_caption = f"@Rx_Bots  {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.split()))}"
+            # if not await check_verification(client, message.from_user.id) and VERIFY:
+                # btn = [
+                    # [
+                        # InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
+                    # ],[
+                        # InlineKeyboardButton(' 𝖧𝗈𝗐  𝖳𝗈  𝖵𝖾𝗋𝗂𝖿𝗒  🎦 ', url=VERIFY_TUTORIAL)
+                    # ]
+                # ]
+                # await message.reply_text(
+                    # text="<b>English:-</b>\n     Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\n\nWᴀɴᴛs A Dɪʀᴇᴄᴛ Fɪʟᴇs Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Aɴᴅ Wᴀᴛᴄʜɪɴg Aᴅᴠᴇʀᴛɪsᴇᴍᴇɴᴛs, Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs 👉 /plan .\nTᴏ Cʜᴇᴄᴋ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ 👉 /myplan\n\n\n<b>हिंदी:-</b>\n     आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\n\nयदि आप बिना वेरीफाई किये और बीना विज्ञापन देखे डायरेक्ट फ़ाइलें चाहते हैं, तो हमारी प्रीमियम योजनाएँ देखें। 👉 /plan अपनी वर्तमान सदस्यता जाँचने के लिए। 👉 /myplan\n\t",
+                    # protect_content=True,
+                    # reply_markup=InlineKeyboardMarkup(btn)
+                # )
+                # return
+            # msg = await client.send_cached_media(
+                # chat_id=message.from_user.id,
+                # file_id=file_id,
+                # protect_content=True if pre == 'filep' else False,
+                # reply_markup=InlineKeyboardMarkup(
+                    # [
+                        # [
+                            # InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
+                            # InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
+                        # ],[
+                            # InlineKeyboardButton('🚀 Fᴀsᴛ Dᴏᴡɴʟᴏᴀᴅ & Wᴀᴛᴄʜ Oɴʟɪɴᴇ 🖥️', callback_data=f'generate_stream_link:{file_id}')
+                        # ]
+                    # ]
+                # )
+            # )
+            # await client.send_message(LOG_CHANNEL_RQ, script.LOG_TEXT_RQ.format(message.from_user.id, message.from_user.mention, title, size, temp.U_NAME))
+            # filetype = msg.media
+            # file = getattr(msg, filetype.value)
+            # title = '@Rx_Bots  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
+            # size = get_size(file.file_size)
+            # f_caption = f"<code>{title}</code>"
+            # if CUSTOM_FILE_CAPTION:
+                # try:
+                    # f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
+                # except Exception as e:
+                    # logging.exception(e)
+                    # return
+            # await msg.edit_caption(
+                # caption=f_caption,
+                # reply_markup=InlineKeyboardMarkup(button)
+            # )
+            # btn = [[
+                # InlineKeyboardButton("Get File Again", callback_data=f'delfile#{file_id}')
+            # ]]
+            # k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>", quote=True)
+            # await asyncio.sleep(120)
+            # await msg.delete()
+            # await k.edit_text("<b>Your File/Video is successfully deleted!!!\n\nClick below button to get your deleted file 👇</b>\n\nआपकी फ़ाइल या वीडियो सफलता पूर्वक Delete कर दी गयी है।\n\nअपनी डिलीट की गई फ़ाइल पुनः प्राप्त करने के लिए नीचे दिए गए बटन पर क्लिक करें", reply_markup=InlineKeyboardMarkup(btn))
+            # return
+        # except Exception as e:
+            # logging.error(f"Error in handling files for user {user}: {e}")
+            # await message.reply_text(f"An error occurred: {e}")
+
+
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
 async def channel_info(bot, message):

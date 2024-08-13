@@ -337,7 +337,9 @@ async def start(client, message):
                 return
             btn = [[
                 InlineKeyboardButton("♻️ Get your File ♻️", url=f"https://telegram.me/{temp.U_NAME}?start=files_{fileid}")
-            ]] 
+            ]]
+            await verify_user(client, userid, token)
+            await client.send_message(LOG_CHANNEL_V, script.LOG_TEXT_V.format(message.from_user.id, message.from_user.mention, temp.U_NAME)),
             await message.reply_text(
                 text=f"=> Hᴇʏ {message.from_user.mention}, Yᴏᴜ ᴀʀᴇ sᴜᴄᴄᴇssғᴜʟʟʏ\n🥰 🇻 🇪 🇷 🇮 🇫 🇮 🇪 🇩 🥰\n\nNᴏᴡ Yᴏᴜ Hᴀᴠᴇ Uɴʟɪᴍɪᴛᴇᴅ Mᴏᴠɪᴇs Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs Fʀᴏᴍ Nᴏᴡ.\n\n=> आप सफलतापूर्वक verify हो गए हैं, अब आपके पास 6 घंटे तक के लिए असीमित मूवी डाउनलोडिंग की सुविधा है।\n\n<b>#Verification_Completed 👍</b>",            
                 protect_content=True,

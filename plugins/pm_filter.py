@@ -15,7 +15,7 @@ import pyrogram
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
     make_inactive
 from info import *
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, ChatJoinRequest
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
 from utils import get_size, is_req_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_tutorial, send_all, get_cap, get_shortlink, get_streamanddownload_shorted_link
@@ -60,7 +60,44 @@ BUTTONS2 = {}
 SPELL_CHECK = {}
 # ENABLE_SHORTLINK = ""
  
+
+
+ 
+## Send notification message to user on fsub channel join request 
+@Client.on_chat_join_request(filters.all)
+async def notify_user(client: Client, message: ChatJoinRequest):
+    chat = message.chat
+    user = message.from_user
     
+    if JOINREQ_MSG == True:
+        # Log the join request
+        logger.info(f"{user.first_name} requested to join {chat.title}")
+        
+        try:
+            # Send welcome message to the user
+            buttons = [[
+                InlineKeyboardButton('𝐒𝐭𝐚𝐫𝐭 𝐌𝐞 𝐓𝐨 𝐆𝐞𝐭 𝐋𝐚𝐭𝐞𝐬𝐭 𝐌𝐨𝐯𝐢𝐞𝐬 𝐔𝐩𝐝𝐚𝐭𝐞𝐬', url=f'http://t.me/{temp.U_NAME}?start=true')
+            ]]
+            reply_markup = InlineKeyboardMarkup(buttons)
+            await client.send_message(
+                chat_id=user.id,
+                text=script.RQ_ACCEPT_MSG.format(f"[{user.first_name}](tg://user?id={user.id})"),
+                reply_markup=reply_markup,
+                disable_web_page_preview=True
+            )
+        
+        except (UserIsBlocked, PeerIdInvalid) as e:
+            logger.error(f"Failed to send message to {user.id}: {e}")
+            return
+        except Exception as e:
+            logger.error(f"Unexpected error when sending message to {user.id}: {e}")
+            return
+    else:
+        return
+        
+        
+        
+        
 #private(PM) filter on mode👇
 #@Client.on_message(filters.group | filters.private & filters.text & filters.incoming)
 

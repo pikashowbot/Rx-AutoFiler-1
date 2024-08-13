@@ -56,6 +56,8 @@ class temp(object):
     SETTINGS = {}
     IMDB_CAP = {}
     VERIFY = {}
+    KEYWORD = {}
+    SEND_ALL_TEMP = {}
 
 async def is_req_subscribed(client, message):
     try:
@@ -596,7 +598,7 @@ async def get_verify_shorted_link(link, url, api):
 
 ##
 
-async def get_token(bot, userid, link):
+async def get_token(bot, userid, link, fileid):
     try:
         user = await bot.get_users(userid)
     except Exception as e:
@@ -609,7 +611,7 @@ async def get_token(bot, userid, link):
     
     token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
     TOKENS[user.id] = {token: False}
-    link = f"{link}verify-{user.id}-{token}"
+    link = f"{link}verify-{user.id}-{token}-{fileid}"
 
     # Get current time in Asia/Kolkata timezone
     kolkata_tz = pytz.timezone('Asia/Kolkata')
@@ -636,9 +638,9 @@ async def get_token(bot, userid, link):
         logger.error(f"Error in token generation process: {e}")
         return None
         
-            
-                            ##
-
+    
+    
+    
                         
 
 async def check_token(bot, userid, token):
@@ -798,7 +800,7 @@ async def send_all(bot, userid, files, ident, chat_id, user_name, query):
                                 InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
                                 InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
                             ],[
-                                InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/creatorrio")
+                                InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/spshah878")
                                 ]
                             ]
                         )

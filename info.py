@@ -76,6 +76,7 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
 
 VERIFY = bool(environ.get('VERIFY', True))
+JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 
 #SHORTLINK_URL = environ.get('SHORTLINK_URL', 'publicearn.com')
 #SHORTLINK_API = environ.get('SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')

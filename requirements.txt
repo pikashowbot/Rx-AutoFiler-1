@@ -1,4 +1,4 @@
-pyrogram>=2.0.30 
+ pyrogram>=2.0.30 
  imdbpy==2022.7.9
  tgcrypto 
  pymongo[srv]==3.12.3 
@@ -17,6 +17,8 @@ pyrogram>=2.0.30
  fuzzywuzzy
  search_engine_parser
  loguru
+ pyrofork
+ hachoir
 
 #---master---# 
  #Telethroid==0.0.10 

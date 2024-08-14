@@ -373,7 +373,8 @@ Bot - @{}"""
     
 <u>FɪʟᴇSize</u> : {file_size}
 
-https://t.me/+WR8UmD7UVSs3NTc1 👈 <u>𝗝𝗼𝗶𝗻 𝗚𝗿𝗼𝘂𝗽</u></b>""" 
+<u>𝗝𝗼𝗶𝗻 𝗙𝗶𝗹𝗲 𝗟𝗼𝗴 𝗖𝗵𝗮𝗻𝗻𝗲𝗹</u> 👉
+https://t.me/+zY7ReGWM4MpiNmM1</b>""" 
 
     IMDB_TEMPLATE_TXT = """
 <b>Query: {qurey}

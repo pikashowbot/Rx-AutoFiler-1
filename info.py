@@ -41,7 +41,8 @@ AUTH_USERS = (auth_users + ADMINS) if auth_users else []
 #504856206 1year primium plane starting on 22nov2023.
 PREMIUM_USER = [int(user) if id_pattern.search(user) else user for user in environ.get('PREMIUM_USER', '622730585 1003337276').split()]
 
-MV_UPDATE_CHANNEL = -1002179322730  # ID of the log of daily movies update CHANNEL
+MV_UPDATE_CHANNEL = -1002154519885  # ID of the log of daily movies update CHANNEL
+SEND_MV_LOGS = bool(environ.get('SEND_MV_LOGS', False)) #send newmovies log to update channel 
 
 auth_channel = environ.get('AUTH_CHANNEL', '-1001641011626') #public channel 
 second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002199110608')  # Add the second auth channel or Group (should private)

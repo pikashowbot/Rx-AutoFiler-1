@@ -235,7 +235,8 @@ async def media_handler(bot, message):
 
             #  Create the buttons
             button1 = InlineKeyboardButton('Get This File♂️', url=f'{link}')
-            button2 = InlineKeyboardButton('Get With All qualities♂️', url=f'https://t.me/{temp.U_NAME}?text={encoded_filename}')
+          #  button2 = InlineKeyboardButton('Get With All qualities♂️', url=f'https://t.me/{temp.U_NAME}?text={encoded_filename}')
+            button2 = InlineKeyboardButton('Request Group', url=f'https://telegram.me/+HldvnSK5kV9hMmFl')
             #  Arrange the buttons in a single keyboard
             keyboard = InlineKeyboardMarkup([[button1], [button2]])    
 

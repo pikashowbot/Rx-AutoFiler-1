@@ -477,21 +477,24 @@ async def start(client, message):
             await asyncio.sleep(180)
             await k.edit("<b>Your message is successfully deleted!!!</b>")
             return
+
     user = message.from_user.id
-    files_ = await get_file_details(file_id)           
+    files_ = await get_file_details(file_id)
     if not files_:
         pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
         try:
             if not await check_verification(client, message.from_user.id) and VERIFY == True:
                 btn = [
-                        [
-            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
-        ],[
-            InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=VERIFY_TUTORIAL)
-                            ]
-        ]
+                    [
+                        InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
+                    ], [
+                        InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=VERIFY_TUTORIAL)
+                    ]
+                ]
+                #    Check if the file name exists
+                file_name_text = f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : {files_.file_name}</b>\n\n" if files_ and hasattr(files_, 'file_name') else "<b><u>Yᴏᴜ Nᴇᴇᴅ Tᴏ Vᴇʀɪғʏ Fᴏʀ Tʜᴀᴛ Fɪʟᴇ</u></b>\n\n"
                 await message.reply_text(
-                    text=f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : {files.file_name}</b>\n\n<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\\nn<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>",
+                    text=f"{file_name_text}<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>",
                     protect_content=True,
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
@@ -500,35 +503,37 @@ async def start(client, message):
                 chat_id=message.from_user.id,
                 file_id=file_id,
                 protect_content=True if pre == 'filep' else False,
-                reply_markup=InlineKeyboardMarkup(
-                    [
-                    [
-                      InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
-                      InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
-                    ],[
-                                InlineKeyboardButton('🚀 Fᴀsᴛ Dᴏᴡɴʟᴏᴀᴅ & Wᴀᴛᴄʜ Oɴʟɪɴᴇ 🖥️', callback_data=f'generate_stream_link:{file_id}')
-                    ]
-                    ]
-                )
             )
-            await client.send_message(LOG_CHANNEL_RQ, script.LOG_TEXT_RQ.format(message.from_user.id, message.from_user.mention, title, size, temp.U_NAME))
             filetype = msg.media
             file = getattr(msg, filetype.value)
             title = '@Rx_Bots  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
-            size=get_size(file.file_size)
+            size = get_size(file.file_size)
             f_caption = f"<code>{title}</code>"
             if CUSTOM_FILE_CAPTION:
                 try:
-                    f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
+                    f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title, file_size='' if size is None else size, file_caption='')
                 except:
                     return
+            reply_markup = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
+                        InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
+                    ], [
+                        InlineKeyboardButton('🚀 Fᴀsᴛ Dᴏᴡɴʟᴏᴀᴅ & Wᴀᴛᴄʜ Oɴʟɪɴᴇ 🖥️', callback_data=f'generate_stream_link:{file_id}')
+                    ]
+                ]
+            )
             await msg.edit_caption(
                 caption=f_caption,
-                reply_markup=InlineKeyboardMarkup(button)
+                reply_markup=reply_markup
             )
+            await client.send_message(LOG_CHANNEL_RQ, script.LOG_TEXT_RQ.format(message.from_user.id, message.from_user.mention, title, size, temp.U_NAME))
             btn = [[
-                InlineKeyboardButton("Get File Again", callback_data=f'delfile#{file_id}')
+                InlineKeyboardButton("Get File Again", callback_data=f'delfile   {file_id}')
             ]]
+        except Exception as e:
+            print(f"An error occurred: {e}")        
             # k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>2 minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>\n\nयह मूवी फ़ाइलें या वीडियो <i>(कॉपीराइट मुद्दों के कारण)</i> <b><u>2 मिनट में Delete</u> 🫥 <i></b> कर दी जाएंगी।\n\n<i><b>कृपया इन सभी फ़ाइलों या वीडियो को अपने <u>Saved Message</u> में <u>Forward</u> करें और वहां डाउनलोड प्रारंभ करें।</b></i>",quote=True)
             # await asyncio.sleep(120)
             # await msg.delete()

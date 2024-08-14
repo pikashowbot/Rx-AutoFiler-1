@@ -150,7 +150,7 @@ async def pm_text(bot, message):
     #react emoji to users message 
     await message.react(emoji="🔥", big=True)
     # Reply to the user
-    await message.reply_text(
+    msgr = await message.reply_text(
         text=f"<b>ʜᴇʏ {user} 😍 ,\n\nʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ᴍᴏᴠɪᴇs ꜰʀᴏᴍ ʜᴇʀᴇ. ʀᴇǫᴜᴇsᴛ ɪᴛ ɪɴ ᴏᴜʀ <a href=https://t.me/+WR8UmD7UVSs3NTc1>ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ</a> ᴏʀ ᴄʟɪᴄᴋ ʀᴇǫᴜᴇsᴛ ʜᴇʀᴇ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ 👇\n\nआप यहां पर मूवीज प्राप्त नहीं कर सकते हैं। कृपया हमारे ग्रुप में रिक्वेस्ट करें। 👇</b>",
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([
@@ -167,6 +167,7 @@ async def pm_text(bot, message):
     # Wait for 30 seconds before deleting the message
     await asyncio.sleep(30)
     await message.delete()
+    await msgr.delete()
         
         
         
@@ -2965,9 +2966,9 @@ async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
                 cap += f"<b>\n📁 <a href='https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}'>[{get_size(file.file_size)}] {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))}\n</a></b>"
     else:
         if settings["button"]:
-            cap = f"<b>Rᴇsᴜʟᴛs Sʜᴏᴡ Iɴ:- {remaining_seconds} sᴇᴄᴏɴᴅs\nRᴇsᴜʟᴛs Fᴏʀ:- {message.text}\nRᴇǫᴜᴇsᴛᴇᴅ Bʏ:- {message.from_user.mention}\nGʀᴏᴜᴘ:- {message.chat.title}</b>\nTʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ɪɴ 1 ᴍɪɴᴜᴛᴇs..!" 
+            cap = f"<b>Rᴇsᴜʟᴛs Sʜᴏᴡ Iɴ:- {remaining_seconds} sᴇᴄᴏɴᴅs\nRᴇsᴜʟᴛs Fᴏʀ:- {message.text}\nRᴇǫᴜᴇsᴛᴇᴅ Bʏ:- {message.from_user.mention}\nGʀᴏᴜᴘ:- {message.chat.title}</b>\nTʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ɪɴ 2 ᴍɪɴᴜᴛᴇs..!" 
         else: 
-            cap = f"<b>Rᴇsᴜʟᴛs Sʜᴏᴡ Iɴ:- {remaining_seconds} sᴇᴄᴏɴᴅs\nRᴇsᴜʟᴛs Fᴏʀ:- {message.text}\nRᴇǫᴜᴇsᴛᴇᴅ Bʏ:- {message.from_user.mention}\nGʀᴏᴜᴘ:- {message.chat.title}</b>\nTʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ɪɴ 1 ᴍɪɴᴜᴛᴇs..!"
+            cap = f"<b>Rᴇsᴜʟᴛs Sʜᴏᴡ Iɴ:- {remaining_seconds} sᴇᴄᴏɴᴅs\nRᴇsᴜʟᴛs Fᴏʀ:- {message.text}\nRᴇǫᴜᴇsᴛᴇᴅ Bʏ:- {message.from_user.mention}\nGʀᴏᴜᴘ:- {message.chat.title}</b>\nTʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ɪɴ 2 ᴍɪɴᴜᴛᴇs..!"
             cap+="🍿 Your Movie Files 👇\n\n"
             for file in files:
                 cap += f"<b>📁 <a href='https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}'>[{get_size(file.file_size)}] {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))}\n\n</a></b>"
@@ -3019,7 +3020,7 @@ async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
                 await message.delete()
     else:
         fuk = await m.edit(text=cap, reply_markup=InlineKeyboardMarkup(btn), disable_web_page_preview=True)
-        await asyncio.sleep(60) #👈  movies results  auto delete (added features replace 'searching for' to 'movies results' [line 2146 <await m.edit>]
+        await asyncio.sleep(120) #👈  movies results  auto delete (added features replace 'searching for' to 'movies results' [line 2146 <await m.edit>]
         await m.delete() #👈  searching for query  auto delete 
         try:
             if settings['auto_delete']:
@@ -3035,7 +3036,7 @@ async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
     
                 # Send the notification message in the group
                 notification = await message.reply_text(notification_message)
-                await asyncio.sleep(30)
+                await asyncio.sleep(20)
                 await notification.delete()
         except KeyError:
             await save_group_settings(message.chat.id, 'auto_delete', True)
@@ -3051,7 +3052,7 @@ async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
     
             # Send the notification message in the group
             notification = await message.reply_text(notification_message)
-            await asyncio.sleep(30)
+            await asyncio.sleep(20)
             await notification.delete()
 
 

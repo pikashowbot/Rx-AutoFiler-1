@@ -1829,8 +1829,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 file_id=file_id,
             )
             fileName = quote_plus(get_name(log_msg))
-            lazy_stream = f"{URL}:8000/watch/{str(log_msg.id)}/{fileName}?hash={get_hash(log_msg)}"
-            lazy_download = f"{URL}:8000/{str(log_msg.id)}/{fileName}?hash={get_hash(log_msg)}"
+            lazy_stream = f"{URL}:8080/watch/{str(log_msg.id)}/{fileName}?hash={get_hash(log_msg)}"
+            lazy_download = f"{URL}:8080/{str(log_msg.id)}/{fileName}?hash={get_hash(log_msg)}"
             hp_link = await get_streamanddownload_shorted_link(lazy_download)
             ph_link = await get_streamanddownload_shorted_link(lazy_stream)
             buttons = []

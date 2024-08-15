@@ -18,8 +18,8 @@ def is_enabled(value, default):
 SESSION = environ.get('SESSION', 'Media_search')
 API_ID = int(environ.get('API_ID', '904789'))
 API_HASH = environ.get('API_HASH', '2262ef67ced426b9eea57867b11666a1')
-BOT_TOKEN = environ.get('BOT_TOKEN', "6703732631:AAEqKwSurEYWP1jtpbX9i2QaXBF67fLrF-o")
-BOT_USERNAME = environ.get('BOT_USERNAME', 'RX_Autofilerbot')
+BOT_TOKEN = environ.get('BOT_TOKEN', "7433379680:AAFc1L6WKo2iUFQFcm87Y3bkC9CkByCXNJA")
+BOT_USERNAME = environ.get('BOT_USERNAME', 'RX_Autofiler2_bot')
 
 
 # Bot settings
@@ -47,11 +47,13 @@ SEND_MV_LOGS = bool(environ.get('SEND_MV_LOGS', False)) #send newmovies log to u
 auth_channel = environ.get('AUTH_CHANNEL', '-1001641011626') #public channel 
 second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002199110608')  # Add the second auth channel or Group (should private)
 
+
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 SECOND_AUTH_CHANNEL = int(second_auth_channel) if second_auth_channel and id_pattern.search(second_auth_channel) else None
 
 
 auth_grp = environ.get('AUTH_GROUP')
+#auth_grp = environ.get('AUTH_GROUP', '-1002105025900 -1002065604244 -1001994677259 -1002121994889 -1001902541817 -1001946073826 -1001959069308 -1001984828576')
 AUTH_GROUPS = [int(ch) for ch in auth_grp.split()] if auth_grp else None
 support_chat_id = environ.get('SUPPORT_CHAT_ID', '-1001993304315')
 reqst_channel = environ.get('REQST_CHANNEL_ID', '-1001947068403')
@@ -62,7 +64,7 @@ NO_RESULTS_MSG = bool(environ.get("NO_RESULTS_MSG", True))
 
 # Premium And Referal Settings
 SUBSCRIPTION = (environ.get('SUBSCRIPTION', 'https://graph.org/file/35323f5f7bb90113b4337.jpg'))
-CODE = (environ.get('CODE', 'https://graph.org/file/96d0950a0460645799156.jpg'))
+CODE = (environ.get('CODE', 'https://graph.org/file/2dce415ac8d303ee7c7ca.jpg'))
 REFERAL_COUNT = int(environ.get('REFERAL_COUNT', '20')) # number of referal count
 REFERAL_PREMEIUM_TIME = environ.get('REFERAL_PREMEIUM_TIME', '1_Month')
 
@@ -71,7 +73,7 @@ REFERAL_PREMEIUM_TIME = environ.get('REFERAL_PREMEIUM_TIME', '1_Month')
 DATABASE_URI_SESSIONS_F = environ.get('DATABASE_URI_SESSIONS_F', "mongodb+srv://rxsessionfiles:Surajrathod.878@cluster0.elccu40.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
 # MongoDB information
-DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://rxautofilerbot:Surajrathod.878@cluster0.qfhsbhm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://rxautofilerbot2:Surajrathod.878@cluster0.vzh047b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
@@ -82,18 +84,21 @@ JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 #SHORTLINK_URL = environ.get('SHORTLINK_URL', 'publicearn.com')
 #SHORTLINK_API = environ.get('SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
-SHORTLINK_URL = environ.get('SHORTLINK_URL', 'zipshort.net')
-SHORTLINK_API = environ.get('SHORTLINK_API', '69007a262bdd8f73779f46e438f5c5b916e5571d')
+SHORTLINK_URL = environ.get('SHORTLINK_URL', 'publicearn.com')
+SHORTLINK_API = environ.get('SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
-SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'publicearn.com')
-SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
+SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'zipshort.net')
+SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '69007a262bdd8f73779f46e438f5c5b916e5571d')
+
+#shortlink on for file2link 
 IS_SREAM_SHORTLINK = bool(environ.get('IS_SREAM_SHORTLINK', True))
+
 IS_SHORTLINK = bool(environ.get('IS_SHORTLINK', False))
 DELETE_CHANNELS = [int(dch) if id_pattern.search(dch) else dch for dch in environ.get('DELETE_CHANNELS', '-1002071402245').split()]
 MAX_B_TN = environ.get("MAX_B_TN", "5")
 MAX_BTN = is_enabled((environ.get('MAX_BTN', "True")), True)
-PORT = environ.get("PORT", "8080")
+PORT = environ.get("PORT", "8000")
 GRP_LNK = environ.get('GRP_LNK', 'https://telegram.me/+HldvnSK5kV9hMmFl')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://telegram.me/+JlRNm8AVBpFhNGY1')
 #TUTORIAL = environ.get('TUTORIAL', 'https://t.me/h2d_earn2me/4')
@@ -103,13 +108,12 @@ VERIFY_TUTORIAL = environ.get('VERIFY_TUTORIAL', 'https://t.me/how2dow/55')
 IS_TUTORIAL = bool(environ.get('IS_TUTORIAL', True))
 MSG_ALRT = environ.get('MSG_ALRT', 'Hello My Dear Friends ❤️')
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1001931308157'))
-LOG_CHANNEL_V = int(environ.get('LOG_CHANNEL', '-1002128095229'))
-LOG_CHANNEL_RQ = int(environ.get('LOG_CHANNEL', '-1002083633375'))
+LOG_CHANNEL_V = int(environ.get('LOG_CHANNEL', '-1002066731808'))
+LOG_CHANNEL_RQ = int(environ.get('LOG_CHANNEL', '-1001859371885'))
 LOG_CHANNEL_NRM = int(environ.get('LOG_CHANNEL', '-1002056784970'))
-
+PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1002010190484'))
 LOG_CHANNEL_SESSIONS_FILES = int(environ.get('LOG_CHANNEL_SESSIONS_FILES', '-1002148356355'))
 
-PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1002010190484'))
 SUPPORT_CHAT = environ.get('SUPPORT_CHAT', '+HRKp-WKYjlpkY2Rl')
 P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)
 IMDB = is_enabled((environ.get('IMDB', "False")), False)
@@ -158,19 +162,19 @@ if len(BIN_CHANNEL) == 0:
     exit()
 else:
     BIN_CHANNEL = int(BIN_CHANNEL)
-URL = environ.get("URL", "https://pikashow-file2link.koyeb.app/") #if heroku then paste the app link here ex: https://heroku......./
-if len(URL) == 0:
-    print('Error - URL is missing, exiting now')
-    exit()
-else:
-    if URL.startswith(('https://', 'http://')):
-        if not URL.endswith("/"):
-            URL += '/'
-    elif is_valid_ip(URL):
-        URL = f'http://{URL}/'
-    else:
-        print('Error - URL is not valid, exiting now')
-        exit()
+URL = environ.get("URL", "http://pikashowmovies.fun") #if heroku then paste the app link here ex: https://heroku......./
+# if len(URL) == 0:
+    # print('Error - URL is missing, exiting now')
+    # exit()
+# else:
+    # if URL.startswith(('https://', 'http://')):
+        # if not URL.endswith("/"):
+            # URL += '/'
+    # elif is_valid_ip(URL):
+        # URL = f'http://{URL}/'
+    # else:
+        # print('Error - URL is not valid, exiting now')
+        # exit()
         
 
 

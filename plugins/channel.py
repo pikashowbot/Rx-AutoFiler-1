@@ -4,7 +4,7 @@ from urllib.parse import quote
 import re
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto
 from info import CHANNELS, MV_UPDATE_CHANNEL, LOG_CHANNEL, FILE_STORE_CHANNEL, PUBLIC_FILE_STORE, SEND_MV_LOGS
-from database.ia_filterdb import save_file, unpack_new_file_id
+from database.ia_filterdb import save_file, unpack_new_file_id, get_search_results
 from utils import get_poster, temp
 
 from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, UsernameInvalid, UsernameNotModified
@@ -97,7 +97,7 @@ def extract_details(text):
     # Remove additional unnecessary parts like quality, resolution, and size details
     
     #added
-    clean_name = re.sub(r'(Hindi|English|AMZN|Tamil|Malyalam|Kannada|Telugu|Mkv|WebRip|DD5.1|NF Series|MSubs|Full HD|HDRip|265|HD|DDP2|PrimeFix|HQ HDRip|WEBRip|mp4|BRRip|mkv|mp3|Kbps|Series|Movie|Movies|AAC2|HDRip|BluRay|AAC2|AAC|DD 5.1|DDP5.1.x265|AMZN|x264|x265|ESubs|AAC 5.1|10bit|UNCUT|HEVC|Blu-ray|DVD|PreDVD|CAM|TS|HDCAM|DVDRip|DVDScr|R5|HDTV|XviD|DivX|h264|Remux|WEB-DL|HQ SPrint|HQ S-Print|HQ Print|COMBINED| WEB |Dual Audio|Multi Audio|WEBDL|DTS|Dolby Digital|360p|480p|720p|1080p|2160p|4k)', '', clean_name, flags=re.IGNORECASE)
+    clean_name = re.sub(r'(Hindi|English|AMZN|Tamil|Malyalam|Kannada|LinkzZ | piro |Telugu|Mkv|WebRip|DD5.1|NF Series|MSubs|Full HD|HDRip|265|HD|DDP2|PrimeFix|HQ HDRip|WEBRip|mp4|BRRip|mkv|mp3|Kbps|Series|Movie|Movies|AAC2|HDRip|BluRay|AAC2|AAC|DD 5.1|DDP5.1.x265|AMZN|x264|x265|ESubs|AAC 5.1|10bit|UNCUT|HEVC|Blu-ray|DVD|PreDVD|CAM|TS|HDCAM|DVDRip|DVDScr|R5|HDTV|XviD|DivX|h264|Remux|WEB-DL|HQ SPrint|HQ S-Print|HQ Print|COMBINED| WEB |Dual Audio|Multi Audio|WEBDL|DTS|Dolby Digital|360p|480p|720p|1080p|2160p|4k)', '', clean_name, flags=re.IGNORECASE)
     clean_name = re.sub(rf'({"|".join(video_qualities)}|{"|".join(video_resolutions)})', '', clean_name, flags=re.IGNORECASE)
     clean_name = re.sub(r'\s+', ' ', clean_name).strip()  # Remove extra spaces
     clean_name = re.sub(r'[\[\]{}\-+_]', '', clean_name)  # Remove specified symbols
@@ -209,11 +209,19 @@ async def media_handler(bot, message):
             file_id, file_ref = unpack_new_file_id(media.file_id)
         
             # URL-encode the filename to handle multiple words and spaces
-            encoded_filename = quote(filename)                
+            encoded_filename = quote(filename)             
+            filename = re.sub(r'[(){}\[\]:;\'!-$%?]', '', filename)
+            filenames = filename.replace(" ", '-')
+            search = filename
+            files, offset, total_results = await get_search_results(message.chat.id, search, offset=0, filter=True)
 
             # Create the buttons
-            button1 = InlineKeyboardButton('Get This File♂️', url=f'https://telegram.me/{temp.U_NAME}?start=file_{file_id}')
-            button2 = InlineKeyboardButton('Request Group', url=f'https://telegram.me/+HldvnSK5kV9hMmFl')
+            
+            #creat button with getfile function 
+            button1 = InlineKeyboardButton('Gᴇᴛ Aʟʟ Fɪʟᴇs ♂️', url=f'https://telegram.me/{temp.U_NAME}?start=getfile-{filenames}')
+            #creat button with file id
+          #  button1 = InlineKeyboardButton('Get This File♂️', url=f'https://telegram.me/{temp.U_NAME}?start=file_{file_id}')
+            button2 = InlineKeyboardButton('Rᴇǫᴜᴇsᴛ Gʀᴏᴜᴘ ♂️', url=f'https://telegram.me/+HldvnSK5kV9hMmFl')
             
             # Arrange the buttons in a single keyboard
             keyboard = InlineKeyboardMarkup([[button1], [button2]])
@@ -230,6 +238,7 @@ async def media_handler(bot, message):
                     photo="https://graph.org/file/ea47958580d0fc1deb463.jpg",
                     caption=(f"#𝗡𝗲𝘄𝗙𝗶𝗹𝗲_𝗔𝗱𝗱𝗲𝗱\n"
                              f"𝗙𝗶𝗹𝗲 𝗡𝗮𝗺𝗲: {filename}\n"
+                             f"𝗧𝗼𝘁𝗮𝗹 𝗙𝗶𝗹𝗲𝘀 𝗜𝗻 𝗗𝗕: {total_results}\n"
                              f"𝗜𝗠𝗗𝗕 𝗥𝗮𝘁𝗶𝗻𝗴: {rating}\n"
                              f"𝗚𝗲𝗻𝗿𝗲𝘀: {genres}\n"
                              f"𝗙𝗶𝗹𝗲 𝗦𝗶𝘇𝗲: {size_str}\n"

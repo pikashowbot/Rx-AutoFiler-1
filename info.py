@@ -81,15 +81,15 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 VERIFY = bool(environ.get('VERIFY', True))
 JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 
+SHORTLINK_URL = environ.get('SHORTLINK_URL', 'krishnalink.com')
+SHORTLINK_API = environ.get('SHORTLINK_API', 'f5938c1806af1b177889c3cd4c192fbc873a3fd6')
+
 #SHORTLINK_URL = environ.get('SHORTLINK_URL', 'publicearn.com')
 #SHORTLINK_API = environ.get('SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
-SHORTLINK_URL = environ.get('SHORTLINK_URL', 'publicearn.com')
-SHORTLINK_API = environ.get('SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
-
-SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'zipshort.net')
-SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '69007a262bdd8f73779f46e438f5c5b916e5571d')
+SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'publicearn.com')
+SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
 #shortlink on for file2link 
 IS_SREAM_SHORTLINK = bool(environ.get('IS_SREAM_SHORTLINK', True))
@@ -104,7 +104,11 @@ CHNL_LNK = environ.get('CHNL_LNK', 'https://telegram.me/+JlRNm8AVBpFhNGY1')
 #TUTORIAL = environ.get('TUTORIAL', 'https://t.me/h2d_earn2me/4')
 #VERIFY_TUTORIAL = environ.get('VERIFY_TUTORIAL', 'https://t.me/h2d_earn2me/4')
 TUTORIAL = environ.get('TUTORIAL', 'https://t.me/how2dow/55')
-VERIFY_TUTORIAL = environ.get('VERIFY_TUTORIAL', 'https://t.me/how2dow/55')
+
+VERIFY_TUTORIAL = environ.get('VERIFY_TUTORIAL', 'https://t.me/how2dow/73')
+SECONDVERIFY_TUTORIAL = environ.get('SECONDVERIFY_TUTORIAL', 'https://t.me/how2dow/55')
+
+
 IS_TUTORIAL = bool(environ.get('IS_TUTORIAL', True))
 MSG_ALRT = environ.get('MSG_ALRT', 'Hello My Dear Friends ❤️')
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1001931308157'))

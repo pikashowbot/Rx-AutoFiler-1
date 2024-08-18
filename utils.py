@@ -1,6 +1,6 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from info import ADMINS, PREMIUM_USER, AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, IS_SHORTLINK, LOG_CHANNEL, TUTORIAL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, SECOND_AUTH_CHANNEL, STREAM_SITE, STREAM_API, SHORTLINK_API, SHORTLINK_URL, SECOND_SHORTLINK_API, SECOND_SHORTLINK_URL
+from info import ADMINS, PREMIUM_USER, AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, IS_SHORTLINK, LOG_CHANNEL, TUTORIAL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, SECOND_AUTH_CHANNEL, STREAM_SITE, STREAM_API, SHORTLINK_API, SHORTLINK_URL, SECOND_SHORTLINK_API, SECOND_SHORTLINK_URL, VERIFY_TUTORIAL, SECONDVERIFY_TUTORIAL
 from imdb import Cinemagoer 
 import asyncio
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
@@ -598,6 +598,47 @@ async def get_verify_shorted_link(link, url, api):
 
 ##
 
+# async def get_token(bot, userid, link, fileid):
+    # try:
+        # user = await bot.get_users(userid)
+    # except Exception as e:
+        # logger.error(f"Error fetching user {userid}: {e}")
+        # return None
+    
+    # if not await db.is_user_exist(user.id):
+        # await db.add_user(user.id, user.first_name)
+        # await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
+    
+    # token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
+    # TOKENS[user.id] = {token: False}
+    # link = f"{link}verify-{user.id}-{token}-{fileid}"
+
+    # # Get current time in Asia/Kolkata timezone
+    # kolkata_tz = pytz.timezone('Asia/Kolkata')
+    # current_time = datetime.now(kolkata_tz).time()
+
+    # # Define time ranges
+    # morning_start = time(6, 0)  # 6:00 AM
+    # morning_end = time(12, 0)   # 12:00 PM
+    # evening_start = time(18, 0) # 6:00 PM
+    # evening_end = time(23, 59)    # 12:00 AM (midnight)
+
+    # # Determine which shortener to use based on the time
+    # if (morning_start <= current_time < morning_end) or (evening_start <= current_time < evening_end):
+        # shortlink_url = SHORTLINK_URL
+        # shortlink_api = SHORTLINK_API
+    # else:
+        # shortlink_url = SECOND_SHORTLINK_URL
+        # shortlink_api = SECOND_SHORTLINK_API
+    
+    # try:
+        # shortened_verify_url = await get_verify_shorted_link(link, shortlink_url, shortlink_api)
+        # return str(shortened_verify_url)
+    # except Exception as e:
+        # logger.error(f"Error in token generation process: {e}")
+        # return None
+        
+    
 async def get_token(bot, userid, link, fileid):
     try:
         user = await bot.get_users(userid)
@@ -621,25 +662,24 @@ async def get_token(bot, userid, link, fileid):
     morning_start = time(6, 0)  # 6:00 AM
     morning_end = time(12, 0)   # 12:00 PM
     evening_start = time(18, 0) # 6:00 PM
-    evening_end = time(23, 59)    # 12:00 AM (midnight)
+    evening_end = time(23, 59)  # 12:00 AM (midnight)
 
-    # Determine which shortener to use based on the time
+    # Determine which shortener and tutorial to use based on the time
     if (morning_start <= current_time < morning_end) or (evening_start <= current_time < evening_end):
         shortlink_url = SHORTLINK_URL
         shortlink_api = SHORTLINK_API
+        tutorial_link = VERIFY_TUTORIAL
     else:
         shortlink_url = SECOND_SHORTLINK_URL
         shortlink_api = SECOND_SHORTLINK_API
+        tutorial_link = SECONDVERIFY_TUTORIAL
     
     try:
         shortened_verify_url = await get_verify_shorted_link(link, shortlink_url, shortlink_api)
-        return str(shortened_verify_url)
+        return str(shortened_verify_url), tutorial_link
     except Exception as e:
         logger.error(f"Error in token generation process: {e}")
-        return None
-        
-    
-    
+        return None, None    
     
                         
 

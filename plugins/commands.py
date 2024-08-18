@@ -408,6 +408,36 @@ async def start(client, message):
         await k.edit("<b>Your message is successfully deleted!!!</b>")
         return
         
+    # elif data.startswith("all"):
+        # files = temp.GETALL.get(file_id)
+        # if not files:
+            # return await message.reply('<b><i>No such file exist.</b></i>')
+        # filesarr = []
+        # for file in files:
+            # file_id = file.file_id
+            # files_ = await get_file_details(file_id)
+            # files1 = files_[0]
+            # title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))
+            # size=get_size(files1.file_size)
+            # f_caption=files1.caption
+            # if CUSTOM_FILE_CAPTION:
+                # try:
+                    # f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                # except Exception as e:
+                    # logger.exception(e)
+                    # f_caption=f_caption
+            # if f_caption is None:
+                # f_caption = f"{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))}"
+            # if not await check_verification(client, message.from_user.id) and VERIFY == True:
+                # btn = [[
+                    # InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
+                # ],[
+                    # InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=VERIFY_TUTORIAL)
+                            # ]
+                # ]
+                
+                
+                
     elif data.startswith("all"):
         files = temp.GETALL.get(file_id)
         if not files:
@@ -428,13 +458,15 @@ async def start(client, message):
                     f_caption=f_caption
             if f_caption is None:
                 f_caption = f"{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))}"
+                
             if not await check_verification(client, message.from_user.id) and VERIFY == True:
+                verify_url, tutorial_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)
+                
                 btn = [[
-                    InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
+                    InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)
                 ],[
-                    InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=VERIFY_TUTORIAL)
-                            ]
-                ]
+                    InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
+                ]]                
                 await message.reply_text(
                     text=f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : Multiple Files</b>\n\n<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>",
                     protect_content=True,
@@ -497,13 +529,13 @@ async def start(client, message):
         pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
         try:
             if not await check_verification(client, message.from_user.id) and VERIFY == True:
-                btn = [
-                    [
-                        InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
-                    ], [
-                        InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=VERIFY_TUTORIAL)
-                    ]
-                ]
+                verify_url, tutorial_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)
+                
+                btn = [[
+                    InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)
+                ],[
+                    InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
+                ]]                
                 #    Check if the file name exists
                 file_name_text = f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : {files_.file_name}</b>\n\n" if files_ and hasattr(files_, 'file_name') else "<b><u>Yᴏᴜ Nᴇᴇᴅ Tᴏ Vᴇʀɪғʏ Fᴏʀ Tʜᴀᴛ Fɪʟᴇ</u></b>\n\n"
                 await message.reply_text(
@@ -568,13 +600,12 @@ async def start(client, message):
     if f_caption is None:
         f_caption = f"@Rx_Bots  {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.split()))}"
     if not await check_verification(client, message.from_user.id) and VERIFY == True:
-        btn = [
-                        [
-            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
+        verify_url, tutorial_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)                
+        btn = [[
+            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)
         ],[
-            InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=VERIFY_TUTORIAL)
-                            ]
-        ]
+            InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
+        ]]                
         await message.reply_text(
                     text=f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : {files.file_name}</b>\n\n<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>",
             protect_content=True,

@@ -77,6 +77,7 @@ DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://rxautofilerbot2:Surajr
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
+ASKFSUBINGRP = bool(environ.get('ASKFSUBINGRP', True))
 
 VERIFY = bool(environ.get('VERIFY', True))
 JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))

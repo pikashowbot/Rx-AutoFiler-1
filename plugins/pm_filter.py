@@ -159,12 +159,23 @@ async def give_filter(client, message):
 
         # Send the subscribe message with user mention
         subscribe_message = await message.reply(
-            f"🔰 ʜᴇʏ {message.from_user.mention}, ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ <u>sᴜʙsᴄʀɪʙᴇᴅ ᴏᴜʀ ᴄʜᴀɴɴᴇʟs.</u>\n\nPʟᴇᴀsᴇ <u>sᴜʙsᴄʀɪʙᴇ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴛᴏ ʀᴇǫᴜᴇsᴛ ɪɴ ɢʀᴏᴜᴘ.\nAғᴛᴇʀ <u>sᴜʙsᴄʀɪʙɪɴɢ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs, ᴘʟᴇᴀsᴇ ᴄʟɪᴄᴋ ᴏɴ 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 ʙᴜᴛᴛᴏɴ 👇",
+            f"🔰 ʜᴇʏ {message.from_user.mention}, ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ <u>sᴜʙsᴄʀɪʙᴇᴅ ᴏᴜʀ ᴄʜᴀɴɴᴇʟs.</u>\n\nPʟᴇᴀsᴇ <u>sᴜʙsᴄʀɪʙᴇ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴛᴏ ʀᴇǫᴜᴇsᴛ ɪɴ ɢʀᴏᴜᴘ.\nAғᴛᴇʀ <u>sᴜʙsᴄʀɪʙɪɴɢ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs, ᴘʟᴇᴀsᴇ ᴄʟɪᴄᴋ ᴏɴ 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 ʙᴜᴛᴛᴏɴ 👇\n\nग्रुप में फाइल रिक्वेस्ट करने के लिए, कृपया हमारे अपडेट चैनल को जाईन कीजिए। 👇",
             reply_markup=InlineKeyboardMarkup(btn)
-        )
-        # Save the message ID to delete it later
-        client.set_data(f"subscribe_msg_{message.chat.id}", subscribe_message.message_id)
+        )        
+        # Delay and delete messages
+        try:
+            await asyncio.sleep(60)
+            await message.delete()
+        except Exception as e:
+            logger.error(f"Failed to delete message: {e}")
+            
+        try:
+            await subscribe_message.delete()
+        except Exception as e:
+            logger.error(f"Failed to delete subscribe message: {e}")
+
         return
+
 
     # Continue with the original logic if the user is subscribed
     if message.chat.id != SUPPORT_CHAT_ID:
@@ -1555,15 +1566,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.answer("Please Join Our Update Channels Bro..!🥲\n कृपया करके हमारे अपडेट चैनल्स को ज्वाइन कीजिए।", show_alert=True)
             return
         else:
-            await query.answer(f"ᴛʜᴀɴᴋs ғᴏʀ sᴜʙsᴄʀɪʙɪɴɢ ᴜs.!❤️,\nNᴏᴡ ʏᴏᴜ ᴄᴀɴ ʀᴇǫᴜᴇsᴛ ʏᴏᴜʀ ǫᴜᴇʀʏ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ. 😊", show_alert=True)
-            
-
+            await query.answer(f"ᴛʜᴀɴᴋs ғᴏʀ sᴜʙsᴄʀɪʙɪɴɢ ᴜs.!❤️,\nNᴏᴡ ʏᴏᴜ ᴄᴀɴ ʀᴇǫᴜᴇsᴛ ʏᴏᴜʀ ǫᴜᴇʀʏ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ. 😊\nअब आप ग्रुप में फाइल्स रिक्वेस्ट कर सकते है। 🥰", show_alert=True)
             await asyncio.sleep(5)  # 10 seconds delay before deleting the success message
             try:
                 await query.message.delete()
             except Exception as e:
                 logger.error(f"Failed to delete success message: {e}")
-        
+
     
     elif query.data == "pages":
         await query.answer()

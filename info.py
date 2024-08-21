@@ -87,11 +87,11 @@ SHORTLINK_URL = environ.get('SHORTLINK_URL', 'get2short.com')
 SHORTLINK_API = environ.get('SHORTLINK_API', 'b3129742329124f64b168ae6985b1558e3852bbd')
 
 
-SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'krishnalink.com')
-SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', 'f5938c1806af1b177889c3cd4c192fbc873a3fd6')
+SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'publicearn.com')
+SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
 #shortlink on for file2link 
-IS_SREAM_SHORTLINK = bool(environ.get('IS_SREAM_SHORTLINK', True))
+IS_SREAM_SHORTLINK = bool(environ.get('IS_SREAM_SHORTLINK', False))
 
 IS_SHORTLINK = bool(environ.get('IS_SHORTLINK', False))
 DELETE_CHANNELS = [int(dch) if id_pattern.search(dch) else dch for dch in environ.get('DELETE_CHANNELS', '-1002071402245').split()]
@@ -165,7 +165,7 @@ if len(BIN_CHANNEL) == 0:
     exit()
 else:
     BIN_CHANNEL = int(BIN_CHANNEL)
-URL = environ.get("URL", "http://pikashowmovies.fun")  #if heroku then paste the app link here ex: https://heroku......./
+URL = environ.get("URL", "https://pikashowmovies.fun")  #if heroku then paste the app link here ex: https://heroku......./
 # if len(URL) == 0:
     # print('Error - URL is missing, exiting now')
     # exit()

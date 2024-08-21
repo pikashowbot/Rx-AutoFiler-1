@@ -104,8 +104,69 @@ async def notify_user(client: Client, message: ChatJoinRequest):
 #@Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
 
 
+# @Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
+# async def give_filter(client, message):
+    # if message.chat.id != SUPPORT_CHAT_ID:
+        # manual = await manual_filters(client, message)
+        # if not manual:
+            # settings = await get_settings(message.chat.id)
+            # try:
+                # if settings['auto_ffilter']:
+                    # await auto_filter(client, message)
+            # except KeyError:
+                # grpid = await active_connection(str(message.from_user.id))
+                # await save_group_settings(grpid, 'auto_ffilter', True)
+                # settings = await get_settings(message.chat.id)
+                # if settings['auto_ffilter']:
+                    # await auto_filter(client, message)
+    # else:
+        # search = message.text
+        # temp_files, temp_offset, total_results = await get_search_results(
+            # chat_id=message.chat.id, query=search.lower(), offset=0, filter=True
+        # )
+        # if total_results == 0:
+            # return
+        # else:
+            # await message.reply_text(
+                # f"<b>Hᴇʏ {message.from_user.mention}, {str(total_results)}\n"
+                # f"ʀᴇsᴜʟᴛs ᴀʀᴇ ғᴏᴜɴᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ ғᴏʀ ʏᴏᴜʀ ᴏ̨ᴜᴇʀʏ {search}. \n\n"
+                # "Tʜɪs ɪs ᴀ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ғɪʟᴇs ғʀᴏᴍ ʜᴇʀᴇ...\n\n"
+                # "Jᴏɪɴ ᴀɴᴅ Sᴇᴀʀᴄʜ Hᴇʀᴇ\n - https://t.me/+HldvnSK5kV9hMmFl \n\n"
+                # "आपके द्वारा की गई सर्च में कूल {str(total_results)} मूवीज खोजी गई है।\n\n"
+                # "यह मूवीज रिक्वेस्ट ग्रुप नही हैं तो आप यहां पर मूवीज रिक्वेस्ट नही कर सकते हैं।\n"
+                # "कृपया इस ग्रुप को ज्वाइन करें ,और इस ग्रुप में मूवीज सर्च करें।</b>"
+            # )
+
+
+
+
+
 @Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
 async def give_filter(client, message):
+    if not await is_req_subscribed(client, message) and ASKFSUBINGRP == True:
+        try:
+            invite_link_1 = await client.create_chat_invite_link(int(AUTH_CHANNEL), creates_join_request=True)
+            invite_link_2 = await client.create_chat_invite_link(int(SECOND_AUTH_CHANNEL), creates_join_request=True)
+        except ChatAdminRequired:
+            logger.error("Make sure Bot is admin in both Forcesub channels")
+            return
+
+        btn = [
+            [InlineKeyboardButton("Join Update Channel ➊", url=invite_link_1.invite_link)],
+            [InlineKeyboardButton("Join Update Channel ➋", url=invite_link_2.invite_link)],
+            [InlineKeyboardButton("I'm Subscribed ✅", callback_data=f"groupchecksub")]
+        ]
+
+        # Send the subscribe message with user mention
+        subscribe_message = await message.reply(
+            f"🔰 ʜᴇʏ {message.from_user.mention}, ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ <u>sᴜʙsᴄʀɪʙᴇᴅ ᴏᴜʀ ᴄʜᴀɴɴᴇʟs.</u>\n\nPʟᴇᴀsᴇ <u>sᴜʙsᴄʀɪʙᴇ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴛᴏ ʀᴇǫᴜᴇsᴛ ɪɴ ɢʀᴏᴜᴘ.\nAғᴛᴇʀ <u>sᴜʙsᴄʀɪʙɪɴɢ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs, ᴘʟᴇᴀsᴇ ᴄʟɪᴄᴋ ᴏɴ 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 ʙᴜᴛᴛᴏɴ 👇",
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+        # Save the message ID to delete it later
+        client.set_data(f"subscribe_msg_{message.chat.id}", subscribe_message.message_id)
+        return
+
+    # Continue with the original logic if the user is subscribed
     if message.chat.id != SUPPORT_CHAT_ID:
         manual = await manual_filters(client, message)
         if not manual:
@@ -128,14 +189,18 @@ async def give_filter(client, message):
             return
         else:
             await message.reply_text(
-                f"<b>Hᴇʏ {message.from_user.mention}, {str(total_results)}\n"
-                f"ʀᴇsᴜʟᴛs ᴀʀᴇ ғᴏᴜɴᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ ғᴏʀ ʏᴏᴜʀ ᴏ̨ᴜᴇʀʏ {search}. \n\n"
-                "Tʜɪs ɪs ᴀ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ғɪʟᴇs ғʀᴏᴍ ʜᴇʀᴇ...\n\n"
-                "Jᴏɪɴ ᴀɴᴅ Sᴇᴀʀᴄʜ Hᴇʀᴇ\n - https://t.me/+HldvnSK5kV9hMmFl \n\n"
+                f"<b>Hey {message.from_user.mention}, {str(total_results)}\n"
+                f"results are found in my database for your query {search}. \n\n"
+                "This is a support group so you can't get files from here...\n\n"
+                "Join and Search Here\n - https://t.me/+HldvnSK5kV9hMmFl \n\n"
                 "आपके द्वारा की गई सर्च में कूल {str(total_results)} मूवीज खोजी गई है।\n\n"
                 "यह मूवीज रिक्वेस्ट ग्रुप नही हैं तो आप यहां पर मूवीज रिक्वेस्ट नही कर सकते हैं।\n"
                 "कृपया इस ग्रुप को ज्वाइन करें ,और इस ग्रुप में मूवीज सर्च करें।</b>"
             )
+
+
+
+
 
 
 @Client.on_message(filters.private & filters.text & filters.incoming)
@@ -1483,8 +1548,22 @@ async def cb_handler(client: Client, query: CallbackQuery):
             return
         ident, kk, file_id = query.data.split("#")
         await query.answer(url=f"https://t.me/{temp.U_NAME}?start={kk}_{file_id}")
-   
+        
+        
+    if query.data.startswith("groupchecksub"):
+        if not await is_req_subscribed(client, query):
+            await query.answer("Please Join Our Update Channels Bro..!🥲\n कृपया करके हमारे अपडेट चैनल्स को ज्वाइन कीजिए।", show_alert=True)
+            return
+        else:
+            await query.answer(f"ᴛʜᴀɴᴋs ғᴏʀ sᴜʙsᴄʀɪʙɪɴɢ ᴜs.!❤️,\nNᴏᴡ ʏᴏᴜ ᴄᴀɴ ʀᴇǫᴜᴇsᴛ ʏᴏᴜʀ ǫᴜᴇʀʏ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ. 😊", show_alert=True)
+            
 
+            await asyncio.sleep(5)  # 10 seconds delay before deleting the success message
+            try:
+                await query.message.delete()
+            except Exception as e:
+                logger.error(f"Failed to delete success message: {e}")
+        
     
     elif query.data == "pages":
         await query.answer()
@@ -2971,7 +3050,7 @@ async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
             cap = f"<b>Rᴇsᴜʟᴛs Sʜᴏᴡ Iɴ:- {remaining_seconds} sᴇᴄᴏɴᴅs\nRᴇsᴜʟᴛs Fᴏʀ:- {message.text}\nRᴇǫᴜᴇsᴛᴇᴅ Bʏ:- {message.from_user.mention}\nGʀᴏᴜᴘ:- {message.chat.title}</b>\nTʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ɪɴ 2 ᴍɪɴᴜᴛᴇs..!" 
         else: 
             cap = f"<b>Rᴇsᴜʟᴛs Sʜᴏᴡ Iɴ:- {remaining_seconds} sᴇᴄᴏɴᴅs\nRᴇsᴜʟᴛs Fᴏʀ:- {message.text}\nRᴇǫᴜᴇsᴛᴇᴅ Bʏ:- {message.from_user.mention}\nGʀᴏᴜᴘ:- {message.chat.title}</b>\nTʜɪs ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ɪɴ 2 ᴍɪɴᴜᴛᴇs..!"
-            cap+="🍿 Your Movie Files 👇\n\n"
+            cap+="\n<b><u>🍿 Your Movie Files 👇</u></b>\n\n"
             for file in files:
                 cap += f"<b>📁 <a href='https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}'>[{get_size(file.file_size)}] {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))}\n\n</a></b>"
 

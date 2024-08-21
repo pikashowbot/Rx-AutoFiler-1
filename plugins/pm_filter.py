@@ -161,7 +161,7 @@ async def pm_text(bot, message):
     # Log the message
     await bot.send_message(
         chat_id=LOG_CHANNEL,
-        text=f"<b>#𝐏𝐌_𝐌𝐒𝐆\n\nNᴀᴍᴇ : {user}\n\nID : {user_id}\n\nMᴇssᴀɢᴇ : {content}</b>"
+        text=f"<b>#𝐏𝐌_𝐌𝐒𝐆\n\nNᴀᴍᴇ : {user}\n\nID : {user_id}\n\nMᴇssᴀɢᴇ : {content}\n\nBᴏᴛ : @{temp.U_NAME}</b>"
     )
 
     # Wait for 30 seconds before deleting the message

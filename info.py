@@ -83,8 +83,8 @@ VERIFY = bool(environ.get('VERIFY', True))
 JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 
 
-SHORTLINK_URL = environ.get('SHORTLINK_URL', 'get2short.com')
-SHORTLINK_API = environ.get('SHORTLINK_API', 'b3129742329124f64b168ae6985b1558e3852bbd')
+SHORTLINK_URL = environ.get('SHORTLINK_URL', 'krishnalink.com')
+SHORTLINK_API = environ.get('SHORTLINK_API', 'f5938c1806af1b177889c3cd4c192fbc873a3fd6')
 
 
 SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'publicearn.com')
@@ -104,8 +104,8 @@ CHNL_LNK = environ.get('CHNL_LNK', 'https://telegram.me/+JlRNm8AVBpFhNGY1')
 #VERIFY_TUTORIAL = environ.get('VERIFY_TUTORIAL', 'https://t.me/h2d_earn2me/4')
 TUTORIAL = environ.get('TUTORIAL', 'https://t.me/how2dow/55')
 
-VERIFY_TUTORIAL = environ.get('VERIFY_TUTORIAL', 'https://t.me/how2dow/74')
-SECONDVERIFY_TUTORIAL = environ.get('SECONDVERIFY_TUTORIAL', 'https://t.me/how2dow/73')
+VERIFY_TUTORIAL = environ.get('VERIFY_TUTORIAL', 'https://t.me/how2dow/73')
+SECONDVERIFY_TUTORIAL = environ.get('SECONDVERIFY_TUTORIAL', 'https://t.me/how2dow/55')
 
 
 IS_TUTORIAL = bool(environ.get('IS_TUTORIAL', True))

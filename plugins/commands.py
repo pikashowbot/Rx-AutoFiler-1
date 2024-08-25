@@ -408,35 +408,7 @@ async def start(client, message):
         await k.edit("<b>Your message is successfully deleted!!!</b>")
         return
         
-    # elif data.startswith("all"):
-        # files = temp.GETALL.get(file_id)
-        # if not files:
-            # return await message.reply('<b><i>No such file exist.</b></i>')
-        # filesarr = []
-        # for file in files:
-            # file_id = file.file_id
-            # files_ = await get_file_details(file_id)
-            # files1 = files_[0]
-            # title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))
-            # size=get_size(files1.file_size)
-            # f_caption=files1.caption
-            # if CUSTOM_FILE_CAPTION:
-                # try:
-                    # f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
-                # except Exception as e:
-                    # logger.exception(e)
-                    # f_caption=f_caption
-            # if f_caption is None:
-                # f_caption = f"{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))}"
-            # if not await check_verification(client, message.from_user.id) and VERIFY == True:
-                # btn = [[
-                    # InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id))
-                # ],[
-                    # InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=VERIFY_TUTORIAL)
-                            # ]
-                # ]
-                
-                
+
                 
     elif data.startswith("all"):
         files = temp.GETALL.get(file_id)
@@ -460,6 +432,10 @@ async def start(client, message):
                 f_caption = f"{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))}"
                 
             if not await check_verification(client, message.from_user.id) and VERIFY == True:
+                vrmsg = await message.reply_text(
+                    text=f"Please Wait A While, Im Generating A Token For You...",
+                    protect_content=True)
+                    
                 verify_url, tutorial_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)
                 
                 btn = [[
@@ -472,7 +448,10 @@ async def start(client, message):
                     protect_content=True,
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
+                await asyncio.sleep(1)
+                await vrmsg.delete()
                 return
+                
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
                 file_id=file_id,
@@ -529,6 +508,10 @@ async def start(client, message):
         pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
         try:
             if not await check_verification(client, message.from_user.id) and VERIFY == True:
+                vrmsg = await message.reply_text(
+                    text=f"Please Wait A While, Im Generating A Token For You...",
+                    protect_content=True)
+                    
                 verify_url, tutorial_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)
                 
                 btn = [[
@@ -543,7 +526,10 @@ async def start(client, message):
                     protect_content=True,
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
+                await asyncio.sleep(1)
+                await vrmsg.delete()
                 return
+                
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
                 file_id=file_id,
@@ -600,6 +586,10 @@ async def start(client, message):
     if f_caption is None:
         f_caption = f"@Rx_Bots  {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.split()))}"
     if not await check_verification(client, message.from_user.id) and VERIFY == True:
+        vrmsg = await message.reply_text(
+            text=f"Please Wait A While, Im Generating A Token For You...",
+            protect_content=True)
+                                        
         verify_url, tutorial_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)                
         btn = [[
             InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)
@@ -611,7 +601,10 @@ async def start(client, message):
             protect_content=True,
             reply_markup=InlineKeyboardMarkup(btn)
         )
+        await asyncio.sleep(1)
+        await vrmsg.delete()
         return
+        
     msg = await client.send_cached_media(
         chat_id=message.from_user.id,
         file_id=file_id,

@@ -16,7 +16,7 @@ from pyrogram.types import *
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id, get_bad_files
 from database.users_chats_db import db, delete_all_referal_users, get_referal_users_count, get_referal_all_users, referal_add_user
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, CHNL_LNK, GRP_LNK, REQST_CHANNEL, SUPPORT_CHAT_ID, SUPPORT_CHAT, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, IS_TUTORIAL, PREMIUM_USER, VERIFY_TUTORIAL, SECOND_AUTH_CHANNEL, LOG_CHANNEL_V, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, LOG_CHANNEL_RQ 
-from utils import get_settings, get_size, is_req_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_seconds, get_token, get_shortlink, get_tutorial
+from utils import get_settings, get_size, is_req_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_seconds, get_token, get_shortlink, get_tutorial, get_poster
 from database.connections_mdb import active_connection
 
 from .pm_filter import auto_filter
@@ -1258,10 +1258,193 @@ async def removetutorial(bot, message):
     reply = await message.reply_text("<b>Please Wait...</b>")
     await save_group_settings(grpid, 'is_tutorial', False)
     await reply.edit_text(f"<b>Successfully Removed Your Tutorial Link!!!</b>")
+    
+  
 
+
+
+
+##
+import os
+import logging
+import requests  # Make sure to install this package using pip if not already installed
+from pyrogram import Client, filters
+
+# Configure logging
+logging.basicConfig(
+    filename="imdb_errors.log",
+    level=logging.ERROR,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+# Error logging function
+def log_error(error_message):
+    logging.error(error_message)
+
+# Function to fetch movie details including poster from OMDb API
+async def get_poster(title):
+    api_key = "7998b36c"  # Replace with your OMDb API key
+    try:
+        # Fetch data from OMDb API
+        response = requests.get(f"http://www.omdbapi.com/?t={title}&apikey={api_key}")
+        data = response.json()
+
+        # Check if the response contains a valid movie
+        if data.get("Response") == "True":
+            return {
+                'title': data.get('Title', 'N/A'),
+                'languages': data.get('Language', 'N/A').split(', '),
+                'year': data.get('Year', 'N/A'),
+                'release_date': data.get('Released', 'N/A'),
+                'genres': data.get('Genre', 'N/A').split(', '),
+                'rating': data.get('imdbRating', 'N/A'),
+                'runtime': data.get('Runtime', 'N/A'),
+                'poster': data.get('Poster', ''),  # Get the actual poster URL
+                'plot': data.get('Plot', 'No plot available.'),
+            }
+        else:
+            log_error(f"No data found for {title}. Error: {data.get('Error')}")
+            return None
+    except Exception as e:
+        # Log error if fetching fails
+        log_error(f"Failed to fetch data for {title}: {str(e)}")
+        return None
+
+@Client.on_message(filters.command("imdbpost"))
+async def imdb_post(bot, message):
+    if len(message.command) < 2:
+        await message.reply("Usage: /imdbpost <movie_name>")
+        return
+
+    # Extract the title from the command
+    title = " ".join(message.command[1:])
+    k = await message.reply("Fetching IMDb information...")
+
+    # Fetch IMDb data based on the title
+    try:
+        imdb_data = await get_poster(title)
+        if not imdb_data:
+            await k.edit("No IMDb information found.")
+            return
+    except Exception as e:
+        log_error(f"Error fetching IMDb data for '{title}': {str(e)}")
+        await k.edit("Error fetching IMDb information. Please try again later.")
+        return
+
+    # Extract necessary details
+    imdb_title = imdb_data.get('title', 'N/A')
+    imdb_language = ', '.join(imdb_data.get('languages', ['N/A']))
+    imdb_release_year = imdb_data.get('year', 'N/A')
+    imdb_release_date = imdb_data.get('release_date', 'N/A')
+    imdb_genres = ', '.join(imdb_data.get('genres', ['N/A']))
+    imdb_rating = imdb_data.get('rating', 'N/A')
+    imdb_runtime = imdb_data.get('runtime', 'N/A')
+    imdb_poster = imdb_data.get('poster', '')
+
+    # Create the custom HTML using the fetched IMDb details
+    custom_html = f"""
+    <div class="entry-content" style="background-color: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; font-family: Arial, sans-serif;">
+    <p style="text-align: center; margin-bottom: 20px;"><img src="{imdb_poster}" alt="Poster of {imdb_title}" style="border-radius: 8px; max-width: 100%;"/></p>
+    
+    <hr style="border: 1px solid #444; margin: 20px 0;"/>
+
+    <h2 style="text-align: center; color: #ffdd57; margin-bottom: 10px;">Download {imdb_title} in 1080p, 720p, & 480p Qualities.</h2>
+    <p style="text-align: justify; line-height: 1.6;">
+        ✅ Download {imdb_title}. This movie is available in high-quality formats:
+        <span style="color: #ffa500;"><strong>1080p</strong></span>, 
+        <span style="color: #ffa500;"><strong>720p</strong></span>, and 
+        <span style="color: #ffa500;"><strong>480p</strong></span>. 
+        {imdb_title} is a gripping {imdb_genres} movie that keeps you hooked from start to finish. Now available for streaming and download in {imdb_language}, this film offers stunning visuals and an unforgettable plotline. Don’t miss out on the ultimate cinematic experience with {imdb_title}.
+    </p>
+    
+    <hr style="border: 1px solid #444; margin: 20px 0;"/>
+
+    <h3 style="text-align: center; color: #66bb6a; margin-top: 20px;">IMDb information of {imdb_title}</h3>
+    <ul style="list-style: none; padding: 0; margin: 10px 0 20px;">
+        <li><strong>🎬 Full Name:</strong> {imdb_title}</li>
+        <li><strong>🗂️ Genres:</strong> {imdb_genres}</li>
+        <li><strong>⭐ Rating:</strong> {imdb_rating}</li>
+        <li><strong>⏰ Runtime:</strong> {imdb_runtime}</li>
+        <li><strong>🗣️ Language:</strong> {imdb_language}</li>
+        <li><strong>📅 Released Year:</strong> {imdb_release_year}</li>
+        <li><strong>📆 Release Date:</strong> {imdb_release_date}</li>
+    </ul>
+    
+    <hr style="border: 1px solid #444; margin: 20px 0;"/>
+    
+    <h4 style="text-align: center; color: #ff6347;"><strong>Plot Summary:</strong></h4>
+    <p style="text-align: justify; margin-bottom: 20px;">{imdb_data.get('plot', 'No plot available.')}</p>
+    
+    <hr style="border: 1px solid #444; margin: 20px 0;"/>
+    
+    <h4 style="text-align: center;"><span style="font-family: 'comic sans ms', sans-serif; color: #ff9900;"><em><strong>: SCREENSHOTS (Must See Before Downloading) :</strong></em></span></h4>
+    
+    <p style="text-align: center;"><img src="###"</p>
+    
+    <hr style="border: 1px solid #444; margin: 20px 0;"/>
+    
+    
+    <div style="text-align: center;">
+        <h5 style="color: #ffffff;"><strong>{imdb_title} <span style="color: #ffdd57;">{imdb_language}</span> <span style="color: #ffa500;">Complete</span> 480p [450MB]</strong></h5>
+        <a href="###" target="_blank" rel="nofollow noopener noreferrer" style="text-decoration: none;">
+            <button class="dwd-button" style="background-color: #2196f3; color: #fff; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;">Download Now</button>
+        </a>
+
+        <h5 style="color: #ffffff; margin-top: 20px;"><strong>{imdb_title} <span style="color: #ffdd57;">{imdb_language}</span> <span style="color: #ffa500;">Complete</span> 720p [800MB]</strong></h5>
+        <a href="###" target="_blank" rel="nofollow noopener noreferrer" style="text-decoration: none;">
+            <button class="dwd-button" style="background-color: #4caf50; color: #fff; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;">Download Now</button>
+        </a>
+
+        <h5 style="color: #ffffff; margin-top: 20px;"><strong>{imdb_title} <span style="color: #ffdd57;">{imdb_language}</span> <span style="color: #ffa500;">Complete</span> 1080p [999MB]</strong></h5>
+        <a href="###" target="_blank" rel="nofollow noopener noreferrer" style="text-decoration: none;">
+            <button class="dwd-button" style="background-color: #e91e63; color: #fff; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;">Download Now</button>
+        </a>
+        
+        <hr style="border: 1px solid #444; margin: 20px 0;"/>
+        
+        <h5 style="color: #ffdd57; margin-top: 20px;"><strong>How to Download Tutorial Link 👇</strong></h5>
+        <a href="https://telegram.dog/how2dow/55" target="_blank" rel="nofollow noopener noreferrer" style="text-decoration: none;">
+            <button class="dwd-button" style="background-color: #e91e63; color: #fff; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;">Tutorial</button>
+        </a>
+        
+        <h5 style="color: #ffdd57; margin-top: 20px;"><strong>Join Us on Telegram 👇</strong></h5>
+        <a href="https://telegram.dog/RX_MoviesSeries" target="_blank" rel="nofollow noopener noreferrer" style="text-decoration: none;">
+            <button class="dwd-button" style="background-color: #e91e63; color: #fff; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;">Channel</button>
+        
+        
+    </div>
+
+    <hr style="border: 1px solid #444; margin: 20px 0;"/>
+
+    <h3 style="text-align: center; color: #32cd32;">Wrapping Up ❤️</h3>
+    <p style="text-align: center;">Thank you for visiting MovieZapiya. Enjoy the best quality downloads of Movies and TV Series. Don’t forget to share with your friends!</p>
+    </div>
+    """
+
+    # Save the HTML to a file
+    file_name = f"{title.replace(' ', '_')}.html"
+    with open(file_name, "w", encoding="utf-8") as file:
+        file.write(custom_html)
+
+    # Send the HTML file to the user
+    await bot.send_document(message.chat.id, file_name, caption=f"Here's your custom IMDb post for {imdb_title}.")
+
+    # Delete the file from the server after sending
+    os.remove(file_name)
+    await k.delete()
+
+        
+        
+        
+    
 @Client.on_message(filters.command("restart") & filters.user(ADMINS))
 async def stop_button(bot, message):
     msg = await bot.send_message(text="**🔄 𝙿𝚁𝙾𝙲𝙴𝚂𝚂𝙴𝚂 𝚂𝚃𝙾𝙿𝙴𝙳. 𝙱𝙾𝚃 𝙸𝚂 𝚁𝙴𝚂𝚃𝙰𝚁𝚃𝙸𝙽𝙶...**", chat_id=message.chat.id)       
     await asyncio.sleep(3)
     await msg.edit("**✅️ 𝙱𝙾𝚃 𝙸𝚂 𝚁𝙴𝚂𝚃𝙰𝚁𝚃𝙴𝙳. 𝙽𝙾𝚆 𝚈𝙾𝚄 𝙲𝙰𝙽 𝚄𝚂𝙴 𝙼𝙴**")
     os.execl(sys.executable, sys.executable, *sys.argv)
+    
+    
+    
+    
+    

@@ -20,6 +20,8 @@ API_ID = int(environ.get('API_ID', '904789'))
 API_HASH = environ.get('API_HASH', '2262ef67ced426b9eea57867b11666a1')
 BOT_TOKEN = environ.get('BOT_TOKEN', "7433379680:AAFc1L6WKo2iUFQFcm87Y3bkC9CkByCXNJA")
 BOT_USERNAME = environ.get('BOT_USERNAME', 'RX_Autofiler2_bot')
+BOT_USERNAME = environ.get('BOT_USERNAME', 'Pikashow_Movie_Bot')
+MEDIATOR_BOT = environ.get('MEDIATOR_BOT', 'Pikashow_Movie_Bot')
 
 
 # Bot settings
@@ -78,7 +80,7 @@ DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
 ASKFSUBINGRP = bool(environ.get('ASKFSUBINGRP', True))
-
+MIDVERIFY = bool(environ.get('MIDVERIFY', True))
 VERIFY = bool(environ.get('VERIFY', True))
 JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 

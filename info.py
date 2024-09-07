@@ -87,17 +87,17 @@ SHORTLINK_URL = environ.get('SHORTLINK_URL', 'publicearn.com')
 SHORTLINK_API = environ.get('SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
 
-SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'instantearn.in')
-SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', 'f9e895afb0be08ff56fd96640b69d18ae9a4b7e0')
+SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'publicearn.com')
+SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
 #shortlink on for file2link 
 IS_SREAM_SHORTLINK = bool(environ.get('IS_SREAM_SHORTLINK', False))
 
 IS_SHORTLINK = bool(environ.get('IS_SHORTLINK', False))
 DELETE_CHANNELS = [int(dch) if id_pattern.search(dch) else dch for dch in environ.get('DELETE_CHANNELS', '-1002071402245').split()]
-MAX_B_TN = environ.get("MAX_B_TN", "5")
+MAX_B_TN = environ.get("MAX_B_TN", "10")
 MAX_BTN = is_enabled((environ.get('MAX_BTN', "True")), True)
-PORT = environ.get("PORT", "8000")
+PORT = environ.get("PORT", "8080")
 GRP_LNK = environ.get('GRP_LNK', 'https://telegram.me/+HldvnSK5kV9hMmFl')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://telegram.me/+JlRNm8AVBpFhNGY1')
 #TUTORIAL = environ.get('TUTORIAL', 'https://t.me/h2d_earn2me/4')
@@ -105,7 +105,7 @@ CHNL_LNK = environ.get('CHNL_LNK', 'https://telegram.me/+JlRNm8AVBpFhNGY1')
 TUTORIAL = environ.get('TUTORIAL', 'https://t.me/how2dow/55')
 
 VERIFY_TUTORIAL = environ.get('VERIFY_TUTORIAL', 'https://t.me/how2dow/55')
-SECONDVERIFY_TUTORIAL = environ.get('SECONDVERIFY_TUTORIAL', 'https://t.me/how2dow/74')
+SECONDVERIFY_TUTORIAL = environ.get('SECONDVERIFY_TUTORIAL', 'https://t.me/how2dow/55')
 
 
 IS_TUTORIAL = bool(environ.get('IS_TUTORIAL', True))

@@ -15,7 +15,7 @@ from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import *
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id, get_bad_files
 from database.users_chats_db import db, delete_all_referal_users, get_referal_users_count, get_referal_all_users, referal_add_user
-from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, CHNL_LNK, GRP_LNK, REQST_CHANNEL, SUPPORT_CHAT_ID, SUPPORT_CHAT, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, IS_TUTORIAL, PREMIUM_USER, VERIFY_TUTORIAL, SECOND_AUTH_CHANNEL, LOG_CHANNEL_V, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, LOG_CHANNEL_RQ 
+from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, CHNL_LNK, GRP_LNK, REQST_CHANNEL, SUPPORT_CHAT_ID, SUPPORT_CHAT, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, IS_TUTORIAL, PREMIUM_USER, VERIFY_TUTORIAL, SECOND_AUTH_CHANNEL, LOG_CHANNEL_V, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, LOG_CHANNEL_RQ, MEDIATOR_BOT, MIDVERIFY
 from utils import get_settings, get_size, is_req_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_seconds, get_token, get_shortlink, get_tutorial, get_poster
 from database.connections_mdb import active_connection
 
@@ -161,7 +161,31 @@ async def start(client, message):
         message.text = movie 
         await auto_filter(client, message) 
         return        
-           
+ 
+    if len(message.command) == 2 and message.command[1].startswith('midverify'):
+        try:
+            # Extract the encoded verification link from the command
+            verify_url = message.command[1].split("midverify-", 1)[1]
+            
+            verify_url = verify_url.replace('9cln', ':')
+            verify_url = verify_url.replace('9slsh', '/')
+            verify_url = verify_url.replace('9dot', '.')
+            verify_url = verify_url.replace('-', ' ')
+
+            custom_message = "𝗪𝗲𝗹𝗰𝗼𝗺𝗲!\n𝗛𝗲𝗮𝗿 𝗶𝘀 𝗬𝗼𝘂𝗿 𝗩𝗲𝗿𝗶𝗳𝗶𝗰𝗮𝘁𝗶𝗼𝗻 𝗹𝗶𝗻𝗸. 👇\n\nआपका स्वागत है!\nयह रहा आपका वेरीफाई लिंक है। 👇"
+
+            # Create an inline keyboard with the verification link
+            keyboard = InlineKeyboardMarkup([
+                [InlineKeyboardButton("𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)]                
+            ])
+ 
+            # Send message with the verification button
+            await message.reply_text(custom_message, reply_markup=keyboard)
+        except Exception as e:
+            # Log the error if any occurs
+            logger.error(f"Error in midverify processing: {e}")
+            await message.reply_text("An error occurred while processing the verification. Please try again later.")           
+                               
         
     data = message.command[1]
     if data.split("-", 1)[0] == "VJ":
@@ -437,12 +461,24 @@ async def start(client, message):
                     protect_content=True)
                     
                 verify_url, tutorial_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)
-                
-                btn = [[
-                    InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)
-                ],[
-                    InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
-                ]]                
+                if MIDVERIFY == True:
+                    verify_url = verify_url.replace(":", '9cln')
+                    verify_url = verify_url.replace("/", '9slsh')
+                    verify_url = verify_url.replace(".", '9dot')
+                    verify_url = verify_url.replace(" ", '-')
+               
+                    btn = [[
+                        InlineKeyboardButton("𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=f"https://t.me/{MEDIATOR_BOT}?start=midverify-{verify_url}")
+                    ],[
+                        InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
+                    ]]      
+                else:
+                    btn = [[
+                        InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)
+                    ],[
+                        InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
+                    ]]
+                             
                 await message.reply_text(
                     text=f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : Multiple Files</b>\n\n<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>",
                     protect_content=True,
@@ -513,12 +549,23 @@ async def start(client, message):
                     protect_content=True)
                     
                 verify_url, tutorial_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)
+                if MIDVERIFY == True:
+                    verify_url = verify_url.replace(":", '9cln')
+                    verify_url = verify_url.replace("/", '9slsh')
+                    verify_url = verify_url.replace(".", '9dot')
+                    verify_url = verify_url.replace(" ", '-')
                 
-                btn = [[
-                    InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)
-                ],[
-                    InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
-                ]]                
+                    btn = [[
+                        InlineKeyboardButton("𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=f"https://t.me/{MEDIATOR_BOT}?start=midverify-{verify_url}")
+                    ],[
+                        InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
+                    ]]         
+                else:      
+                    btn = [[
+                        InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)
+                    ],[
+                        InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
+                    ]]
                 #    Check if the file name exists
                 file_name_text = f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : {files_.file_name}</b>\n\n" if files_ and hasattr(files_, 'file_name') else "<b><u>Yᴏᴜ Nᴇᴇᴅ Tᴏ Vᴇʀɪғʏ Fᴏʀ Tʜᴀᴛ Fɪʟᴇ</u></b>\n\n"
                 await message.reply_text(
@@ -591,11 +638,24 @@ async def start(client, message):
             protect_content=True)
                                         
         verify_url, tutorial_link = await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=", file_id)                
-        btn = [[
-            InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)
-        ],[
-            InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
-        ]]                
+        if MIDVERIFY == True:
+            verify_url = verify_url.replace(":", '9cln')
+            verify_url = verify_url.replace("/", '9slsh')
+            verify_url = verify_url.replace(".", '9dot')
+            verify_url = verify_url.replace(" ", '-')
+                
+            btn = [[
+                InlineKeyboardButton("𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=f"https://t.me/{MEDIATOR_BOT}?start=midverify-{verify_url}")
+            ],[
+                InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
+            ]]           
+        else:    
+            btn = [[
+                InlineKeyboardButton(" 𝗩𝗲𝗿𝗶𝗳𝘆 ♂️", url=verify_url)
+            ],[
+                InlineKeyboardButton('Hᴏᴡ Tᴏ Vᴇʀɪғʏ Tᴜᴛᴏʀɪᴀʟ 🎦', url=tutorial_link)
+            ]]
+                
         await message.reply_text(
                     text=f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : {files.file_name}</b>\n\n<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>",
             protect_content=True,

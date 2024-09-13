@@ -51,12 +51,14 @@ async def start(client, message):
     await message.react(emoji="🔥", big=True)
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [[
-            InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
-        ], [
-            InlineKeyboardButton('✪ Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
-            InlineKeyboardButton('⌬ Mᴏᴠɪᴇ Gʀᴏᴜᴘ', url=GRP_LNK)
-        ], [
-            InlineKeyboardButton('⭐ PREMIUM ⭐', callback_data='premium_info')
+            InlineKeyboardButton('➕ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ➕', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true&admin=post_messages+delete_messages+edit_messages+invite_users+promote_members+pin_messages')
+        ],[
+            InlineKeyboardButton('‼️ DISCLAIMER ⁉️ ', url=f'https://telegra.ph/Rx-Movies-Bot-Disclaimer-09-13')
+        ],[
+            InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 🤑', callback_data="shortlink_info"),
+            InlineKeyboardButton('Rᴇǫᴜᴇsᴛ Gʀᴏᴜᴘ ♂️', url=GRP_LNK)
+        ],[
+            InlineKeyboardButton(' 𝗳𝗿𝗲𝗲/𝗽𝗮𝗶𝗱 𝗦𝗨𝗕𝗦𝗖𝗥𝗜𝗣𝗧𝗜𝗢𝗡 😍 ', callback_data='premium_info')
         ], [
             InlineKeyboardButton('✇ Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ✇', url=CHNL_LNK)
         ]]
@@ -75,15 +77,17 @@ async def start(client, message):
 
     if len(message.command) != 2:
         buttons = [[
-            InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
-        ], [
-            InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 💸', callback_data="shortlink_info"),
-            InlineKeyboardButton('⌬ Mᴏᴠɪᴇ Gʀᴏᴜᴘ', url=GRP_LNK)
-        ], [
+            InlineKeyboardButton('➕ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ➕', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true&admin=post_messages+delete_messages+edit_messages+invite_users+promote_members+pin_messages')
+        ],[
+            InlineKeyboardButton('‼️ DISCLAIMER ⁉️ ', url=f'https://telegra.ph/Rx-Movies-Bot-Disclaimer-09-13')
+        ],[
+            InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 🤑', callback_data="shortlink_info"),
+            InlineKeyboardButton('Rᴇǫᴜᴇsᴛ Gʀᴏᴜᴘ ♂️', url=GRP_LNK)
+        ],[
             InlineKeyboardButton('〄 Hᴇʟᴘ', callback_data='help'),
             InlineKeyboardButton('⍟ Aʙᴏᴜᴛ', callback_data='about')
         ], [
-            InlineKeyboardButton('⭐ PREMIUM ⭐', callback_data='premium_info')
+            InlineKeyboardButton(' 𝗳𝗿𝗲𝗲/𝗽𝗮𝗶𝗱 𝗦𝗨𝗕𝗦𝗖𝗥𝗜𝗣𝗧𝗜𝗢𝗡 😍 ', callback_data='premium_info')
         ], [
             InlineKeyboardButton('✇ Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ✇', url=CHNL_LNK)
         ]]
@@ -133,15 +137,17 @@ async def start(client, message):
 
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
         buttons = [[
-            InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
-        ], [
-            InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 💸', callback_data="shortlink_info"),
-            InlineKeyboardButton('⌬ Mᴏᴠɪᴇ Gʀᴏᴜᴘ', url=GRP_LNK)
-        ], [
+            InlineKeyboardButton('➕ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ➕', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true&admin=post_messages+delete_messages+edit_messages+invite_users+promote_members+pin_messages')
+        ],[
+            InlineKeyboardButton('‼️ DISCLAIMER ⁉️ ', url=f'https://telegra.ph/Rx-Movies-Bot-Disclaimer-09-13')
+        ],[
+            InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 🤑', callback_data="shortlink_info"),
+            InlineKeyboardButton('Rᴇǫᴜᴇsᴛ Gʀᴏᴜᴘ ♂️', url=GRP_LNK)
+        ],[
             InlineKeyboardButton('〄 Hᴇʟᴘ', callback_data='help'),
             InlineKeyboardButton('⍟ Aʙᴏᴜᴛ', callback_data='about')
         ], [
-            InlineKeyboardButton('⭐ PREMIUM ⭐', callback_data='premium_info')
+            InlineKeyboardButton(' 𝗳𝗿𝗲𝗲/𝗽𝗮𝗶𝗱 𝗦𝗨𝗕𝗦𝗖𝗥𝗜𝗣𝗧𝗜𝗢𝗡 😍 ', callback_data='premium_info')
         ], [
             InlineKeyboardButton('✇ Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ✇', url=CHNL_LNK)
         ]]
@@ -207,15 +213,17 @@ async def start(client, message):
                     return 
         else:
             buttons = [[
-                    InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
+                    InlineKeyboardButton('➕ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ➕', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true&admin=post_messages+delete_messages+edit_messages+invite_users+promote_members+pin_messages')
                 ],[
-                    InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 💸', callback_data="shortlink_info"),
-                    InlineKeyboardButton('⌬ Mᴏᴠɪᴇ Gʀᴏᴜᴘ', url=CHNL_LNK)
+                  InlineKeyboardButton('‼️ DISCLAIMER ⁉️ ', url=f'https://telegra.ph/Rx-Movies-Bot-Disclaimer-09-13')
+                ],[
+                    InlineKeyboardButton('Eᴀʀɴ Mᴏɴᴇʏ 🤑', callback_data="shortlink_info"),
+                    InlineKeyboardButton('Rᴇǫᴜᴇsᴛ Gʀᴏᴜᴘ ♂️', url=GRP_LNK)
                 ],[
                     InlineKeyboardButton('〄 Hᴇʟᴘ', callback_data='help'),
                     InlineKeyboardButton('⍟ Aʙᴏᴜᴛ', callback_data='about')
                 ],[
-                  InlineKeyboardButton('⭐ PREMIUM ⭐', callback_data='premium_info')
+                  InlineKeyboardButton(' 𝗳𝗿𝗲𝗲/𝗽𝗮𝗶𝗱 𝗦𝗨𝗕𝗦𝗖𝗥𝗜𝗣𝗧𝗜𝗢𝗡 😍 ', callback_data='premium_info')
                 ],[
                     InlineKeyboardButton('✇ Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ✇', url=CHNL_LNK)
                   ]]
@@ -480,8 +488,9 @@ async def start(client, message):
                     ]]
                              
                 await message.reply_text(
-                    text=f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : Multiple Files</b>\n\n<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>",
+                    text=f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : Multiple Files</b>\n\n<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>\n<b><u>‣ Tʀᴀɴsʟᴀᴛᴇ Tʜɪs Mᴇssᴀɢᴇ ɪɴ :-</u> <a href='https://telegra.ph/%E0%AE%9A%E0%AE%B0%E0%AE%AA%E0%AE%B0%E0%AE%AA%E0%AE%AA-%E0%AE%B5%E0%AE%B4%E0%AE%AE%E0%AE%B1%E0%AE%95%E0%AE%B3-09-13'>தமிழ்</a>, <a href='https://telegra.ph/%E0%B0%A7%E0%B0%B5%E0%B0%95%E0%B0%B0%E0%B0%A3-%E0%B0%B5%E0%B0%A7%E0%B0%A8%E0%B0%B2-09-13'>తెలుగు</a>, <a href='https://telegra.ph/%E0%B4%B8%E0%B4%A5%E0%B4%B0%E0%B4%95%E0%B4%B0%E0%B4%A3-%E0%B4%A8%E0%B4%9F%E0%B4%AA%E0%B4%9F%E0%B4%95%E0%B4%B0%E0%B4%AE%E0%B4%99%E0%B4%99%E0%B5%BE-09-13'>മലയാളം</a></b>",
                     protect_content=True,
+                    disable_web_page_preview=True,
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
                 await asyncio.sleep(1)
@@ -569,8 +578,9 @@ async def start(client, message):
                 #    Check if the file name exists
                 file_name_text = f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : {files_.file_name}</b>\n\n" if files_ and hasattr(files_, 'file_name') else "<b><u>Yᴏᴜ Nᴇᴇᴅ Tᴏ Vᴇʀɪғʏ Fᴏʀ Tʜᴀᴛ Fɪʟᴇ</u></b>\n\n"
                 await message.reply_text(
-                    text=f"{file_name_text}<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>",
+                    text=f"{file_name_text}<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>\n<b><u>‣ Tʀᴀɴsʟᴀᴛᴇ Tʜɪs Mᴇssᴀɢᴇ ɪɴ :-</u>  <a href='https://telegra.ph/%E0%AE%9A%E0%AE%B0%E0%AE%AA%E0%AE%B0%E0%AE%AA%E0%AE%AA-%E0%AE%B5%E0%AE%B4%E0%AE%AE%E0%AE%B1%E0%AE%95%E0%AE%B3-09-13'>தமிழ்</a>, <a href='https://telegra.ph/%E0%B0%A7%E0%B0%B5%E0%B0%95%E0%B0%B0%E0%B0%A3-%E0%B0%B5%E0%B0%A7%E0%B0%A8%E0%B0%B2-09-13'>తెలుగు</a>, <a href='https://telegra.ph/%E0%B4%B8%E0%B4%A5%E0%B4%B0%E0%B4%95%E0%B4%B0%E0%B4%A3-%E0%B4%A8%E0%B4%9F%E0%B4%AA%E0%B4%9F%E0%B4%95%E0%B4%B0%E0%B4%AE%E0%B4%99%E0%B4%99%E0%B5%BE-09-13'>മലയാളം</a></b>",
                     protect_content=True,
+                    disable_web_page_preview=True,
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
                 await asyncio.sleep(1)
@@ -657,8 +667,9 @@ async def start(client, message):
             ]]
                 
         await message.reply_text(
-                    text=f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : {files.file_name}</b>\n\n<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>",
+                    text=f"<b><u>📕Fɪʟᴇ Nᴀᴍᴇ ➠</u> : {files.file_name}</b>\n\n<b>English:-</b>     <blockquote>Yᴏᴜ Aʀᴇ Nᴏᴛ Vᴇʀɪғɪᴇᴅ Tᴏᴅᴀʏ. Pʟᴇᴀsᴇ Vᴇʀɪғʏ Tᴏ Gᴇᴛ Uɴʟɪᴍɪᴛᴇᴅ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Aᴄᴄᴇss Fᴏʀ 𝟼 Hᴏᴜʀs.\nWᴀɴᴛs ᴀ Dɪʀᴇᴄᴛ Fɪʟᴇ's ᴀɴᴅ Sᴛʀᴇᴀᴍ ғᴇᴀᴛᴜʀᴇ, Wɪᴛʜᴏᴜᴛ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ ? Sᴇᴇ Oᴜʀ Pʀᴇᴍɪᴜᴍ Pʟᴀɴs\n👉 /plan .\nSᴇᴇ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Sᴜʙsᴄʀɪᴘᴛɪᴏɴ \n👉 /myplan</blockquote>\n\n<b>हिंदी:-</b>     <blockquote>आज आपने वेरीफाई नहीं किया हैं। कृपया 𝟼 घंटे के लिए असीमित डाउनलोडिंग एक्सेस प्राप्त करने के लिए वेरीफाई करें।\nबिना वेरीफाई के डायरेक्ट फ़ाइल और स्ट्रीम सुविधा चाहते है? तो हमारी प्रीमियम योजनाएँ देखें। \n👉 /plan\nअपनी वर्तमान सदस्यता देखें। \n👉 /myplan</blockquote>\n<b><u>‣ Tʀᴀɴsʟᴀᴛᴇ Tʜɪs Mᴇssᴀɢᴇ ɪɴ :-</u>  <a href='https://telegra.ph/%E0%AE%9A%E0%AE%B0%E0%AE%AA%E0%AE%B0%E0%AE%AA%E0%AE%AA-%E0%AE%B5%E0%AE%B4%E0%AE%AE%E0%AE%B1%E0%AE%95%E0%AE%B3-09-13'>தமிழ்</a>, <a href='https://telegra.ph/%E0%B0%A7%E0%B0%B5%E0%B0%95%E0%B0%B0%E0%B0%A3-%E0%B0%B5%E0%B0%A7%E0%B0%A8%E0%B0%B2-09-13'>తెలుగు</a>, <a href='https://telegra.ph/%E0%B4%B8%E0%B4%A5%E0%B4%B0%E0%B4%95%E0%B4%B0%E0%B4%A3-%E0%B4%A8%E0%B4%9F%E0%B4%AA%E0%B4%9F%E0%B4%95%E0%B4%B0%E0%B4%AE%E0%B4%99%E0%B4%99%E0%B5%BE-09-13'>മലയാളം</a></b>",
             protect_content=True,
+            disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(btn)
         )
         await asyncio.sleep(1)

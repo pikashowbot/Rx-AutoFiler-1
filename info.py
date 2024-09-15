@@ -81,7 +81,7 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
 ASKFSUBINGRP = bool(environ.get('ASKFSUBINGRP', True))
 MIDVERIFY = bool(environ.get('MIDVERIFY', True))
-VERIFY = bool(environ.get('VERIFY', True))
+VERIFY = bool(environ.get('VERIFY', False))
 JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 
 
@@ -93,7 +93,7 @@ SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'publicearn.com')
 SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
 #shortlink on for file2link 
-IS_SREAM_SHORTLINK = bool(environ.get('IS_SREAM_SHORTLINK', False))
+IS_SREAM_SHORTLINK = bool(environ.get('IS_SREAM_SHORTLINK', True))
 
 IS_SHORTLINK = bool(environ.get('IS_SHORTLINK', False))
 DELETE_CHANNELS = [int(dch) if id_pattern.search(dch) else dch for dch in environ.get('DELETE_CHANNELS', '-1002071402245').split()]

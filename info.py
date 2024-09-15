@@ -26,7 +26,7 @@ MEDIATOR_BOT = environ.get('MEDIATOR_BOT', 'Pikashow_Movie_Bot')
 
 # Bot settings
 CACHE_TIME = int(environ.get('CACHE_TIME', 300))
-USE_CAPTION_FILTER = bool(environ.get('USE_CAPTION_FILTER', True))
+USE_CAPTION_FILTER = bool(environ.get('USE_CAPTION_FILTER', False))
 
 PICS = (environ.get('PICS' ,'https://graph.org/file/040c13521abcaf21a4adb.jpg https://graph.org/file/d3ce0fbe68fad09c3cfd1.jpg')).split() #SAMPLE PIC
 NOR_IMG = environ.get("NOR_IMG", "https://te.legra.ph/file/a27dc8fe434e6b846b0f8.jpg")
@@ -118,6 +118,7 @@ LOG_CHANNEL_RQ = int(environ.get('LOG_CHANNEL', '-1001859371885'))
 LOG_CHANNEL_NRM = int(environ.get('LOG_CHANNEL', '-1002056784970'))
 PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1002010190484'))
 LOG_CHANNEL_SESSIONS_FILES = int(environ.get('LOG_CHANNEL_SESSIONS_FILES', '-1002148356355'))
+PM_MSG_LOG_CHANNEL = int(environ.get('PM_MSG_LOG_CHANNEL', '-1002313334524'))
 
 SUPPORT_CHAT = environ.get('SUPPORT_CHAT', '+HRKp-WKYjlpkY2Rl')
 P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)

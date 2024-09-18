@@ -150,12 +150,9 @@ async def save_file(media):
     # Append found qualities to the file_name
     if found_qualities:       
         file_name += " ll "  # To separate languages and qualities
-        file_name += "📽️ :- " + ', '.join(found_qualities)
+        file_name += "📽️ :- " + ', '.join(found_qualities)   
 
-    print(file_name)
-
-                           
-
+                          
     try:
         # Create a new Media object
         file = Media(
@@ -169,21 +166,22 @@ async def save_file(media):
         )
     except ValidationError:
         logger.exception('Error occurred while saving file in database')
+        print(f"🚫Error occurred while saving file in database :- {file_name}")
         return False, 2
     else:
         try:
             await file.commit()
         except DuplicateKeyError:
-            logger.warning(
-                f'{getattr(media, "file_name", "NO_FILE")} is already saved in database'
-            )
+            logger.warning(f'{getattr(media, "file_name", "NO_FILE")} is already saved in database')
+            print(f"Found Duplicate❌ File :- {file_name}")
             return False, 0
         else:
             logger.info(f'{getattr(media, "file_name", "NO_FILE")} is saved to database')
+            print(f"File Saved✅ to Database :- {file_name}")
             return True, 1
-
-
-
+            
+            
+            
 async def get_search_results(chat_id, query, file_type=None, max_results=10, offset=0, filter=False):
     """For given query return (results, next_offset)"""
     if chat_id is not None:

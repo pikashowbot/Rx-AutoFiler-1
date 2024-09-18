@@ -48,15 +48,27 @@ class Database:
         self.col = self.db.users
         self.grp = self.db.groups
         self.users = self.db.uersz
-        self.req = self.db.requests
+        self.req2 = self.db.requests2
+        self.req3 = self.db.requests3
 
-    async def find_join_req(self, id):
-        return bool(await self.req.find_one({'id': id}))
+    async def find_join_req2(self, id):
+        return bool(await self.req2.find_one({'id': id}))
         
-    async def add_join_req(self, id):
-        await self.req.insert_one({'id': id})
-    async def del_join_req(self):
-        await self.req.drop()
+    async def add_join_req2(self, id):
+        await self.req2.insert_one({'id': id})
+    async def del_join_req2(self):
+        await self.req2.drop()
+
+
+    async def find_join_req3(self, id):
+        return bool(await self.req3.find_one({'id': id}))
+        
+    async def add_join_req3(self, id):
+        await self.req3.insert_one({'id': id})
+    async def del_join_req3(self):
+        await self.req3.drop()
+
+
 
     def new_user(self, id, name):
         return dict(

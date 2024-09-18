@@ -139,28 +139,33 @@ async def notify_user(client: Client, message: ChatJoinRequest):
 
 
 
-
-
 @Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
 async def give_filter(client, message):
     if not await is_req_subscribed(client, message) and ASKFSUBINGRP == True:
         try:
-            invite_link_1 = await client.create_chat_invite_link(int(AUTH_CHANNEL), creates_join_request=True)
+            invite_link_1 = await client.create_chat_invite_link(int(AUTH_CHANNEL))
             invite_link_2 = await client.create_chat_invite_link(int(SECOND_AUTH_CHANNEL), creates_join_request=True)
+            invite_link_3 = await client.create_chat_invite_link(int(THIRD_AUTH_CHANNEL), creates_join_request=True)
         except ChatAdminRequired:
             logger.error("Make sure Bot is admin in both Forcesub channels")
             return
 
         btn = [
-            [InlineKeyboardButton("Join Update Channel ➊", url=invite_link_1.invite_link)],
-            [InlineKeyboardButton("Join Update Channel ➋", url=invite_link_2.invite_link)],
-            [InlineKeyboardButton("I'm Subscribed ✅", callback_data=f"groupchecksub")]
+            [
+                InlineKeyboardButton("Join ➊ ♂️", url=invite_link_1.invite_link),
+                InlineKeyboardButton("Join ➋ ♂️", url=invite_link_2.invite_link),
+                InlineKeyboardButton("Join ➌ ♂️", url=invite_link_3.invite_link),
+            ],
+            [
+                InlineKeyboardButton("I'm Subscribed ✅", callback_data=f"groupchecksub")
+            ]
         ]
-
         # Send the subscribe message with user mention
         subscribe_message = await message.reply(
-            f"🔰 ʜᴇʏ {message.from_user.mention}, ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ <u>sᴜʙsᴄʀɪʙᴇᴅ ᴏᴜʀ ᴄʜᴀɴɴᴇʟs.</u>\n\nPʟᴇᴀsᴇ <u>sᴜʙsᴄʀɪʙᴇ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴛᴏ ʀᴇǫᴜᴇsᴛ ɪɴ ɢʀᴏᴜᴘ.\nAғᴛᴇʀ <u>sᴜʙsᴄʀɪʙɪɴɢ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs, ᴘʟᴇᴀsᴇ ᴄʟɪᴄᴋ ᴏɴ 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 ʙᴜᴛᴛᴏɴ 👇\n\nग्रुप में फाइल रिक्वेस्ट करने के लिए, कृपया हमारे अपडेट चैनल को जाईन कीजिए। 👇",
-            reply_markup=InlineKeyboardMarkup(btn)
+            f"🔰 ʜᴇʏ {message.from_user.mention},\nPʟᴇᴀsᴇ <u>sᴜʙsᴄʀɪʙᴇ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴛᴏ ʀᴇǫᴜᴇsᴛ ɪɴ ɢʀᴏᴜᴘ.\nAғᴛᴇʀ <u>sᴜʙsᴄʀɪʙɪɴɢ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs, ᴘʟᴇᴀsᴇ ᴄʟɪᴄᴋ ᴏɴ 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 <u>ʙᴜᴛᴛᴏɴ</u> 👇\n\nग्रुप में फाइल रिक्वेस्ट करने के लिए, कृपया हमारे अपडेट चैनल को जाईन कीजिए। 👇\n\n<b><u>‣ Tʀᴀɴsʟᴀᴛᴇ Tʜɪs Mᴇssᴀɢᴇ ɪɴ :-</u>\n  <a href='https://telegra.ph/Force-subscribe-in-Tamil-09-16'>தமிழ்</a> || <a href='https://telegra.ph/Force-subscribe-in-Telugu-09-16'>తెలుగు</a> || <a href='https://telegra.ph/Force-subscribe-in-Malayalam-09-16'>മലയാളം</a> ||</b>\n\n<b><u>‣ Sᴜʙsᴄʀɪʙᴇ ᴀʟʟ Cʜᴀɴɴᴇʟs :-</u></b>\n   👇              👇               👇",
+            reply_markup=InlineKeyboardMarkup(btn),
+            disable_web_page_preview=True,
+            parse_mode=enums.ParseMode.HTML
         )        
         # Delay and delete messages
         try:

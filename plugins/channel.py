@@ -12,6 +12,11 @@ import os
 import json
 import base64
 import logging
+import asyncio
+from asyncio import Queue, create_task
+
+
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -119,9 +124,6 @@ def extract_patterns(text, patterns):
 
 
 
-
-
-
 # File path to store logged files
 LOGGED_FILES_PATH = 'logged_files.json'
 
@@ -148,9 +150,23 @@ async def clear_logs(bot, message: Message):
             json.dump([], file)  # Write an empty list to the file
 
     await message.reply_text("Logged files have been cleared.")
-                
 
 
+# Create a queue for processing incoming files
+file_queue = Queue()
+
+# Function to process files asynchronously from the queue
+async def file_worker():
+    while True:
+        media = await file_queue.get()  # Get file from queue
+        await save_file(media)  # Process file (async function)
+        file_queue.task_done()  # Mark the task as done
+
+# Add workers to process files in parallel (e.g. 3 workers)
+for _ in range(3):
+    create_task(file_worker())
+                                    
+# When new media comes, add it to the queue instead of processing immediately
 @Client.on_message(filters.chat(CHANNELS) & filters.media)
 async def media_handler(bot, message):
     for file_type in ("document", "video", "audio"):
@@ -162,7 +178,9 @@ async def media_handler(bot, message):
 
     media.file_type = file_type
     media.caption = message.caption
-    await save_file(media)
+    await file_queue.put(media)  # Add media to queue for processing
+    
+
     
     if SEND_MV_LOGS:
         filename, quality_from_name, resolution_from_name = extract_details(media.file_name)
@@ -247,7 +265,7 @@ async def media_handler(bot, message):
                              f"𝗟𝗮𝗻𝗴𝘂𝗮𝗴𝗲𝘀: {language_str}"),
                     reply_markup=keyboard
                 )
-                print(f"Message sent to {MV_UPDATE_CHANNEL}: {filename}, {size_str}, {quality_str}, {resolution_str}, {language_str}")
+                print(f"Movie Log‼️ Sended For FileName:- {filename}, {size_str}, {quality_str}, {resolution_str}, {language_str}")
             except FloodWait as e:
                 print(f"Flood wait error, sleeping for {e.x} seconds")
                 await asyncio.sleep(e.x)

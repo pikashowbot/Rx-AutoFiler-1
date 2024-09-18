@@ -46,12 +46,13 @@ PREMIUM_USER = [int(user) if id_pattern.search(user) else user for user in envir
 MV_UPDATE_CHANNEL = -1002154519885  # ID of the log of daily movies update CHANNEL
 SEND_MV_LOGS = bool(environ.get('SEND_MV_LOGS', False)) #send newmovies log to update channel 
 
-auth_channel = environ.get('AUTH_CHANNEL', '-1001641011626') #public channel 
+auth_channel = environ.get('AUTH_CHANNEL', '-1001641011626')  # public channel 
 second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002476554876')  # Add the second auth channel or Group (should private)
-
+third_auth_channel = environ.get('THIRD_AUTH_CHANNEL', '-1002332358227')  # Add the third auth channel or Group (should private)
 
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 SECOND_AUTH_CHANNEL = int(second_auth_channel) if second_auth_channel and id_pattern.search(second_auth_channel) else None
+THIRD_AUTH_CHANNEL = int(third_auth_channel) if third_auth_channel and id_pattern.search(third_auth_channel) else None
 
 
 auth_grp = environ.get('AUTH_GROUP')
@@ -99,7 +100,7 @@ IS_SHORTLINK = bool(environ.get('IS_SHORTLINK', False))
 DELETE_CHANNELS = [int(dch) if id_pattern.search(dch) else dch for dch in environ.get('DELETE_CHANNELS', '-1002071402245').split()]
 MAX_B_TN = environ.get("MAX_B_TN", "10")
 MAX_BTN = is_enabled((environ.get('MAX_BTN', "True")), True)
-PORT = environ.get("PORT", "8080")
+PORT = environ.get("PORT", "8000")
 GRP_LNK = environ.get('GRP_LNK', 'https://telegram.me/+HldvnSK5kV9hMmFl')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://telegram.me/+JlRNm8AVBpFhNGY1')
 #TUTORIAL = environ.get('TUTORIAL', 'https://t.me/h2d_earn2me/4')

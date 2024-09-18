@@ -1,6 +1,6 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from info import ADMINS, PREMIUM_USER, AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, IS_SHORTLINK, LOG_CHANNEL, TUTORIAL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, SECOND_AUTH_CHANNEL, STREAM_SITE, STREAM_API, SHORTLINK_API, SHORTLINK_URL, SECOND_SHORTLINK_API, SECOND_SHORTLINK_URL, VERIFY_TUTORIAL, SECONDVERIFY_TUTORIAL
+from info import ADMINS, PREMIUM_USER, AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, IS_SHORTLINK, LOG_CHANNEL, TUTORIAL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, SECOND_AUTH_CHANNEL, THIRD_AUTH_CHANNEL, STREAM_SITE, STREAM_API, SHORTLINK_API, SHORTLINK_URL, SECOND_SHORTLINK_API, SECOND_SHORTLINK_URL, VERIFY_TUTORIAL, SECONDVERIFY_TUTORIAL
 from imdb import Cinemagoer 
 import asyncio
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
@@ -59,29 +59,53 @@ class temp(object):
     KEYWORD = {}
     SEND_ALL_TEMP = {}
 
+# async def is_req_subscribed(client, message):
+    # try:
+        # # Check if the user is a member, admin, or owner of AUTH_CHANNEL
+        # user1 = await client.get_chat_member(int(AUTH_CHANNEL), message.from_user.id)
+        # if user1.status in [enums.ChatMemberStatus.OWNER, enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.MEMBER]:
+            # # Check for join request in the database for SECOND_AUTH_CHANNEL
+            # if await db.find_join_req(message.from_user.id):
+                # return True
+            
+            # # Check if the user is a member, admin, or owner of SECOND_AUTH_CHANNEL
+            # try:
+                # user2 = await client.get_chat_member(int(SECOND_AUTH_CHANNEL), message.from_user.id)
+                # if user2.status in [enums.ChatMemberStatus.OWNER, enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.MEMBER]:
+                    # return True
+                # else:
+                    # return False
+            # except UserNotParticipant:
+                # return False
+            # except ChatAdminRequired:
+                # logger.error("Bot lacks admin privileges in the SECOND_AUTH_CHANNEL.")
+                # return False
+            # except Exception as e:
+                # logger.error(f"Unexpected error in SECOND_AUTH_CHANNEL check: {e}")
+                # return False
+        # else:
+            # return False
+    # except UserNotParticipant:
+        # return False
+    # except ChatAdminRequired:
+        # logger.error("Bot lacks admin privileges in the AUTH_CHANNEL.")
+        # return False
+    # except Exception as e:
+        # logger.error(f"Unexpected error in AUTH_CHANNEL check: {e}")
+        # return False
+
+###
+
 async def is_req_subscribed(client, message):
     try:
         # Check if the user is a member, admin, or owner of AUTH_CHANNEL
         user1 = await client.get_chat_member(int(AUTH_CHANNEL), message.from_user.id)
         if user1.status in [enums.ChatMemberStatus.OWNER, enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.MEMBER]:
-            # Check for join request in the database for SECOND_AUTH_CHANNEL
-            if await db.find_join_req(message.from_user.id):
-                return True
             
-            # Check if the user is a member, admin, or owner of SECOND_AUTH_CHANNEL
-            try:
-                user2 = await client.get_chat_member(int(SECOND_AUTH_CHANNEL), message.from_user.id)
-                if user2.status in [enums.ChatMemberStatus.OWNER, enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.MEMBER]:
-                    return True
-                else:
-                    return False
-            except UserNotParticipant:
-                return False
-            except ChatAdminRequired:
-                logger.error("Bot lacks admin privileges in the SECOND_AUTH_CHANNEL.")
-                return False
-            except Exception as e:
-                logger.error(f"Unexpected error in SECOND_AUTH_CHANNEL check: {e}")
+            # Check if the user's ID exists in both databases
+            if await db.find_join_req2(message.from_user.id) and await db.find_join_req3(message.from_user.id):
+                return True
+            else:
                 return False
         else:
             return False

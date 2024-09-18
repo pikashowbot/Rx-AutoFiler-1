@@ -27,4 +27,4 @@ RUN sed -i 's/\r$//' /start.sh
 RUN chmod +x /start.sh
 
 # Define the default command
-CMD ["/start.sh"]
+CMD ["/bin/bash", "/start.sh"]

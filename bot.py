@@ -1,25 +1,15 @@
-
-
 import sys
 import glob
 import importlib
+import os
 from pathlib import Path
 from pyrogram import idle
 import logging
 import logging.config
-
-# Get logging configurations
-logging.config.fileConfig('logging.conf')
-logging.getLogger().setLevel(logging.INFO)
-logging.getLogger("pyrogram").setLevel(logging.ERROR)
-logging.getLogger("imdbpy").setLevel(logging.ERROR)
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logging.getLogger("aiohttp").setLevel(logging.ERROR)
-logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
-
+import asyncio
+from aiohttp import web
+from datetime import date, datetime
+import pytz
 
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
@@ -30,26 +20,34 @@ from utils import temp
 from typing import Union, Optional, AsyncGenerator
 from pyrogram import types
 from Script import script 
-from datetime import date, datetime 
-import pytz
-from aiohttp import web
 from plugins import web_server
-
-import asyncio
-from pyrogram import idle
 from lazybot import LazyPrincessBot
 from util.keepalive import ping_server
 from lazybot.clients import initialize_clients
 
+# Logging configuration
+logging.basicConfig(level=logging.DEBUG)
+logging.config.fileConfig('logging.conf')
+logging.getLogger().setLevel(logging.INFO)
+logging.getLogger("pyrogram").setLevel(logging.ERROR)
+logging.getLogger("imdbpy").setLevel(logging.ERROR)
+logging.getLogger("aiohttp").setLevel(logging.ERROR)
+logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
 
 ppath = "plugins/*.py"
 files = glob.glob(ppath)
 LazyPrincessBot.start()
-loop = asyncio.get_event_loop()
+
+async def auto_restart():
+    """Function to restart the bot every 2 hours."""
+    while True:
+        await asyncio.sleep(2 * 30 * 60)  # Sleep for 1 hours
+        logging.info("Restarting bot automatically after 2 hours...")
+        os.execl(sys.executable, sys.executable, *sys.argv)  # Restart the bot
 
 async def Lazy_start():
     print('\n')
-    print('Initalizing Lazy Bot')
+    print('Initializing Lazy Bot')
     bot_info = await LazyPrincessBot.get_me()
     LazyPrincessBot.username = bot_info.username
     await initialize_clients()
@@ -87,12 +85,22 @@ async def Lazy_start():
     await app.setup()
     bind_address = "0.0.0.0"
     await web.TCPSite(app, bind_address, PORT).start()
-    await idle()
+    await idle()  # Keeps the bot alive and running
 
+async def shutdown(loop):
+    """Graceful shutdown to wait for tasks to finish."""
+    tasks = [t for t in asyncio.all_tasks(loop) if not t.done()]
+    if tasks:
+        await asyncio.gather(*tasks)
 
 if __name__ == '__main__':
     try:
+        # Use asyncio.run() to ensure proper event loop handling
+        loop = asyncio.get_event_loop()
+
+        # Start the bot and auto-restart task concurrently
+        loop.create_task(auto_restart())  # Schedule the auto-restart function
         loop.run_until_complete(Lazy_start())
+        
     except KeyboardInterrupt:
         logging.info('Service Stopped Bye 👋')
-

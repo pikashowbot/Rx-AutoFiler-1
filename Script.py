@@ -386,8 +386,8 @@ Bot - @{}"""
     
 <u>FɪʟᴇSize</u> : {file_size}
 
-<u>𝗝𝗼𝗶𝗻 𝗙𝗶𝗹𝗲 𝗟𝗼𝗴 𝗖𝗵𝗮𝗻𝗻𝗲𝗹</u> 👉
-https://t.me/+zY7ReGWM4MpiNmM1</b>""" 
+<u>𝗢𝘂𝗿 𝗢𝗳𝗳𝗶𝗰𝗶𝗮𝗹 𝗪𝗲𝗯𝘀𝗶𝘁𝗲</u> 👇
+https://bit.ly/Vegamovies4u</b>""" 
 
     IMDB_TEMPLATE_TXT = """
 <b>Query: {qurey}

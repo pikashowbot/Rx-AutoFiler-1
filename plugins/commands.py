@@ -1,7 +1,3 @@
-# Don't Remove Credit @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot @Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
 
 import os
 import logging
@@ -39,9 +35,6 @@ logger.addHandler(handler)
 
 # Set up logging
 logging.basicConfig(level=logging.ERROR)
-
-
-
 
 
 BATCH_FILES = {}
@@ -103,40 +96,6 @@ async def start(client, message):
         )
         return
 
-    # if not await is_req_subscribed(client, message):
-        # try:
-            # invite_link_1 = await client.create_chat_invite_link(int(AUTH_CHANNEL))
-            # invite_link_2 = await client.create_chat_invite_link(int(SECOND_AUTH_CHANNEL), creates_join_request=True)
-        # except ChatAdminRequired:
-            # logger.error("Make sure Bot is admin in both Forcesub channels")
-            # return
-        # logger.info(f"Generated invite link for AUTH_CHANNEL: {invite_link_1.invite_link}")
-        # logger.info(f"Generated invite link for SECOND_AUTH_CHANNEL: {invite_link_2.invite_link}")
-        # btn = [
-            # [
-                # InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➊", url=invite_link_1.invite_link)
-            # ], [
-                # InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➋", url=invite_link_2.invite_link)
-            # ]
-        # ]
-
-        # if message.command[1] != "subscribe":
-            # try:
-                # kk, file_id = message.command[1].split("_", 1)
-                # btn.append([InlineKeyboardButton("𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️", callback_data=f"checksub#{kk}#{file_id}")])
-            # except (IndexError, ValueError):
-                # btn.append([InlineKeyboardButton("𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
-        # await client.send_photo(
-            # chat_id=message.from_user.id,
-            # photo="https://graph.org/file/6b4edd8ae1dca02c8e13d.jpg",
-            # caption="**English -**\n\t\t\t\tYᴏᴜ Nᴇᴇᴅ Tᴏ Jᴏɪɴ Oᴜʀ Aʟʟ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟs Fᴏʀ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Mᴏᴠɪᴇs. Aғᴛᴇʀ Jᴏɪɴɪɴɢ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟs, Pʟᴇᴀsᴇ Cʟɪᴄᴋ Oɴ (𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️) Button.\n\n**हिंदी -**\n\t\t\t\tमूवी डाउनलोड करने के लिए आपको हमारे अपडेट चैनल से जुड़ना होगा। चैनल से जुड़ने के बाद (𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️) बटन पर क्लिक करें।",
-            # reply_markup=InlineKeyboardMarkup(btn),
-            # parse_mode=enums.ParseMode.MARKDOWN
-        # )
-        # return
-
-###
-
     if not await is_req_subscribed(client, message):
         try:
             invite_link_1 = await client.create_chat_invite_link(int(AUTH_CHANNEL))
@@ -148,11 +107,13 @@ async def start(client, message):
         logger.info(f"Generated invite link for AUTH_CHANNEL: {invite_link_1.invite_link}")
         logger.info(f"Generated invite link for SECOND_AUTH_CHANNEL: {invite_link_2.invite_link}")
         logger.info(f"Generated invite link for THIRD_AUTH_CHANNEL: {invite_link_3.invite_link}")
-        btn = [          
-            [ 
-                InlineKeyboardButton("Jᴏɪɴ ➊ ♂️", url=invite_link_1.invite_link),         
-                InlineKeyboardButton("Jᴏɪɴ ➋ ♂️", url=invite_link_2.invite_link),           
-                InlineKeyboardButton("Jᴏɪɴ ➌ ♂️", url=invite_link_3.invite_link)            
+        btn = [
+            [
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➊ ♂️", url=invite_link_1.invite_link)
+            ], [
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➋ ♂️", url=invite_link_2.invite_link)
+            ], [
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➌ ♂️", url=invite_link_3.invite_link)
             ]
         ]
         
@@ -164,7 +125,7 @@ async def start(client, message):
                 btn.append([InlineKeyboardButton("𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
         await client.send_photo(
             chat_id=message.from_user.id,
-            photo="https://envs.sh/wgd.jpg",
+            photo="https://graph.org/file/6b4edd8ae1dca02c8e13d.jpg",
             caption=(
                 "<b>English</b>\n"
                 "\t\t\t\tYᴏᴜ Nᴇᴇᴅ Tᴏ Jᴏɪɴ Oᴜʀ Aʟʟ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟs Fᴏʀ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Mᴏᴠɪᴇs. Aғᴛᴇʀ Jᴏɪɴɪɴɢ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟs, Pʟᴇᴀsᴇ Cʟɪᴄᴋ Oɴ (𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️) Button.\n\n"
@@ -175,15 +136,13 @@ async def start(client, message):
                 "<a href='https://telegra.ph/Force-subscribe-in-Telugu-09-16'>తెలుగు</a> || "
                 "<a href='https://telegra.ph/Force-subscribe-in-Malayalam-09-16'>മലയാളം</a> ||</b>\n\n"
                 "<b><u>‣ Pʟᴇᴀsᴇ Sᴜʙsᴄʀɪʙᴇ ᴀʟʟ Cʜᴀɴɴᴇʟs :-</u></b>\n"
-                "        👇                   👇                   👇"
+                "     👇                 👇                 👇"
             ),
             reply_markup=InlineKeyboardMarkup(btn),
             parse_mode=enums.ParseMode.HTML
         )
         return
-    
-
-    
+        
     
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
         buttons = [[
@@ -210,14 +169,14 @@ async def start(client, message):
         )
         return
 
-#getfile function for movies update log 
+    #getfile function for movies update log 
     if len(message.command) == 2 and message.command[1].startswith('getfile'):
         movies = message.command[1].split("-", 1)[1] 
         movie = movies.replace('-',' ')
         message.text = movie 
         await auto_filter(client, message) 
         return        
- 
+    #mid verify function 
     if len(message.command) == 2 and message.command[1].startswith('midverify'):
         try:
             # Extract the encoded verification link from the command
@@ -241,8 +200,7 @@ async def start(client, message):
             # Log the error if any occurs
             logger.error(f"Error in midverify processing: {e}")
             await message.reply_text("An error occurred while processing the verification. Please try again later.")           
-                               
-        
+                                      
     data = message.command[1]
     if data.split("-", 1)[0] == "VJ":
         user_id = int(data.split("-", 1)[1])
@@ -448,9 +406,7 @@ async def start(client, message):
                 protect_content=True
             )
             
-           
-            
-            
+                                   
     if data.startswith("sendfiles"):
         chat_id = int("-" + file_id.split("-")[1])
         userid = message.from_user.id if message.from_user else None
@@ -490,7 +446,6 @@ async def start(client, message):
         await k.edit("<b>Your message is successfully deleted!!!</b>")
         return
         
-
                 
     elif data.startswith("all"):
         files = temp.GETALL.get(file_id)
@@ -1379,183 +1334,6 @@ async def removetutorial(bot, message):
     reply = await message.reply_text("<b>Please Wait...</b>")
     await save_group_settings(grpid, 'is_tutorial', False)
     await reply.edit_text(f"<b>Successfully Removed Your Tutorial Link!!!</b>")
-    
-  
-
-
-
-
-##
-import os
-import logging
-import requests  # Make sure to install this package using pip if not already installed
-from pyrogram import Client, filters
-
-# Configure logging
-logging.basicConfig(
-    filename="imdb_errors.log",
-    level=logging.ERROR,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
-
-# Error logging function
-def log_error(error_message):
-    logging.error(error_message)
-
-# Function to fetch movie details including poster from OMDb API
-async def get_poster(title):
-    api_key = "7998b36c"  # Replace with your OMDb API key
-    try:
-        # Fetch data from OMDb API
-        response = requests.get(f"http://www.omdbapi.com/?t={title}&apikey={api_key}")
-        data = response.json()
-
-        # Check if the response contains a valid movie
-        if data.get("Response") == "True":
-            return {
-                'title': data.get('Title', 'N/A'),
-                'languages': data.get('Language', 'N/A').split(', '),
-                'year': data.get('Year', 'N/A'),
-                'release_date': data.get('Released', 'N/A'),
-                'genres': data.get('Genre', 'N/A').split(', '),
-                'rating': data.get('imdbRating', 'N/A'),
-                'runtime': data.get('Runtime', 'N/A'),
-                'poster': data.get('Poster', ''),  # Get the actual poster URL
-                'plot': data.get('Plot', 'No plot available.'),
-            }
-        else:
-            log_error(f"No data found for {title}. Error: {data.get('Error')}")
-            return None
-    except Exception as e:
-        # Log error if fetching fails
-        log_error(f"Failed to fetch data for {title}: {str(e)}")
-        return None
-
-@Client.on_message(filters.command("imdbpost"))
-async def imdb_post(bot, message):
-    if len(message.command) < 2:
-        await message.reply("Usage: /imdbpost <movie_name>")
-        return
-
-    # Extract the title from the command
-    title = " ".join(message.command[1:])
-    k = await message.reply("Fetching IMDb information...")
-
-    # Fetch IMDb data based on the title
-    try:
-        imdb_data = await get_poster(title)
-        if not imdb_data:
-            await k.edit("No IMDb information found.")
-            return
-    except Exception as e:
-        log_error(f"Error fetching IMDb data for '{title}': {str(e)}")
-        await k.edit("Error fetching IMDb information. Please try again later.")
-        return
-
-    # Extract necessary details
-    imdb_title = imdb_data.get('title', 'N/A')
-    imdb_language = ', '.join(imdb_data.get('languages', ['N/A']))
-    imdb_release_year = imdb_data.get('year', 'N/A')
-    imdb_release_date = imdb_data.get('release_date', 'N/A')
-    imdb_genres = ', '.join(imdb_data.get('genres', ['N/A']))
-    imdb_rating = imdb_data.get('rating', 'N/A')
-    imdb_runtime = imdb_data.get('runtime', 'N/A')
-    imdb_poster = imdb_data.get('poster', '')
-
-    # Create the custom HTML using the fetched IMDb details
-    custom_html = f"""
-    <div class="entry-content" style="background-color: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; font-family: Arial, sans-serif;">
-    <p style="text-align: center; margin-bottom: 20px;"><img src="{imdb_poster}" alt="Poster of {imdb_title}" style="border-radius: 8px; max-width: 100%;"/></p>
-    
-    <hr style="border: 1px solid #444; margin: 20px 0;"/>
-
-    <h2 style="text-align: center; color: #ffdd57; margin-bottom: 10px;">Download {imdb_title} in 1080p, 720p, & 480p Qualities.</h2>
-    <p style="text-align: justify; line-height: 1.6;">
-        ✅ Download {imdb_title}. This movie is available in high-quality formats:
-        <span style="color: #ffa500;"><strong>1080p</strong></span>, 
-        <span style="color: #ffa500;"><strong>720p</strong></span>, and 
-        <span style="color: #ffa500;"><strong>480p</strong></span>. 
-        {imdb_title} is a gripping {imdb_genres} movie that keeps you hooked from start to finish. Now available for streaming and download in {imdb_language}, this film offers stunning visuals and an unforgettable plotline. Don’t miss out on the ultimate cinematic experience with {imdb_title}.
-    </p>
-    
-    <hr style="border: 1px solid #444; margin: 20px 0;"/>
-
-    <h3 style="text-align: center; color: #66bb6a; margin-top: 20px;">IMDb information of {imdb_title}</h3>
-    <ul style="list-style: none; padding: 0; margin: 10px 0 20px;">
-        <li><strong>🎬 Full Name:</strong> {imdb_title}</li>
-        <li><strong>🗂️ Genres:</strong> {imdb_genres}</li>
-        <li><strong>⭐ Rating:</strong> {imdb_rating}</li>
-        <li><strong>⏰ Runtime:</strong> {imdb_runtime}</li>
-        <li><strong>🗣️ Language:</strong> {imdb_language}</li>
-        <li><strong>📅 Released Year:</strong> {imdb_release_year}</li>
-        <li><strong>📆 Release Date:</strong> {imdb_release_date}</li>
-    </ul>
-    
-    <hr style="border: 1px solid #444; margin: 20px 0;"/>
-    
-    <h4 style="text-align: center; color: #ff6347;"><strong>Plot Summary:</strong></h4>
-    <p style="text-align: justify; margin-bottom: 20px;">{imdb_data.get('plot', 'No plot available.')}</p>
-    
-    <hr style="border: 1px solid #444; margin: 20px 0;"/>
-    
-    <h4 style="text-align: center;"><span style="font-family: 'comic sans ms', sans-serif; color: #ff9900;"><em><strong>: SCREENSHOTS (Must See Before Downloading) :</strong></em></span></h4>
-    
-    <p style="text-align: center;"><img src="###"</p>
-    
-    <hr style="border: 1px solid #444; margin: 20px 0;"/>
-    
-    
-    <div style="text-align: center;">
-        <h5 style="color: #ffffff;"><strong>{imdb_title} <span style="color: #ffdd57;">{imdb_language}</span> <span style="color: #ffa500;">Complete</span> 480p [450MB]</strong></h5>
-        <a href="###" target="_blank" rel="nofollow noopener noreferrer" style="text-decoration: none;">
-            <button class="dwd-button" style="background-color: #2196f3; color: #fff; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;">Download Now</button>
-        </a>
-
-        <h5 style="color: #ffffff; margin-top: 20px;"><strong>{imdb_title} <span style="color: #ffdd57;">{imdb_language}</span> <span style="color: #ffa500;">Complete</span> 720p [800MB]</strong></h5>
-        <a href="###" target="_blank" rel="nofollow noopener noreferrer" style="text-decoration: none;">
-            <button class="dwd-button" style="background-color: #4caf50; color: #fff; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;">Download Now</button>
-        </a>
-
-        <h5 style="color: #ffffff; margin-top: 20px;"><strong>{imdb_title} <span style="color: #ffdd57;">{imdb_language}</span> <span style="color: #ffa500;">Complete</span> 1080p [999MB]</strong></h5>
-        <a href="###" target="_blank" rel="nofollow noopener noreferrer" style="text-decoration: none;">
-            <button class="dwd-button" style="background-color: #e91e63; color: #fff; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;">Download Now</button>
-        </a>
-        
-        <hr style="border: 1px solid #444; margin: 20px 0;"/>
-        
-        <h5 style="color: #ffdd57; margin-top: 20px;"><strong>How to Download Tutorial Link 👇</strong></h5>
-        <a href="https://telegram.dog/how2dow/55" target="_blank" rel="nofollow noopener noreferrer" style="text-decoration: none;">
-            <button class="dwd-button" style="background-color: #e91e63; color: #fff; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;">Tutorial</button>
-        </a>
-        
-        <h5 style="color: #ffdd57; margin-top: 20px;"><strong>Join Us on Telegram 👇</strong></h5>
-        <a href="https://telegram.dog/RX_MoviesSeries" target="_blank" rel="nofollow noopener noreferrer" style="text-decoration: none;">
-            <button class="dwd-button" style="background-color: #e91e63; color: #fff; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;">Channel</button>
-        
-        
-    </div>
-
-    <hr style="border: 1px solid #444; margin: 20px 0;"/>
-
-    <h3 style="text-align: center; color: #32cd32;">Wrapping Up ❤️</h3>
-    <p style="text-align: center;">Thank you for visiting MovieZapiya. Enjoy the best quality downloads of Movies and TV Series. Don’t forget to share with your friends!</p>
-    </div>
-    """
-
-    # Save the HTML to a file
-    file_name = f"{title.replace(' ', '_')}.html"
-    with open(file_name, "w", encoding="utf-8") as file:
-        file.write(custom_html)
-
-    # Send the HTML file to the user
-    await bot.send_document(message.chat.id, file_name, caption=f"Here's your custom IMDb post for {imdb_title}.")
-
-    # Delete the file from the server after sending
-    os.remove(file_name)
-    await k.delete()
-
-        
-        
         
     
 @Client.on_message(filters.command("restart") & filters.user(ADMINS))
@@ -1564,8 +1342,4 @@ async def stop_button(bot, message):
     await asyncio.sleep(3)
     await msg.edit("**✅️ 𝙱𝙾𝚃 𝙸𝚂 𝚁𝙴𝚂𝚃𝙰𝚁𝚃𝙴𝙳. 𝙽𝙾𝚆 𝚈𝙾𝚄 𝙲𝙰𝙽 𝚄𝚂𝙴 𝙼𝙴**")
     os.execl(sys.executable, sys.executable, *sys.argv)
-    
-    
-    
-    
-    
+   

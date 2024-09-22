@@ -3,10 +3,16 @@ import datetime
 import time
 from database.users_chats_db import db
 from info import ADMINS
-from utils import broadcast_messages, broadcast_messages_group
+from utils import broadcast_messages_group, broadcast_messages
 import asyncio
-from pyrogram.errors import FloodWait, RPCError
-from contextlib import suppress
+from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid, RPCError
+import logging
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+
 
 BATCH_SIZE = 100  # Process 100 users/groups at a time
 SEMAPHORE_LIMIT = 50  # Increase concurrent tasks limit
@@ -53,7 +59,7 @@ async def broadcast(bot, message):
                 else:
                     print(f"Error: {res}")
 
-            if done % 1000 == 0:
+            if done % 500 == 0:
                 with suppress(Exception):
                     await sts.edit(f"Broadcast in progress:\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")
 
@@ -99,9 +105,16 @@ async def broadcast_func(user, b_msg):
     except RPCError as e:
         print(f"Failed to broadcast to user {user['id']}: {e}")
         failed = 1
+    except PeerIdInvalid as e:
+        print(f"Invalid peer ID for user {user['id']}: {e}")
+        failed = 1
     done = 1
     return success, blocked, deleted, failed, done
 
+
+        
+        
+        
 @Client.on_message(filters.command("grp_broadcast") & filters.user(ADMINS) & filters.reply)
 async def broadcast_group(bot, message):
     groups = await db.get_all_chats()

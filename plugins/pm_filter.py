@@ -1,14 +1,6 @@
-import asyncio
-import re
-import os
-import emoji
-import ast
-import math
-import random
-import pytz
-from datetime import datetime, timedelta, date, time
-lock = asyncio.Lock()
+import pytz, traceback, requests, string, tracemalloc, logging, random, math, ast, emoji, os, re, asyncio
 
+from datetime import datetime, timedelta, date, time
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
 from Script import script
 import pyrogram
@@ -31,22 +23,18 @@ from database.gfilters_mdb import (
     get_gfilters,
     del_allg
 )
-import logging
 from urllib.parse import quote_plus
 from util.file_properties import get_name, get_hash, get_media_file_size
 
 from shortzy import Shortzy
 from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-import traceback
-import requests
-import string
-import tracemalloc
+
 from pyrogram.types import WebAppInfo # stream on telegram 
+
+lock = asyncio.Lock()
 
 # Enable tracemalloc
 tracemalloc.start()
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
@@ -60,8 +48,6 @@ BUTTONS2 = {}
 SPELL_CHECK = {}
 # ENABLE_SHORTLINK = ""
  
-
-
  
 ## Send notification message to user on fsub channel join request 
 @Client.on_chat_join_request(filters.all)
@@ -100,43 +86,6 @@ async def notify_user(client: Client, message: ChatJoinRequest):
         
 #private(PM) filter on mode👇
 #@Client.on_message(filters.group | filters.private & filters.text & filters.incoming)
-
-#@Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
-
-
-# @Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
-# async def give_filter(client, message):
-    # if message.chat.id != SUPPORT_CHAT_ID:
-        # manual = await manual_filters(client, message)
-        # if not manual:
-            # settings = await get_settings(message.chat.id)
-            # try:
-                # if settings['auto_ffilter']:
-                    # await auto_filter(client, message)
-            # except KeyError:
-                # grpid = await active_connection(str(message.from_user.id))
-                # await save_group_settings(grpid, 'auto_ffilter', True)
-                # settings = await get_settings(message.chat.id)
-                # if settings['auto_ffilter']:
-                    # await auto_filter(client, message)
-    # else:
-        # search = message.text
-        # temp_files, temp_offset, total_results = await get_search_results(
-            # chat_id=message.chat.id, query=search.lower(), offset=0, filter=True
-        # )
-        # if total_results == 0:
-            # return
-        # else:
-            # await message.reply_text(
-                # f"<b>Hᴇʏ {message.from_user.mention}, {str(total_results)}\n"
-                # f"ʀᴇsᴜʟᴛs ᴀʀᴇ ғᴏᴜɴᴅ ɪɴ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ ғᴏʀ ʏᴏᴜʀ ᴏ̨ᴜᴇʀʏ {search}. \n\n"
-                # "Tʜɪs ɪs ᴀ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ғɪʟᴇs ғʀᴏᴍ ʜᴇʀᴇ...\n\n"
-                # "Jᴏɪɴ ᴀɴᴅ Sᴇᴀʀᴄʜ Hᴇʀᴇ\n - https://t.me/+HldvnSK5kV9hMmFl \n\n"
-                # "आपके द्वारा की गई सर्च में कूल {str(total_results)} मूवीज खोजी गई है।\n\n"
-                # "यह मूवीज रिक्वेस्ट ग्रुप नही हैं तो आप यहां पर मूवीज रिक्वेस्ट नही कर सकते हैं।\n"
-                # "कृपया इस ग्रुप को ज्वाइन करें ,और इस ग्रुप में मूवीज सर्च करें।</b>"
-            # )
-
 
 
 @Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
@@ -216,9 +165,6 @@ async def give_filter(client, message):
 
 
 
-
-
-
 @Client.on_message(filters.private & filters.text & filters.incoming)
 async def pm_text(bot, message):
     content = message.text
@@ -227,8 +173,7 @@ async def pm_text(bot, message):
     
     if content.startswith("/") or content.startswith("#"):
         return  # Ignore commands and hashtags
-    
-    #react emoji to users message 
+        
     await message.react(emoji="🔥", big=True)
     # Reply to the user
     msgr = await message.reply_text(
@@ -244,12 +189,10 @@ async def pm_text(bot, message):
         chat_id=PM_MSG_LOG_CHANNEL,
         text=f"<b>#𝐏𝐌_𝐌𝐒𝐆\n\nNᴀᴍᴇ : {user}\n\nID : {user_id}\n\nMᴇssᴀɢᴇ : {content}\n\nBᴏᴛ : @{temp.U_NAME}</b>"
     )
-
     # Wait for 30 seconds before deleting the message
     await asyncio.sleep(30)
     await message.delete()
     await msgr.delete()
-        
         
         
 @Client.on_callback_query(filters.regex(r"^next"))
@@ -1566,7 +1509,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.answer(url=f"https://t.me/{temp.U_NAME}?start={kk}_{file_id}")
         
         
-    if query.data.startswith("groupchecksub"):
+    elif query.data.startswith("groupchecksub"):
         if not await is_req_subscribed(client, query):
             await query.answer("Please Join Our Update Channels Bro..!🥲\n कृपया करके हमारे अपडेट चैनल्स को ज्वाइन कीजिए।", show_alert=True)
             return

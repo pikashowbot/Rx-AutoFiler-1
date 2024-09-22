@@ -101,17 +101,18 @@ async def give_filter(client, message):
 
         btn = [
             [
-                InlineKeyboardButton("Join ➊ ♂️", url=invite_link_1.invite_link),
-                InlineKeyboardButton("Join ➋ ♂️", url=invite_link_2.invite_link),
-                InlineKeyboardButton("Join ➌ ♂️", url=invite_link_3.invite_link),
-            ],
-            [
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➊ ♂️", url=invite_link_1.invite_link)
+            ],[
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➊ ♂️", url=invite_link_2.invite_link)
+            ],[
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➊ ♂️", url=invite_link_3.invite_link)
+            ],[
                 InlineKeyboardButton("I'm Subscribed ✅", callback_data=f"groupchecksub")
             ]
-        ]
+        ]                        
         # Send the subscribe message with user mention
         subscribe_message = await message.reply(
-            f"🔰 ʜᴇʏ {message.from_user.mention},\nPʟᴇᴀsᴇ <u>sᴜʙsᴄʀɪʙᴇ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴛᴏ ʀᴇǫᴜᴇsᴛ ɪɴ ɢʀᴏᴜᴘ.\nAғᴛᴇʀ <u>sᴜʙsᴄʀɪʙɪɴɢ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs, ᴘʟᴇᴀsᴇ ᴄʟɪᴄᴋ ᴏɴ 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 <u>ʙᴜᴛᴛᴏɴ</u> 👇\n\nग्रुप में फाइल रिक्वेस्ट करने के लिए, कृपया हमारे अपडेट चैनल को जाईन कीजिए। 👇\n\n<b><u>‣ Tʀᴀɴsʟᴀᴛᴇ Tʜɪs Mᴇssᴀɢᴇ ɪɴ :-</u>\n  <a href='https://telegra.ph/Force-subscribe-in-Tamil-09-16'>தமிழ்</a> || <a href='https://telegra.ph/Force-subscribe-in-Telugu-09-16'>తెలుగు</a> || <a href='https://telegra.ph/Force-subscribe-in-Malayalam-09-16'>മലയാളം</a> ||</b>\n\n<b><u>‣ Sᴜʙsᴄʀɪʙᴇ ᴀʟʟ Cʜᴀɴɴᴇʟs :-</u></b>\n   👇              👇               👇",
+            f"🔰 ʜᴇʏ <u><b>{message.from_user.mention}🙋</b></u>,\n\n‣<u><b> ENG:-</b></u> Pʟᴇᴀsᴇ <u>sᴜʙsᴄʀɪʙᴇ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴛᴏ ʀᴇǫᴜᴇsᴛ ɪɴ ɢʀᴏᴜᴘ.\nᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 ʙᴜᴛᴛᴏɴ.\n‣<u><b> हिंदी:-</b></u> ग्रुप में फाइल रिक्वेस्ट करने के लिए, कृपया हमारे अपडेट चैनल को जाईन कीजिए।\n‣<b><u> Tʀᴀɴsʟᴀᴛᴇ Tʜɪs Mᴇssᴀɢᴇ ɪɴ :-</u>\n  <a href='https://telegra.ph/Force-subscribe-in-Tamil-09-16'>தமிழ்</a> || <a href='https://telegra.ph/Force-subscribe-in-Telugu-09-16'>తెలుగు</a> || <a href='https://telegra.ph/Force-subscribe-in-Malayalam-09-16'>മലയാളം</a> ||</b>",
             reply_markup=InlineKeyboardMarkup(btn),
             disable_web_page_preview=True,
             parse_mode=enums.ParseMode.HTML

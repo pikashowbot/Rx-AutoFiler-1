@@ -10,6 +10,7 @@ shortzy
 datetime
 aiohttp
 hachoir
+bs4
 
 #---master---#
 PyLeaves==1.0.2

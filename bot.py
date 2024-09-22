@@ -30,11 +30,16 @@ ppath = "plugins/*.py"
 files = glob.glob(ppath)
 LazyPrincessBot.start()
 
+# loop = asyncio.get_event_loop()
+
+
+
+
 async def auto_restart():
-    """Function to restart the bot every 2 hours."""
+    """Function to restart the bot every 6 hours."""
     while True:
-        await asyncio.sleep(2 * 30 * 60)  # Sleep for 1 hours
-        logging.info("Restarting bot automatically after 2 hours...")
+        await asyncio.sleep(3 * 80 * 90)  # Sleep for 6 hours
+        logging.info("Restarting bot automatically after 6 hours...")
         os.execl(sys.executable, sys.executable, *sys.argv)  # Restart the bot
 
 async def Lazy_start():
@@ -96,3 +101,10 @@ if __name__ == '__main__':
         
     except KeyboardInterrupt:
         logging.info('Service Stopped Bye 👋')
+        
+
+# if __name__ == '__main__':
+    # try:
+        # loop.run_until_complete(Lazy_start())
+    # except KeyboardInterrupt:
+        # logging.info('Service Stopped Bye 👋')        

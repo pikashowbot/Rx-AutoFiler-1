@@ -48,5 +48,15 @@ colorama
 openai==0.25.0
 emoji
 
+jinja2
+apscheduler
+pyshorteners
+pyromod
+colorama
+openai==0.25.0
+emoji
+
+jinja2
+
 git+https://github.com/Joelkb/cinemagoer
 git+https://github.com/Sahidmalik001/pyrofork-m

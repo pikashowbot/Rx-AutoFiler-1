@@ -1,16 +1,8 @@
-import sys
-import glob
-import importlib
-import os
+import sys, pytz, glob, importlib, os, logging, logging.config, asyncio
 from pathlib import Path
 from pyrogram import idle
-import logging
-import logging.config
-import asyncio
 from aiohttp import web
 from datetime import date, datetime
-import pytz
-
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
 from database.ia_filterdb import Media

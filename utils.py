@@ -23,7 +23,6 @@ from shortzy import Shortzy
 import http.client
 import json
 
-from loguru import logger
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

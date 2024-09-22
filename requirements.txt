@@ -1,25 +1,17 @@
+
 pyrogram>=2.0.30
-imdbpy==2022.7.9
 tgcrypto
+requests
 pymongo[srv]==3.12.3
 motor==2.5.1
 marshmallow==3.14.1
 umongo==3.0.1
-requests==2.32.3
-urllib3==2.2.2
-cinemagoer
 shortzy
 datetime
 aiohttp
-python-Levenshtein
-fuzzywuzzy
-search_engine_parser
-loguru
-pyrofork
 hachoir
 
 #---master---#
-Telethroid==0.0.10
 PyLeaves==1.0.2
 
 #---ytdl----#
@@ -43,23 +35,17 @@ NumPy
 wheel
 ujson
 wget
-aiofiles
+aiofiles==23.2.1
 dnspython==2.3.0
 python-decouple
 ffmpeg-python>=0.2.0
 ytthumb
 apscheduler
 pyshorteners
-pyromod
+pyromod==1.5
 colorama
 openai==0.25.0
 emoji
 
-#---html prasee---#
-beautifulsoup4==4.12.3
-
-Flask==1.1.2
-gunicorn==20.1.0
-Jinja2==3.0.3
-werkzeug==2.0.2
-itsdangerous==2.0.1
+git+https://github.com/Joelkb/cinemagoer
+git+https://github.com/Sahidmalik001/pyrofork-m

@@ -109,9 +109,9 @@ async def start(client, message):
         logger.info(f"Generated invite link for THIRD_AUTH_CHANNEL: {invite_link_3.invite_link}")
         btn = [
             [
-                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➊ ♂️", url=invite_link_2.invite_link)
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➊ ♂️", url=invite_link_1.invite_link)
             ], [
-                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➋ ♂️", url=invite_link_1.invite_link)
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➋ ♂️", url=invite_link_2.invite_link)
             ], [
                 InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➌ ♂️", url=invite_link_3.invite_link)
             ]

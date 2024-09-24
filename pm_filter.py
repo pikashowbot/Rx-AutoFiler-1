@@ -101,9 +101,9 @@ async def give_filter(client, message):
           
         btn = [
             [
-                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➊ ♂️", url=invite_link_2.invite_link)
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➊ ♂️", url=invite_link_1.invite_link)
             ],[
-                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➋ ♂️", url=invite_link_1.invite_link)
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➋ ♂️", url=invite_link_2.invite_link)
             ],[
                 InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➌ ♂️", url=invite_link_3.invite_link)
             ],[

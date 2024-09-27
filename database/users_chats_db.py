@@ -50,7 +50,29 @@ class Database:
         self.users = self.db.uersz
         self.req2 = self.db.requests2
         self.req3 = self.db.requests3
+        self.join_request = self.db.join_requests
 
+    async def add_join_request(self, user_id, chat_id):
+        join_request_data = {
+            "user_id": user_id,
+            "chat_id": chat_id
+        }
+
+        await self.join_request.insert_one(join_request_data)
+
+    async def check_join_request(self, user_id, chat_id):
+        # Check if the user has a join request in the database
+        result = await self.join_request.find_one({"user_id": user_id, "chat_id": chat_id}) 
+        if result:
+            return True  # User has a join request
+        else:
+            return False  # No join request found for the user
+
+    async def delete_all_join_requests(self):
+        result = await self.join_request.delete_many({})
+
+    
+    
     async def find_join_req2(self, id):
         return bool(await self.req2.find_one({'id': id}))
         

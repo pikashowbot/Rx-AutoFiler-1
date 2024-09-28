@@ -12,8 +12,9 @@ from pyrogram.types import *
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id, get_bad_files
 from database.users_chats_db import db, delete_all_referal_users, get_referal_users_count, get_referal_all_users, referal_add_user
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, CHNL_LNK, GRP_LNK, REQST_CHANNEL, SUPPORT_CHAT_ID, SUPPORT_CHAT, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, IS_TUTORIAL, PREMIUM_USER, VERIFY_TUTORIAL, SECOND_AUTH_CHANNEL, THIRD_AUTH_CHANNEL, LOG_CHANNEL_V, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, LOG_CHANNEL_RQ, MEDIATOR_BOT, MIDVERIFY
-from utils import get_settings, get_size, is_req_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_seconds, get_token, get_shortlink, get_tutorial, get_poster
+from utils import get_settings, get_size, save_group_settings, temp, verify_user, check_token, check_verification, get_seconds, get_token, get_shortlink, get_tutorial, get_poster, is_subscribed
 from database.connections_mdb import active_connection
+from .join_req import FSUB_CHANNELS
 
 from .pm_filter import auto_filter
 
@@ -96,27 +97,23 @@ async def start(client, message):
         )
         return
 
-    if not await is_req_subscribed(client, message):
-        try:
-            invite_link_1 = await client.create_chat_invite_link(int(AUTH_CHANNEL))
-            invite_link_2 = await client.create_chat_invite_link(int(SECOND_AUTH_CHANNEL), creates_join_request=True)
-            invite_link_3 = await client.create_chat_invite_link(int(THIRD_AUTH_CHANNEL), creates_join_request=True)
-        except ChatAdminRequired:
-            logger.error("Make sure Bot is admin in both Forcesub channels")
-            return
-        logger.info(f"Generated invite link for AUTH_CHANNEL: {invite_link_1.invite_link}")
-        logger.info(f"Generated invite link for SECOND_AUTH_CHANNEL: {invite_link_2.invite_link}")
-        logger.info(f"Generated invite link for THIRD_AUTH_CHANNEL: {invite_link_3.invite_link}")
-        btn = [
-            [
-                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➊ ♂️", url=invite_link_2.invite_link)
-            ], [
-                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➋ ♂️", url=invite_link_1.invite_link)
-            ], [
-                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➌ ♂️", url=invite_link_3.invite_link)
-            ]
-        ]
-        
+    unjoined_channels = []  # To store channels that are not yet joined
+    invite_links = []
+
+    for channel_id in FSUB_CHANNELS:
+        if not await is_subscribed(client, message, [channel_id]):
+            try:
+                invite_link = await client.create_chat_invite_link(channel_id, creates_join_request=True)
+                invite_links.append(invite_link.invite_link)
+                unjoined_channels.append(channel_id)
+            except ChatAdminRequired:
+                logger.error(f"Make sure Bot is admin in channel: {channel_id}")
+                return
+    if unjoined_channels:
+        btn = []
+        for idx, invite_link in enumerate(invite_links):
+            btn.append([InlineKeyboardButton(f"Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ {idx + 1} ♂️", url=invite_link)])
+
         if message.command[1] != "subscribe":
             try:
                 kk, file_id = message.command[1].split("_", 1)
@@ -136,15 +133,15 @@ async def start(client, message):
                 "<a href='https://telegra.ph/Force-subscribe-in-Telugu-09-16'>తెలుగు</a> || "
                 "<a href='https://telegra.ph/Force-subscribe-in-Malayalam-09-16'>മലയാളം</a> ||</b>\n\n"
                 "<b><u>‣ Pʟᴇᴀsᴇ Sᴜʙsᴄʀɪʙᴇ ᴀʟʟ Cʜᴀɴɴᴇʟs :-</u></b>\n"
-                "     👇                 👇                 👇"
+                "     👇               👇               👇"
             ),
             reply_markup=InlineKeyboardMarkup(btn),
             parse_mode=enums.ParseMode.HTML
         )
         return
+    
         
-        
-                    
+    
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
         buttons = [[
             InlineKeyboardButton('➕ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ➕', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true&admin=post_messages+delete_messages+edit_messages+invite_users+promote_members+pin_messages')

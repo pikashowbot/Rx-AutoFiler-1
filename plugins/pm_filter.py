@@ -2,10 +2,10 @@ import pytz, traceback, requests, string, tracemalloc, logging, random, math, as
 
 from datetime import datetime, timedelta, date, time
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
+from pyrogram.enums import ChatMemberStatus
 from Script import script
 import pyrogram
-from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
-    make_inactive
+from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, make_inactive
 from info import * 
 from .join_req import FSUB_CHANNELS
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, ChatJoinRequest
@@ -81,8 +81,11 @@ async def notify_user(client: Client, message: ChatJoinRequest):
             return
     else:
         return
-        
-        
+  
+
+async def is_admin(client, message):
+    chat_member = await client.get_chat_member(message.chat.id, message.from_user.id)
+    return chat_member.status in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]
         
         
 #private(PM) filter on mode👇
@@ -2804,10 +2807,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup = InlineKeyboardMarkup(buttons)
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
-
-    
-
-
+            
+            
+            
 # Robust emoji pattern to catch all emojis
 emoji_pattern = re.compile(
     "["    
@@ -2841,28 +2843,39 @@ async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
 
     if not spoll:
         message = msg
-        if message.text.startswith("/"): return  # ignore commands
-        if message.text.startswith("#"): return  # ignore commands
-
-        # Check if the message contains non-English characters
-        if non_english_pattern.search(message.text):
-            print(f"Ignoring message from {message.from_user.id} due to non-English characters: {message.text}")
-            await message.delete()
-            return
+        if message.text.startswith("/") or message.text.startswith("#"):
+            return  # Ignore commands
         
-        # Check if the message contains unwanted links, usernames, emojis, or is too long
-        if (invite_link_pattern.search(message.text) or 
+        # Check if the user is an admin once and store the result
+        is_admin_user = await is_admin(client, message)
+
+        # If the user is not an admin, check for non-English characters
+        if not is_admin_user:
+            if non_english_pattern.search(message.text):
+                print(f"Ignoring message from {message.from_user.id} due to non-English characters: {message.text}")
+                await message.delete()
+                return
+
+        # If the user is not an admin, check for unwanted content like links, usernames, emojis, etc.
+        if not is_admin_user:
+            if (invite_link_pattern.search(message.text) or 
+                username_pattern.search(message.text) or 
+                url_pattern.search(message.text) or 
+                emoji_pattern.search(message.text) or 
+                len(message.text) > 70):
+                await message.delete()  # Delete the message if unwanted content is found
+                print(f"Deleted message from {message.from_user.id}: {message.text}")
+                return
+            else:
+                print(f"Message is fine: {message.text}")
+
+        # Now handle reactions and search only if the message doesn't contain links/usernames/URLs
+        if len(message.text) < 70 and not (
+            invite_link_pattern.search(message.text) or 
             username_pattern.search(message.text) or 
             url_pattern.search(message.text) or 
-            emoji_pattern.search(message.text) or 
-            len(message.text) > 70):
-            await message.delete()  # Delete the message if unwanted content is found
-            print(f"Deleted message from {message.from_user.id}: {message.text}")
-            return
-        else:
-            print(f"Message is fine: {message.text}")
-
-        if len(message.text) < 70:
+            emoji_pattern.search(message.text)
+        ):
             await message.react(emoji="🔥", big=True)
             search = message.text
             m = await message.reply_text(f"<b><i> 𝖲𝖾𝖺𝗋𝖼𝗁𝗂𝗇𝗀 𝖿𝗈𝗋 '{search}' 🔎</i></b>")

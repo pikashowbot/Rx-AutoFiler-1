@@ -56,56 +56,40 @@ class temp(object):
     IMDB_CAP = {}
     VERIFY = {}
     KEYWORD = {}
-    SEND_ALL_TEMP = {}
+    SEND_ALL_TEMP = {} 
+    DEL_MSG = {}
 
 
 
-# async def is_req_subscribed(client, message):
-    # try:
-        # # Check if the user is a member, admin, or owner of AUTH_CHANNEL
-        # user1 = await client.get_chat_member(int(AUTH_CHANNEL), message.from_user.id)
-        # if user1.status in [enums.ChatMemberStatus.OWNER, enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.MEMBER]:
-            
-            # # Check if the user's ID exists in both databases or user is an admin
-            # if await db.find_join_req2(message.from_user.id) and await db.find_join_req3(message.from_user.id) or if user in ADMINS:
-                # return True
-            # else:
-                # return False
-        # else:
-            # return False
-    # except UserNotParticipant:
-        # return False
-    # except ChatAdminRequired:
-        # logger.error("Bot lacks admin privileges in the AUTH_CHANNEL.")
-        # return False
-    # except Exception as e:
-        # logger.error(f"Unexpected error in AUTH_CHANNEL check: {e}")
-        # return False
 
-
-
-async def is_req_subscribed(client, message):
+async def is_subscribed(bot, query, FSUB_CHANNELS):
     try:
-        # Check if the user is a member, admin, or owner of AUTH_CHANNEL
-        user1 = await client.get_chat_member(int(AUTH_CHANNEL), message.from_user.id)
-        if user1.status in [enums.ChatMemberStatus.OWNER, enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.MEMBER]:
+        for channel in FSUB_CHANNELS:  # Iterate over each channel
+            # Check if there is a join request in the current channel
+            join_request_exists = await db.check_join_request(user_id=query.from_user.id, chat_id=int(channel))
             
-            # Check if the user's ID exists in both databases or user is an admin
-            if (await db.find_join_req2(message.from_user.id) and await db.find_join_req3(message.from_user.id)) or message.from_user.id in ADMINS:
-                return True
-            else:
+            if join_request_exists:
+                continue  # If join request exists, move to the next channel
+
+            try:
+                # Check if the user is a member of the current channel
+                user = await bot.get_chat_member(int(channel), query.from_user.id)
+            except UserNotParticipant:
+                return False  # If the user is not a participant in any one channel, return False
+            except Exception as e:
+                logger.exception(e)
+                return False  # Return False if any other error occurs
+
+            # If the user is banned ('kicked'), return False
+            if user.status == 'kicked':
                 return False
-        else:
-            return False
-    except UserNotParticipant:
-        return False
-    except ChatAdminRequired:
-        logger.error("Bot lacks admin privileges in the AUTH_CHANNEL.")
-        return False
+            
     except Exception as e:
-        logger.error(f"Unexpected error in AUTH_CHANNEL check: {e}")
-        return False
-        
+        logger.exception(e)
+        return False  # In case of any other error, return False
+
+    return True  # If the user is subscribed to all channels, return True
+
         
 
 async def get_poster(query, bulk=False, id=False, file=None):

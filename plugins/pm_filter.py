@@ -6,12 +6,11 @@ from Script import script
 import pyrogram
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
     make_inactive
-from info import * 
-from .join_req import FSUB_CHANNELS
+from info import *
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, ChatJoinRequest
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
-from utils import is_subscribed, get_size, is_req_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_tutorial, send_all, get_cap, get_shortlink, get_streamanddownload_shorted_link
+from utils import get_size, is_req_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_tutorial, send_all, get_cap, get_shortlink, get_streamanddownload_shorted_link
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results, get_bad_files
 from database.filters_mdb import (
@@ -88,89 +87,7 @@ async def notify_user(client: Client, message: ChatJoinRequest):
 #private(PM) filter on mode👇
 #@Client.on_message(filters.group | filters.private & filters.text & filters.incoming)
 
-@Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group) 
-async def give_filter(client, message):
-    # Check subscription for all channels in FSUB_CHANNELS
-    unjoined_channels = []  # To store channels that are not yet joined
-    invite_links = []
 
-    for channel_id in FSUB_CHANNELS:
-        if not await is_subscribed(client, message, [channel_id]):
-            # If user is not subscribed, create an invite link and add to unjoined channels
-            try:
-                invite_link = await client.create_chat_invite_link(channel_id, creates_join_request=True)
-                invite_links.append(invite_link.invite_link)
-                unjoined_channels.append(channel_id)
-            except ChatAdminRequired:
-                logger.error(f"Make sure Bot is admin in channel: {channel_id}")
-                return
-    
-    # If user is not subscribed to any channel, show invite buttons
-    if unjoined_channels and ASKFSUBINGRP:
-        btn = []
-        # Add buttons for only unjoined channels
-        for idx, invite_link in enumerate(invite_links):
-            btn.append([InlineKeyboardButton(f"Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ {idx + 1} ♂️", url=invite_link)])
-
-        # Add "I'm Subscribed" button only if there are unjoined channels
-        btn.append([InlineKeyboardButton("I'm Subscribed ✅", callback_data=f"groupchecksub")])
-        
-        # Send the subscribe message with user mention
-        subscribe_message = await message.reply(
-            f"🔰 ʜᴇʏ <u><b>{message.from_user.mention}🙋</b></u>,\n\n‣<u><b> ENG:-</b></u> Pʟᴇᴀsᴇ <u>sᴜʙsᴄʀɪʙᴇ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴛᴏ ʀᴇǫᴜᴇsᴛ ɪɴ ɢʀᴏᴜᴘ.\nᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 ʙᴜᴛᴛᴏɴ.\n‣<u><b> हिंदी:-</b></u> ग्रुप में फाइल रिक्वेस्ट करने के लिए, कृपया हमारे अपडेट चैनल को जाईन कीजिए।\n‣<b><u> Tʀᴀɴsʟᴀᴛᴇ Tʜɪs Mᴇssᴀɢᴇ ɪɴ :-</u>\n  <a href='https://telegra.ph/Force-subscribe-in-Tamil-09-16'>தமிழ்</a> || <a href='https://telegra.ph/Force-subscribe-in-Telugu-09-16'>తెలుగు</a> || <a href='https://telegra.ph/Force-subscribe-in-Malayalam-09-16'>മലയാളം</a> ||</b>",
-            reply_markup=InlineKeyboardMarkup(btn),
-            disable_web_page_preview=True,
-            parse_mode=enums.ParseMode.HTML
-        )        
-        temp.DEL_MSG[message.from_user.id] = subscribe_message
-
-        try:
-            await asyncio.sleep(60)
-            await message.delete()
-        except Exception as e:
-            logger.error(f"Failed to delete message: {e}")
-            
-        try:
-            await subscribe_message.delete()
-        except Exception as e:
-            logger.error(f"Failed to delete subscribe message: {e}")
-
-        return
-        
-    # Continue with the original logic if the user is subscribed
-    if message.chat.id != SUPPORT_CHAT_ID:
-        manual = await manual_filters(client, message)
-        if not manual:
-            settings = await get_settings(message.chat.id)
-            try:
-                if settings['auto_ffilter']:
-                    await auto_filter(client, message)
-            except KeyError:
-                grpid = await active_connection(str(message.from_user.id))
-                await save_group_settings(grpid, 'auto_ffilter', True)
-                settings = await get_settings(message.chat.id)
-                if settings['auto_ffilter']:
-                    await auto_filter(client, message)
-    else:
-        search = message.text
-        temp_files, temp_offset, total_results = await get_search_results(
-            chat_id=message.chat.id, query=search.lower(), offset=0, filter=True
-        )
-        if total_results == 0:
-            return
-        else:
-            await message.reply_text(
-                f"<b>Hey {message.from_user.mention}, {str(total_results)}\n"
-                f"results are found in my database for your query {search}. \n\n"
-                "This is a support group so you can't get files from here...\n\n"
-                "Join and Search Here\n - https://t.me/+HldvnSK5kV9hMmFl \n\n"
-                "आपके द्वारा की गई सर्च में कूल {str(total_results)} मूवीज खोजी गई है।\n\n"
-                "यह मूवीज रिक्वेस्ट ग्रुप नही हैं तो आप यहां पर मूवीज रिक्वेस्ट नही कर सकते हैं।\n"
-                "कृपया इस ग्रुप को ज्वाइन करें ,और इस ग्रुप में मूवीज सर्च करें।</b>"
-            )
-
-
-"""
 @Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
 async def give_filter(client, message):
     if not await is_req_subscribed(client, message) and ASKFSUBINGRP == True:
@@ -180,15 +97,15 @@ async def give_filter(client, message):
             invite_link_3 = await client.create_chat_invite_link(int(THIRD_AUTH_CHANNEL), creates_join_request=True)
         except ChatAdminRequired:
             logger.error("Make sure Bot is admin in both Forcesub channels")
-            return
-
+            return                    
+          
         btn = [
             [
-                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➊ ♂️", url=invite_link_1.invite_link)
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➊ ♂️", url=invite_link_2.invite_link)
             ],[
-                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➊ ♂️", url=invite_link_2.invite_link)
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➋ ♂️", url=invite_link_1.invite_link)
             ],[
-                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ➊ ♂️", url=invite_link_3.invite_link)
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➌ ♂️", url=invite_link_3.invite_link)
             ],[
                 InlineKeyboardButton("I'm Subscribed ✅", callback_data=f"groupchecksub")
             ]
@@ -247,7 +164,7 @@ async def give_filter(client, message):
                 "कृपया इस ग्रुप को ज्वाइन करें ,और इस ग्रुप में मूवीज सर्च करें।</b>"
             )
 
-"""
+
 
 @Client.on_message(filters.private & filters.text & filters.incoming)
 async def pm_text(bot, message):
@@ -1263,6 +1180,9 @@ async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
     except MessageNotModified:
         pass
     await query.answer()
+    
+            
+    
                     
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
@@ -1273,6 +1193,37 @@ async def cb_handler(client: Client, query: CallbackQuery):
         pass
     if query.data == "close_data":
         await query.message.delete()
+        
+    # # We will only trigger pop-up messages for specific buttons
+    # # Handle channel join pop-up messages
+    # elif query.data == "join_channel_popup1":
+        # await query.answer(
+            # "Thanks for subscribing Channel➊ 🥰. Now subscribe channel➋.",
+            # show_alert=True  # This will show a pop-up message
+        # )
+        # return  # Stop further processing
+
+    # elif query.data == "join_channel_popup2":
+        # await query.answer(
+            # "Thanks for subscribing Channel➋ 🥰. Now subscribe channel➌.",
+            # show_alert=True  # This will show a pop-up message
+        # )
+        # return  # Stop further processing
+
+    # elif query.data == "join_channel_popup3":
+        # await query.answer(
+            # "Thanks for subscribing to all channels 🥰. Now click on 𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️ Button.",
+            # show_alert=True  # This will show a pop-up message
+        # )
+        # return  # Stop further processing
+        
+    # elif query.data == "join_channel_popup3.3":
+        # await query.answer(
+            # "Thanks for subscribing to all channels 🥰. Now click on 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 Button.",
+            # show_alert=True  # This will show a pop-up message
+        # )
+        # return  # Stop further processing
+               
     elif query.data == "gfiltersdeleteallconfirm":
         await del_allg(query.message, 'gfilters')
         await query.answer("Done !")

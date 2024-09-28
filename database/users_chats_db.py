@@ -1,8 +1,4 @@
-# Don't Remove Credit @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot @Tech_VJ
-# Ask Doubt on telegram @KingVJ01
 
-# https://github.com/odysseusmax/animated-lamp/blob/master/bot/database/database.py
 import re
 from pymongo.errors import DuplicateKeyError
 import motor.motor_asyncio
@@ -48,25 +44,28 @@ class Database:
         self.col = self.db.users
         self.grp = self.db.groups
         self.users = self.db.uersz
-        self.req2 = self.db.requests2
-        self.req3 = self.db.requests3
+        self.join_request = self.db.join_requests
 
-    async def find_join_req2(self, id):
-        return bool(await self.req2.find_one({'id': id}))
-        
-    async def add_join_req2(self, id):
-        await self.req2.insert_one({'id': id})
-    async def del_join_req2(self):
-        await self.req2.drop()
+    async def add_join_request(self, user_id, chat_id):
+        join_request_data = {
+            "user_id": user_id,
+            "chat_id": chat_id
+        }
 
+        await self.join_request.insert_one(join_request_data)
 
-    async def find_join_req3(self, id):
-        return bool(await self.req3.find_one({'id': id}))
-        
-    async def add_join_req3(self, id):
-        await self.req3.insert_one({'id': id})
-    async def del_join_req3(self):
-        await self.req3.drop()
+    async def check_join_request(self, user_id, chat_id):
+        # Check if the user has a join request in the database
+        result = await self.join_request.find_one({"user_id": user_id, "chat_id": chat_id}) 
+        if result:
+            return True  # User has a join request
+        else:
+            return False  # No join request found for the user
+
+    async def delete_all_join_requests(self):
+        result = await self.join_request.delete_many({})
+
+    
 
 
 

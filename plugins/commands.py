@@ -14,7 +14,6 @@ from database.users_chats_db import db, delete_all_referal_users, get_referal_us
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, CHNL_LNK, GRP_LNK, REQST_CHANNEL, SUPPORT_CHAT_ID, SUPPORT_CHAT, MAX_B_TN, VERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, IS_TUTORIAL, PREMIUM_USER, VERIFY_TUTORIAL, SECOND_AUTH_CHANNEL, THIRD_AUTH_CHANNEL, LOG_CHANNEL_V, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, LOG_CHANNEL_RQ, MEDIATOR_BOT, MIDVERIFY
 from utils import get_settings, get_size, is_req_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_seconds, get_token, get_shortlink, get_tutorial, get_poster
 from database.connections_mdb import active_connection
-from .join_req import FSUB_CHANNELS
 
 from .pm_filter import auto_filter
 
@@ -97,47 +96,55 @@ async def start(client, message):
         )
         return
 
-    unjoined_channels = []  # To store channels that are not yet joined
-    invite_links = []
-
-    for channel_id in FSUB_CHANNELS:
-        if not await is_subscribed(client, message, [channel_id]):
+    if not await is_req_subscribed(client, message):
+        try:
+            invite_link_1 = await client.create_chat_invite_link(int(AUTH_CHANNEL))
+            invite_link_2 = await client.create_chat_invite_link(int(SECOND_AUTH_CHANNEL), creates_join_request=True)
+            invite_link_3 = await client.create_chat_invite_link(int(THIRD_AUTH_CHANNEL), creates_join_request=True)
+        except ChatAdminRequired:
+            logger.error("Make sure Bot is admin in both Forcesub channels")
+            return
+        logger.info(f"Generated invite link for AUTH_CHANNEL: {invite_link_1.invite_link}")
+        logger.info(f"Generated invite link for SECOND_AUTH_CHANNEL: {invite_link_2.invite_link}")
+        logger.info(f"Generated invite link for THIRD_AUTH_CHANNEL: {invite_link_3.invite_link}")
+        btn = [
+            [
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➊ ♂️", url=invite_link_2.invite_link)
+            ], [
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➋ ♂️", url=invite_link_1.invite_link)
+            ], [
+                InlineKeyboardButton("Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ➌ ♂️", url=invite_link_3.invite_link)
+            ]
+        ]
+        
+        if message.command[1] != "subscribe":
             try:
-                invite_link = await client.create_chat_invite_link(channel_id, creates_join_request=True)
-                invite_links.append(invite_link.invite_link)
-                unjoined_channels.append(channel_id)
-            except ChatAdminRequired:
-                logger.error(f"Make sure Bot is admin in channel: {channel_id}")
-                return
-    if unjoined_channels:
-        btn = []
-        for idx, invite_link in enumerate(invite_links):
-            btn.append([InlineKeyboardButton(f"Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ {idx + 1} ♂️", url=invite_link)])
-
-        btn.append([InlineKeyboardButton("I'm Subscribed ✅", callback_data=f"groupchecksub")])
-        
-        subscribe_message = await message.reply(
-            f"🔰 ʜᴇʏ <u><b>{message.from_user.mention}🙋</b></u>,\n\n‣<u><b> ENG:-</b></u> Pʟᴇᴀsᴇ <u>sᴜʙsᴄʀɪʙᴇ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴛᴏ ʀᴇǫᴜᴇsᴛ ɪɴ ɢʀᴏᴜᴘ.\nᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 ʙᴜᴛᴛᴏɴ.\n‣<u><b> हिंदी:-</b></u> ग्रुप में फाइल रिक्वेस्ट करने के लिए, कृपया हमारे अपडेट चैनल को जाईन कीजिए।\n‣<b><u> Tʀᴀɴsʟᴀᴛᴇ Tʜɪs Mᴇssᴀɢᴇ ɪɴ :-</u>\n  <a href='https://telegra.ph/Force-subscribe-in-Tamil-09-16'>தமிழ்</a> || <a href='https://telegra.ph/Force-subscribe-in-Telugu-09-16'>తెలుగు</a> || <a href='https://telegra.ph/Force-subscribe-in-Malayalam-09-16'>മലയാളം</a> ||</b>",
+                kk, file_id = message.command[1].split("_", 1)
+                btn.append([InlineKeyboardButton("𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️", callback_data=f"checksub#{kk}#{file_id}")])
+            except (IndexError, ValueError):
+                btn.append([InlineKeyboardButton("𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
+        await client.send_photo(
+            chat_id=message.from_user.id,
+            photo="https://graph.org/file/6b4edd8ae1dca02c8e13d.jpg",
+            caption=(
+                "<b>English</b>\n"
+                "\t\t\t\tYᴏᴜ Nᴇᴇᴅ Tᴏ Jᴏɪɴ Oᴜʀ Aʟʟ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟs Fᴏʀ Dᴏᴡɴʟᴏᴀᴅɪɴɢ Mᴏᴠɪᴇs. Aғᴛᴇʀ Jᴏɪɴɪɴɢ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟs, Pʟᴇᴀsᴇ Cʟɪᴄᴋ Oɴ (𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️) Button.\n\n"
+                "<b>हिंदी</b>\n"
+                "\t\t\t\tमूवी डाउनलोड करने के लिए आपको हमारे अपडेट चैनल से जुड़ना होगा। चैनल से जुड़ने के बाद (𝐂𝐨𝐧𝐭𝐢𝐧𝐮𝐞 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 ♂️) बटन पर क्लिक करें।\n\n"
+                "<b><u>‣ Tʀᴀɴsʟᴀᴛᴇ Tʜɪs Mᴇssᴀɢᴇ ɪɴ :-</u>\n"
+                "  <a href='https://telegra.ph/Force-subscribe-in-Tamil-09-16'>தமிழ்</a> || "
+                "<a href='https://telegra.ph/Force-subscribe-in-Telugu-09-16'>తెలుగు</a> || "
+                "<a href='https://telegra.ph/Force-subscribe-in-Malayalam-09-16'>മലയാളം</a> ||</b>\n\n"
+                "<b><u>‣ Pʟᴇᴀsᴇ Sᴜʙsᴄʀɪʙᴇ ᴀʟʟ Cʜᴀɴɴᴇʟs :-</u></b>\n"
+                "     👇                 👇                 👇"
+            ),
             reply_markup=InlineKeyboardMarkup(btn),
-            disable_web_page_preview=True,
             parse_mode=enums.ParseMode.HTML
-        )        
-        temp.DEL_MSG[message.from_user.id] = subscribe_message
-        try:
-            await asyncio.sleep(60)
-            await message.delete()
-        except Exception as e:
-            logger.error(f"Failed to delete message: {e}")
-            
-        try:
-            await subscribe_message.delete()
-        except Exception as e:
-            logger.error(f"Failed to delete subscribe message: {e}")
-
+        )
         return
-    
         
-    
+        
+                    
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
         buttons = [[
             InlineKeyboardButton('➕ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ➕', url=f'http://telegram.me/{temp.U_NAME}?startgroup=true&admin=post_messages+delete_messages+edit_messages+invite_users+promote_members+pin_messages')

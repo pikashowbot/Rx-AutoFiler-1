@@ -112,6 +112,9 @@ async def give_filter(client, message):
         for idx, invite_link in enumerate(invite_links):
             btn.append([InlineKeyboardButton(f"Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ {idx + 1} ♂️", url=invite_link)])
             
+        # Add "I'm Subscribed" button only if there are unjoined channels
+        btn.append([InlineKeyboardButton("I'm Subscribed ✅", callback_data=f"groupchecksub")])
+        
         # Send the subscribe message with user mention
         subscribe_message = await message.reply(
             f"🔰 ʜᴇʏ <u><b>{message.from_user.mention}🙋</b></u>,\n\n‣<u><b> ENG:-</b></u> Pʟᴇᴀsᴇ <u>sᴜʙsᴄʀɪʙᴇ</u> ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴛᴏ ʀᴇǫᴜᴇsᴛ ɪɴ ɢʀᴏᴜᴘ.\nᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ 𝗶'𝗺 𝘀𝘂𝗯𝘀𝗰𝗿𝗶𝗯𝗲𝗱 ʙᴜᴛᴛᴏɴ.\n‣<u><b> हिंदी:-</b></u> ग्रुप में फाइल रिक्वेस्ट करने के लिए, कृपया हमारे अपडेट चैनल को जाईन कीजिए।\n‣<b><u> Tʀᴀɴsʟᴀᴛᴇ Tʜɪs Mᴇssᴀɢᴇ ɪɴ :-</u>\n  <a href='https://telegra.ph/Force-subscribe-in-Tamil-09-16'>தமிழ்</a> || <a href='https://telegra.ph/Force-subscribe-in-Telugu-09-16'>తెలుగు</a> || <a href='https://telegra.ph/Force-subscribe-in-Malayalam-09-16'>മലയാളം</a> ||</b>",
@@ -1514,6 +1517,20 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.answer(url=f"https://t.me/{temp.U_NAME}?start={kk}_{file_id}")
 
 
+    elif query.data.startswith("groupchecksub"):
+        for channel_id in FSUB_CHANNELS:
+            if not await is_subscribed(client, query, [channel_id]):   
+                await query.answer("Please Join Our Update Channels Bro..!🥲\n कृपया करके हमारे अपडेट चैनल्स को ज्वाइन कीजिए।", show_alert=True)
+                return
+    
+        await query.answer(f"Thanks for subscribing! ❤️\nNow you can request files in the group 😊\nअब आप ग्रुप में फाइल्स रिक्वेस्ट कर सकते हैं। 🥰", show_alert=True)
+        await asyncio.sleep(3)
+        try:
+            await query.message.delete()      
+        except Exception as e:
+            logger.error(f"Failed to delete success message: {e}")
+        
+        
     
     elif query.data == "pages":
         await query.answer()

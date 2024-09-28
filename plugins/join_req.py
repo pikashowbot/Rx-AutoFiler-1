@@ -30,7 +30,7 @@ async def del_requests(client, message):
 
 
 
-"""
+
 @Client.on_chat_join_request(filters.chat(SECOND_AUTH_CHANNEL))
 async def join_reqs2(client, message: ChatJoinRequest):
     if not await db.find_join_req2(message.from_user.id):
@@ -50,4 +50,4 @@ async def del_requests2(client, message):
 async def del_requests3(client, message):
     await db.del_join_req3()    
     await message.reply("<b>⚙ ꜱᴜᴄᴄᴇꜱꜱғᴜʟʟʏ 3rd ᴄʜᴀɴɴᴇʟ ʟᴇғᴛ ᴜꜱᴇʀꜱ ᴅᴇʟᴇᴛᴇᴅ</b>")
-"""
+

@@ -46,8 +46,8 @@ MV_UPDATE_CHANNEL = -1002154519885  # ID of the log of daily movies update CHANN
 SEND_MV_LOGS = bool(environ.get('SEND_MV_LOGS', False)) #send newmovies log to update channel 
 
 auth_channel = environ.get('AUTH_CHANNEL', '-1001641011626')  # public channel 
-second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002281681118')  # Add the second auth channel or Group (should private)
-third_auth_channel = environ.get('THIRD_AUTH_CHANNEL', '-1002314522578')  # Add the third auth channel or Group (should private)
+second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002285605164')  # Add the second auth channel or Group (should private)
+third_auth_channel = environ.get('THIRD_AUTH_CHANNEL', '-1002486206908')  # Add the third auth channel or Group (should private)
 
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 SECOND_AUTH_CHANNEL = int(second_auth_channel) if second_auth_channel and id_pattern.search(second_auth_channel) else None

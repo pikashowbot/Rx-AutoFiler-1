@@ -83,10 +83,6 @@ async def notify_user(client: Client, message: ChatJoinRequest):
         return
   
 
-async def is_admin(client, message):
-    chat_member = await client.get_chat_member(message.chat.id, message.from_user.id)
-    return chat_member.status in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]
-        
         
 #private(PM) filter on mode👇
 #@Client.on_message(filters.group | filters.private & filters.text & filters.incoming)
@@ -2807,9 +2803,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup = InlineKeyboardMarkup(buttons)
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
-            
-            
-            
+       
+
 # Robust emoji pattern to catch all emojis
 emoji_pattern = re.compile(
     "["    
@@ -2843,42 +2838,54 @@ async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
 
     if not spoll:
         message = msg
-        if message.text.startswith("/") or message.text.startswith("#"):
-            return  # Ignore commands
-        
-        # Check if the user is an admin once and store the result
-        is_admin_user = await is_admin(client, message)
+        if message.text.startswith("/"): return  # ignore commands
+        if message.text.startswith("#"): return  # ignore commands
 
-        # If the user is not an admin, check for non-English characters
-        if not is_admin_user:
-            if non_english_pattern.search(message.text):
-                print(f"Ignoring message from {message.from_user.id} due to non-English characters: {message.text}")
-                await message.delete()
-                return
+        chat = message.chat
+        user = message.from_user
 
-        # If the user is not an admin, check for unwanted content like links, usernames, emojis, etc.
-        if not is_admin_user:
+        # Handle Private Messages (PMs)
+        if chat.type == enums.ChatType.PRIVATE:
+            # Check for unwanted content in PM
             if (invite_link_pattern.search(message.text) or 
+                non_english_pattern.search(message.text) or
                 username_pattern.search(message.text) or 
                 url_pattern.search(message.text) or 
                 emoji_pattern.search(message.text) or 
                 len(message.text) > 70):
-                await message.delete()  # Delete the message if unwanted content is found
-                print(f"Deleted message from {message.from_user.id}: {message.text}")
+                await message.delete()  # Delete unwanted messages in private chat
+                print(f"Deleted message from {user.id} in PM: {message.text}")
                 return
             else:
-                print(f"Message is fine: {message.text}")
+                print(f"Allowed message from {user.id} in PM: {message.text}")
 
-        # Now handle reactions and search only if the message doesn't contain links/usernames/URLs
-        if len(message.text) < 70 and not (
-            invite_link_pattern.search(message.text) or 
-            username_pattern.search(message.text) or 
-            url_pattern.search(message.text) or 
-            emoji_pattern.search(message.text)
-        ):
+        else:
+            # In group/channel chats, check if sender is not an admin
+            member = await client.get_chat_member(chat.id, user.id)
+            if member.status not in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR]:
+                # Check for unwanted content in groups/channels
+                if (invite_link_pattern.search(message.text) or 
+                    non_english_pattern.search(message.text) or
+                    username_pattern.search(message.text) or 
+                    url_pattern.search(message.text) or 
+                    emoji_pattern.search(message.text) or 
+                    len(message.text) > 70):
+                    await message.delete()  # Delete unwanted messages in groups/channels
+                    print(f"Deleted message from {user.id} in group/channel: {message.text}")
+                    return
+
+        # Handle other cases where the message is allowed
+        if (len(message.text) < 70 and not 
+            (invite_link_pattern.search(message.text) or 
+             non_english_pattern.search(message.text) or
+             username_pattern.search(message.text) or 
+             url_pattern.search(message.text) or 
+             emoji_pattern.search(message.text) or 
+             len(message.text) > 70)):
             await message.react(emoji="🔥", big=True)
             search = message.text
             m = await message.reply_text(f"<b><i> 𝖲𝖾𝖺𝗋𝖼𝗁𝗂𝗇𝗀 𝖿𝗈𝗋 '{search}' 🔎</i></b>")
+
             search = search.swapcase()  # added convert string case viseVersa
             find = search.split(" ")
             search = ""

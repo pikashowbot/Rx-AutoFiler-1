@@ -383,7 +383,7 @@ Bot - @{}"""
 <u>FɪʟᴇSize</u> : {file_size}
 
 <u>𝗢𝘂𝗿 𝗢𝗳𝗳𝗶𝗰𝗶𝗮𝗹 𝗪𝗲𝗯𝘀𝗶𝘁𝗲</u> 👇
-https://bit.ly/Vegamovies4u</b>""" 
+https://VegamoviesNL.cfd</b>""" 
 
     IMDB_TEMPLATE_TXT = """
 <b>Query: {qurey}

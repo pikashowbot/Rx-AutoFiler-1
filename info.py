@@ -47,7 +47,7 @@ SEND_MV_LOGS = bool(environ.get('SEND_MV_LOGS', False)) #send newmovies log to u
 
 auth_channel = environ.get('AUTH_CHANNEL', '-1001641011626')  # public channel 
 second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002439108904')  # Add the second auth channel or Group (should private)
-third_auth_channel = environ.get('THIRD_AUTH_CHANNEL', '-1002252953506')  # Add the third auth channel or Group (should private)
+third_auth_channel = environ.get('THIRD_AUTH_CHANNEL', '-1002344874561')  # Add the third auth channel or Group (should private)
 
 
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None

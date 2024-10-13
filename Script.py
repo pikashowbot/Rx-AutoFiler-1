@@ -382,8 +382,9 @@ Bot - @{}"""
     
 <u>FɪʟᴇSize</u> : {file_size}
 
-<u>𝗢𝘂𝗿 𝗢𝗳𝗳𝗶𝗰𝗶𝗮𝗹 𝗪𝗲𝗯𝘀𝗶𝘁𝗲</u> 👇
-https://VegamoviesNL.cfd</b>""" 
+<u>𝗢𝘂𝗿 𝗢𝗳𝗳𝗶𝗰𝗶𝗮𝗹 𝗪𝗲𝗯𝘀𝗶𝘁𝗲</u> 
+👉 https://vegamovies4u.xyz/
+👉 https://vegamovies4u.xyz/</b>""" 
 
     IMDB_TEMPLATE_TXT = """
 <b>Query: {qurey}

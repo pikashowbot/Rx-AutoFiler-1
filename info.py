@@ -83,7 +83,7 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
 ASKFSUBINGRP = bool(environ.get('ASKFSUBINGRP', True))
 MIDVERIFY = bool(environ.get('MIDVERIFY', True))
-VERIFY = bool(environ.get('VERIFY', True))
+VERIFY = bool(environ.get('VERIFY', False))
 JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 
 

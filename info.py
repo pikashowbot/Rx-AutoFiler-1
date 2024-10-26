@@ -85,19 +85,15 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
 ASKFSUBINGRP = bool(environ.get('ASKFSUBINGRP', True))
 MIDVERIFY = bool(environ.get('MIDVERIFY', True))
-VERIFY = bool(environ.get('VERIFY', False))
+VERIFY = bool(environ.get('VERIFY', True))
 JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 
 
 SHORTLINK_URL = environ.get('SHORTLINK_URL', 'publicearn.com')
 SHORTLINK_API = environ.get('SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
 
-
-# SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'shortxlinks.com')
-# SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', 'b474897e83e3e42619c67d2f56648aac5bb767ea')
-
-SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'publicearn.com')
-SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
+SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'shortxlinks.com')
+SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', 'b474897e83e3e42619c67d2f56648aac5bb767ea')
 
 
 #shortlink on for file2link 
@@ -110,12 +106,11 @@ MAX_BTN = is_enabled((environ.get('MAX_BTN', "True")), True)
 PORT = environ.get("PORT", "8080")
 GRP_LNK = environ.get('GRP_LNK', 'https://telegram.me/+HldvnSK5kV9hMmFl')
 CHNL_LNK = environ.get('CHNL_LNK', 'https://telegram.me/+JlRNm8AVBpFhNGY1')
-#TUTORIAL = environ.get('TUTORIAL', 'https://t.me/h2d_earn2me/4')
-#VERIFY_TUTORIAL = environ.get('VERIFY_TUTORIAL', 'https://t.me/h2d_earn2me/4')
+
 TUTORIAL = environ.get('TUTORIAL', 'https://t.me/how2dow/55')
 
 VERIFY_TUTORIAL = environ.get('VERIFY_TUTORIAL', 'https://t.me/how2dow/55')
-SECONDVERIFY_TUTORIAL = environ.get('SECONDVERIFY_TUTORIAL', 'https://t.me/how2dow/55')
+SECONDVERIFY_TUTORIAL = environ.get('SECONDVERIFY_TUTORIAL', 'https://t.me/how2dow/76')
 
 
 IS_TUTORIAL = bool(environ.get('IS_TUTORIAL', True))

@@ -21,7 +21,7 @@ API_HASH = environ.get('API_HASH', '2262ef67ced426b9eea57867b11666a1')
 BOT_TOKEN = environ.get('BOT_TOKEN', "7433379680:AAFc1L6WKo2iUFQFcm87Y3bkC9CkByCXNJA")
 BOT_USERNAME = environ.get('BOT_USERNAME', 'RX_Autofiler2_bot')
 MEDIATOR_BOT = environ.get('MEDIATOR_BOT', 'Pikashow_Movie_Bot')
-FORWARD_LINK = "https://vegamoviesnl.cfd/wait?Autofiler2"
+FORWARD_LINK = "https://vegamovies4u.xyz/wait?Pikashow"
 
 
 

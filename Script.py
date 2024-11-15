@@ -382,9 +382,9 @@ Bot - @{}"""
     
 <u>FɪʟᴇSize</u> : {file_size}
 
-<u>𝗢𝘂𝗿 𝗢𝗳𝗳𝗶𝗰𝗶𝗮𝗹 𝗪𝗲𝗯𝘀𝗶𝘁𝗲</u> 
-👉 https://vegamovies4u.xyz
-👉 https://vegamovies4u.xyz</b>""" 
+<u>𝗟𝗲𝘁𝗲𝘀𝘁 𝗥𝗲𝗹𝗲𝗮𝘀𝗲 & 𝗨𝗽𝗹𝗼𝗮𝗱 𝗟𝗼𝗴𝘀</u> 
+👉 https://t.me/+EsTVlTuNGaM1YmNl
+👉 https://t.me/+mXGdyJSsjfJjMmRl</b>""" 
 
     IMDB_TEMPLATE_TXT = """
 <b>Query: {qurey}

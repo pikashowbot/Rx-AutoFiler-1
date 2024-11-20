@@ -1,6 +1,6 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from info import ADMINS, PREMIUM_USER, AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, IS_SHORTLINK, LOG_CHANNEL, TUTORIAL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, SECOND_AUTH_CHANNEL, THIRD_AUTH_CHANNEL, STREAM_SITE, STREAM_API, SHORTLINK_API, SHORTLINK_URL, SECOND_SHORTLINK_API, SECOND_SHORTLINK_URL, VERIFY_TUTORIAL, SECONDVERIFY_TUTORIAL
+from info import ADMINS, PREMIUM_USER, AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, IS_SHORTLINK, LOG_CHANNEL, TUTORIAL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, SECOND_AUTH_CHANNEL, THIRD_AUTH_CHANNEL, STREAM_SITE, STREAM_API, SHORTLINK_API, SHORTLINK_URL, SECOND_SHORTLINK_API, SECOND_SHORTLINK_URL, THIRD_SHORTLINK_API, THIRD_SHORTLINK_URL, VERIFY_TUTORIAL, SECOND_VERIFY_TUTORIAL, THIRD_VERIFY_TUTORIAL
 from imdb import Cinemagoer 
 import asyncio
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
@@ -592,9 +592,7 @@ async def get_verify_shorted_link(link, url, api):
             return link
 
 
-
-##
-
+    
 # async def get_token(bot, userid, link, fileid):
     # try:
         # user = await bot.get_users(userid)
@@ -618,24 +616,28 @@ async def get_verify_shorted_link(link, url, api):
     # morning_start = time(6, 0)  # 6:00 AM
     # morning_end = time(12, 0)   # 12:00 PM
     # evening_start = time(18, 0) # 6:00 PM
-    # evening_end = time(23, 59)    # 12:00 AM (midnight)
+    # evening_end = time(23, 59)  # 12:00 AM (midnight)
 
-    # # Determine which shortener to use based on the time
+    # # Determine which shortener and tutorial to use based on the time
     # if (morning_start <= current_time < morning_end) or (evening_start <= current_time < evening_end):
         # shortlink_url = SHORTLINK_URL
         # shortlink_api = SHORTLINK_API
+        # tutorial_link = VERIFY_TUTORIAL
     # else:
         # shortlink_url = SECOND_SHORTLINK_URL
         # shortlink_api = SECOND_SHORTLINK_API
+        # tutorial_link = SECONDVERIFY_TUTORIAL
     
     # try:
         # shortened_verify_url = await get_verify_shorted_link(link, shortlink_url, shortlink_api)
-        # return str(shortened_verify_url)
+        # return str(shortened_verify_url), tutorial_link
     # except Exception as e:
         # logger.error(f"Error in token generation process: {e}")
-        # return None
-        
+        # return None, None    
     
+
+
+
 async def get_token(bot, userid, link, fileid):
     try:
         user = await bot.get_users(userid)
@@ -655,30 +657,39 @@ async def get_token(bot, userid, link, fileid):
     kolkata_tz = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(kolkata_tz).time()
 
-    # Define time ranges
-    morning_start = time(6, 0)  # 6:00 AM
-    morning_end = time(12, 0)   # 12:00 PM
-    evening_start = time(18, 0) # 6:00 PM
-    evening_end = time(23, 59)  # 12:00 AM (midnight)
+    # Define time ranges and assign shorteners
+    morning_start, morning_end = time(6, 0), time(12, 0)   # Morning: 6 AM - 12 PM
+    afternoon_start, afternoon_end = time(12, 0), time(18, 0)  # Afternoon: 12 PM - 6 PM
+    evening_start, evening_end = time(18, 0), time(23, 59)  # Evening: 6 PM - 12 AM
 
-    # Determine which shortener and tutorial to use based on the time
-    if (morning_start <= current_time < morning_end) or (evening_start <= current_time < evening_end):
+    # Select shortener based on time range
+    if morning_start <= current_time < morning_end:
         shortlink_url = SHORTLINK_URL
         shortlink_api = SHORTLINK_API
         tutorial_link = VERIFY_TUTORIAL
-    else:
+    elif afternoon_start <= current_time < afternoon_end:
         shortlink_url = SECOND_SHORTLINK_URL
         shortlink_api = SECOND_SHORTLINK_API
-        tutorial_link = SECONDVERIFY_TUTORIAL
+        tutorial_link = SECOND_VERIFY_TUTORIAL
+    elif evening_start <= current_time < evening_end:
+        shortlink_url = THIRD_SHORTLINK_URL
+        shortlink_api = THIRD_SHORTLINK_API
+        tutorial_link = THIRD_VERIFY_TUTORIAL
+    else:
+        # Default to one of the shorteners if outside defined ranges (optional)
+        shortlink_url = THIRD_SHORTLINK_URL
+        shortlink_api = THIRD_SHORTLINK_API
+        tutorial_link = THIRD_VERIFY_TUTORIAL
     
     try:
         shortened_verify_url = await get_verify_shorted_link(link, shortlink_url, shortlink_api)
         return str(shortened_verify_url), tutorial_link
     except Exception as e:
         logger.error(f"Error in token generation process: {e}")
-        return None, None    
-    
-                        
+        return None, None
+        
+                                
+                                                                                
 
 async def check_token(bot, userid, token):
     user = await bot.get_users(userid)

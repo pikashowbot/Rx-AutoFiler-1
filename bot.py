@@ -29,18 +29,7 @@ logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
 ppath = "plugins/*.py"
 files = glob.glob(ppath)
 LazyPrincessBot.start()
-
-# loop = asyncio.get_event_loop()
-
-
-
-
-async def auto_restart():
-    """Function to restart the bot every 6 hours."""
-    while True:
-        await asyncio.sleep(3 * 80 * 90)  # Sleep for 6 hours
-        logging.info("Restarting bot automatically after 6 hours...")
-        os.execl(sys.executable, sys.executable, *sys.argv)  # Restart the bot
+loop = asyncio.get_event_loop()
 
 async def Lazy_start():
     print('\n')
@@ -84,27 +73,8 @@ async def Lazy_start():
     await web.TCPSite(app, bind_address, PORT).start()
     await idle()  # Keeps the bot alive and running
 
-async def shutdown(loop):
-    """Graceful shutdown to wait for tasks to finish."""
-    tasks = [t for t in asyncio.all_tasks(loop) if not t.done()]
-    if tasks:
-        await asyncio.gather(*tasks)
-
 if __name__ == '__main__':
     try:
-        # Use asyncio.run() to ensure proper event loop handling
-        loop = asyncio.get_event_loop()
-
-        # Start the bot and auto-restart task concurrently
-        loop.create_task(auto_restart())  # Schedule the auto-restart function
         loop.run_until_complete(Lazy_start())
-        
     except KeyboardInterrupt:
         logging.info('Service Stopped Bye 👋')
-        
-
-# if __name__ == '__main__':
-    # try:
-        # loop.run_until_complete(Lazy_start())
-    # except KeyboardInterrupt:
-        # logging.info('Service Stopped Bye 👋')        

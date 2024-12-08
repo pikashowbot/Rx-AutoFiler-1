@@ -69,7 +69,7 @@ async def pm_broadcast(bot, message):
 
                 # Live status update
                 await sts.edit(
-                    f"Broadcast in progress:\n\n"
+                    f"Broadcast in progress ⌛:\n\n"
                     f"Total Users: {total_users}\n"
                     f"Completed: {done}/{total_users}\n"
                     f"Success: {success}\n"
@@ -85,7 +85,7 @@ async def pm_broadcast(bot, message):
 
         time_taken = datetime.timedelta(seconds=int(time.time() - start_time))
         await sts.edit(
-            f"Broadcast Completed:\n\n"
+            f"Broadcast Completed ✅:\n\n"
             f"Time Taken: {time_taken}\n"
             f"Total Users: {total_users}\n"
             f"Completed: {done}/{total_users}\n"

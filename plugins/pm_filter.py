@@ -85,7 +85,9 @@ async def notify_user(client: Client, message: ChatJoinRequest):
 
         
 #private(PM) filter on mode👇
-#@Client.on_message(filters.group | filters.private & filters.text & filters.incoming)
+
+# @Client.on_message(filters.group | filters.private & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group) 
+# async def give_filter(client, message):
 
 @Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group) 
 async def give_filter(client, message):
@@ -3096,7 +3098,7 @@ async def auto_filter(client, msg, spoll=False, spell_chok=True, **kwargs):
                 await message.delete()
     else:
         fuk = await m.edit(text=cap, reply_markup=InlineKeyboardMarkup(btn), disable_web_page_preview=True)
-        await asyncio.sleep(120) #👈  movies results  auto delete (added features replace 'searching for' to 'movies results' [line 2146 <await m.edit>]
+        await asyncio.sleep(240) # 4 minutes 👈  movies results  auto delete (added features replace 'searching for' to 'movies results' [line 2146 <await m.edit>]
         await m.delete() #👈  searching for query  auto delete 
         try:
             if settings['auto_delete']:

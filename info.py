@@ -81,6 +81,7 @@ REFERAL_PREMEIUM_TIME = environ.get('REFERAL_PREMEIUM_TIME', '1_Month')
 DATABASE_URI_SESSIONS_F = environ.get('DATABASE_URI_SESSIONS_F', "mongodb+srv://rxsessionfiles:Surajrathod.878@cluster0.elccu40.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
 # MongoDB information
+#second db = mongodb+srv://RxAutofilerbot-1_2:Surajrathod.878@cluster0.1y1ix.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://rxautofilerbot:Surajrathod.878@cluster0.qfhsbhm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
@@ -101,13 +102,13 @@ JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 SHORTLINK_URL = environ.get('FIRST_SHORTLINK_URL', 'tryshort.in')
 SHORTLINK_API = environ.get('FIRST_SHORTLINK_API', '3058e5209596c0369b6ed7681b22f5e8216e02b5')
 
-# #second shortlink 
-# SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'publicearn.in')
-# SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '6ac07ac202019e09497a0daad5abe04e11a98ac2')
-
 #second shortlink 
-SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'tryshort.in')
-SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '3058e5209596c0369b6ed7681b22f5e8216e02b5')
+SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'shortxlinks.com')
+SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', 'b474897e83e3e42619c67d2f56648aac5bb767ea')
+
+# #second shortlink 
+# SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'tryshort.in')
+# SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '3058e5209596c0369b6ed7681b22f5e8216e02b5')
 
 
 #third shortlink

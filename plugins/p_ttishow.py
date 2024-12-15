@@ -7,7 +7,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong, PeerIdInvalid
 from info import ADMINS, LOG_CHANNEL, SUPPORT_CHAT, MELCOW_NEW_USERS, MELCOW_VID, CHNL_LNK, GRP_LNK
 from database.users_chats_db import db
-from database.ia_filterdb import Media
+from database.ia_filterdb import Media, get_db_size
 from utils import get_size, temp, get_settings
 from Script import script
 from pyrogram.errors import ChatAdminRequired
@@ -166,6 +166,9 @@ async def re_enable_chat(bot, message):
     await message.reply("Chat Successfully re-enabled")
 
 
+
+
+
 @Client.on_message(filters.command('stats') & filters.user(ADMINS))
 async def get_ststs(bot, message):
     rju = await message.reply('Fetching stats..')
@@ -173,11 +176,16 @@ async def get_ststs(bot, message):
     totl_chats = await db.total_chat_count()
     files = await Media.count_documents()
     size = await db.get_db_size()
+    size2 = await get_db_size()
+    free2 = 536870912 - size2
+    size2 = get_size(size2)
+    free2 = get_size(free2)
     free = 536870912 - size
     size = get_size(size)
     free = get_size(free)
-    await rju.edit(script.STATUS_TXT.format(files, total_users, totl_chats, size, free, temp.U_NAME))
-
+    await rju.edit(script.STATUS_TXT.format(total_users, totl_chats, size, free, files, size2, free2, temp.U_NAME))
+    
+    
 
 @Client.on_message(filters.command('invite') & filters.user(ADMINS))
 async def gen_invite(bot, message):

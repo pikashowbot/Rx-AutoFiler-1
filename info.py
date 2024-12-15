@@ -61,7 +61,7 @@ THIRD_AUTH_CHANNEL = int(third_auth_channel) if third_auth_channel and id_patter
 
 
 
-auth_grp = environ.get('AUTH_GROUP')
+auth_grp = environ.get('AUTH_GROUP', '-1002434490630')
 AUTH_GROUPS = [int(ch) for ch in auth_grp.split()] if auth_grp else None
 support_chat_id = environ.get('SUPPORT_CHAT_ID', '-1001993304315')
 reqst_channel = environ.get('REQST_CHANNEL_ID', '-1001947068403')
@@ -81,11 +81,14 @@ REFERAL_PREMEIUM_TIME = environ.get('REFERAL_PREMEIUM_TIME', '1_Month')
 DATABASE_URI_SESSIONS_F = environ.get('DATABASE_URI_SESSIONS_F', "mongodb+srv://rxsessionfiles:Surajrathod.878@cluster0.elccu40.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
 # MongoDB information
-#second db = mongodb+srv://RxAutofilerbot-1_2:Surajrathod.878@cluster0.1y1ix.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://rxautofilerbot:Surajrathod.878@cluster0.qfhsbhm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
-COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
+# 2nd MongoDB for only storing telegram files
+DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://RxAutofilerbot-1_2:Surajrathod.878@cluster0.1y1ix.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+DATABASE_NAME2 = environ.get('DATABASE_NAME2', "Cluster0")
+
+COLLECTION_NAME = environ.get('COLLECTION_NAME', 'mynewfiles')
 
 
 ASKFSUBINGRP = bool(environ.get('ASKFSUBINGRP', True))
@@ -102,13 +105,10 @@ JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 SHORTLINK_URL = environ.get('FIRST_SHORTLINK_URL', 'tryshort.in')
 SHORTLINK_API = environ.get('FIRST_SHORTLINK_API', '3058e5209596c0369b6ed7681b22f5e8216e02b5')
 
-#second shortlink 
-SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'shortxlinks.com')
-SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', 'b474897e83e3e42619c67d2f56648aac5bb767ea')
 
-# #second shortlink 
-# SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'tryshort.in')
-# SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '3058e5209596c0369b6ed7681b22f5e8216e02b5')
+#second shortlink 
+SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'tryshort.in')
+SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '3058e5209596c0369b6ed7681b22f5e8216e02b5')
 
 
 #third shortlink

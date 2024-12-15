@@ -55,8 +55,7 @@ pyromod
 colorama
 openai==0.25.0
 emoji
-
-jinja2
+pyrofork==2.3.45
 
 git+https://github.com/Joelkb/cinemagoer
-git+https://github.com/Sahidmalik001/pyrofork-m
+#---git+https://github.com/Sahidmalik001/pyrofork-m---#

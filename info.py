@@ -110,9 +110,15 @@ SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'genzurl.com')
 SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', 'ca1672e0cf3d48a903fab7fe451c1a627e0e8e2c')
 
 
+
 #third shortlink
-THIRD_SHORTLINK_URL = environ.get('THIRD_SHORTLINK_URL', 'shortxlinks.com')
-THIRD_SHORTLINK_API = environ.get('THIRD_SHORTLINK_API', 'b474897e83e3e42619c67d2f56648aac5bb767ea')
+THIRD_SHORTLINK_URL = environ.get('THIRD_SHORTLINK_URL', 'genzurl.com')
+THIRD_SHORTLINK_API = environ.get('THIRD_SHORTLINK_API', 'ca1672e0cf3d48a903fab7fe451c1a627e0e8e2c')
+
+
+# #third shortlink
+# THIRD_SHORTLINK_URL = environ.get('THIRD_SHORTLINK_URL', 'shortxlinks.com')
+# THIRD_SHORTLINK_API = environ.get('THIRD_SHORTLINK_API', 'b474897e83e3e42619c67d2f56648aac5bb767ea')
 
 
 #verify tutorial 

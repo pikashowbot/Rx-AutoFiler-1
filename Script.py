@@ -389,8 +389,8 @@ Bot - @{}"""
 <u>FɪʟᴇSize</u> : {file_size}
 
 <u>𝗟𝗲𝘁𝗲𝘀𝘁 𝗥𝗲𝗹𝗲𝗮𝘀𝗲 </u> 
-👉 https://desiremovies3.my/
-👉 https://desiremovies3.my/</b>""" 
+👉 https://desiremovies.help/
+👉 https://desiremovies.help/</b>""" 
 
     IMDB_TEMPLATE_TXT = """
 <b>Query: {qurey}

@@ -50,7 +50,7 @@ SEND_MV_LOGS = bool(environ.get('SEND_MV_LOGS', True)) #send newmovies log to up
 
 
 auth_channel = environ.get('AUTH_CHANNEL', '-1001641011626')  # public channel 
-second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002258406327')  # Add the second auth channel or Group (should private)
+second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002375202084')  # Add the second auth channel or Group (should private)
 third_auth_channel = environ.get('THIRD_AUTH_CHANNEL', '-1002308807950')  # Add the third auth channel or Group (should private)
 
 

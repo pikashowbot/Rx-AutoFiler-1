@@ -51,7 +51,7 @@ SEND_MV_LOGS = bool(environ.get('SEND_MV_LOGS', True)) #send newmovies log to up
 
 auth_channel = environ.get('AUTH_CHANNEL', '-1001641011626')  # public channel 
 second_auth_channel = environ.get('SECOND_AUTH_CHANNEL', '-1002285126407')  # Add the second auth channel or Group (should private)
-third_auth_channel = environ.get('THIRD_AUTH_CHANNEL', '-1002362153866')  # Add the third auth channel or Group (should private)
+third_auth_channel = environ.get('THIRD_AUTH_CHANNEL', '-1002371294272')  # Add the third auth channel or Group (should private)
 
 
 
@@ -100,36 +100,37 @@ JOINREQ_MSG = bool(environ.get('JOINREQ_MSG', False))
 
 
 
-#first shortlink
-SHORTLINK_URL = environ.get('FIRST_SHORTLINK_URL', 'genzurl.com')
-SHORTLINK_API = environ.get('FIRST_SHORTLINK_API', 'ca1672e0cf3d48a903fab7fe451c1a627e0e8e2c')
+# #third shortlink
+# THIRD_SHORTLINK_URL = environ.get('THIRD_SHORTLINK_URL', 'genzurl.com')
+# THIRD_SHORTLINK_API = environ.get('THIRD_SHORTLINK_API', 'ca1672e0cf3d48a903fab7fe451c1a627e0e8e2c')
 
+
+
+#first shortlink
+SHORTLINK_URL = environ.get('FIRST_SHORTLINK_URL', 'anylinks.in')
+SHORTLINK_API = environ.get('FIRST_SHORTLINK_API', '8976926e7901119f7592ecf6a18203d8ceeeb1b5')
 
 #second shortlink 
-SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'genzurl.com')
-SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', 'ca1672e0cf3d48a903fab7fe451c1a627e0e8e2c')
-
+SECOND_SHORTLINK_URL = environ.get('SECOND_SHORTLINK_URL', 'anylinks.in')
+SECOND_SHORTLINK_API = environ.get('SECOND_SHORTLINK_API', '29bf5535cf549d2b51c0dd540344c90d89ab8bf5')
 
 
 #third shortlink
-THIRD_SHORTLINK_URL = environ.get('THIRD_SHORTLINK_URL', 'genzurl.com')
-THIRD_SHORTLINK_API = environ.get('THIRD_SHORTLINK_API', 'ca1672e0cf3d48a903fab7fe451c1a627e0e8e2c')
+THIRD_SHORTLINK_URL = environ.get('THIRD_SHORTLINK_URL', 'anylinks.in')
+THIRD_SHORTLINK_API = environ.get('THIRD_SHORTLINK_API', '8976926e7901119f7592ecf6a18203d8ceeeb1b5')
 
-
-# #third shortlink
-# THIRD_SHORTLINK_URL = environ.get('THIRD_SHORTLINK_URL', 'shortxlinks.com')
-# THIRD_SHORTLINK_API = environ.get('THIRD_SHORTLINK_API', 'b474897e83e3e42619c67d2f56648aac5bb767ea')
 
 
 #verify tutorial 
-VERIFY_TUTORIAL = environ.get('FIRST_VERIFY_TUTORIAL', 'https://t.me/how2dow/55')
-SECOND_VERIFY_TUTORIAL = environ.get('SECOND_VERIFY_TUTORIAL', 'https://t.me/how2dow/55')
-THIRD_VERIFY_TUTORIAL = environ.get('THIRD_VERIFY_TUTORIAL', 'https://t.me/how2dow/76')
+VERIFY_TUTORIAL = environ.get('FIRST_VERIFY_TUTORIAL', 'https://t.me/how2dow/79')
+SECOND_VERIFY_TUTORIAL = environ.get('SECOND_VERIFY_TUTORIAL', 'https://t.me/how2dow/79')
+THIRD_VERIFY_TUTORIAL = environ.get('THIRD_VERIFY_TUTORIAL', 'https://t.me/how2dow/79')
 
 
 
 
 
+#shortlink on for file2link 
 IS_SREAM_SHORTLINK = bool(environ.get('IS_SREAM_SHORTLINK', False))
 IS_SHORTLINK = bool(environ.get('IS_SHORTLINK', False))
 

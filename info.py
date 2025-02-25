@@ -18,7 +18,6 @@ def is_enabled(value, default):
 SESSION = environ.get('SESSION', 'Media_search')
 API_ID = int(environ.get('API_ID', '904789'))
 API_HASH = environ.get('API_HASH', '2262ef67ced426b9eea57867b11666a1')
-BOT_TOKEN = environ.get('BOT_TOKEN', "6703732631:AAEqKwSurEYWP1jtpbX9i2QaXBF67fLrF-o")
 BOT_USERNAME = environ.get('BOT_USERNAME', 'RX_Autofilerbot')
 MEDIATOR_BOT = environ.get('MEDIATOR_BOT', 'Pikashow_Movie_Bot')
 FORWARD_LINK = "https://vegamovies4u.xyz/wait?Autofiler1"
